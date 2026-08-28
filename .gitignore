@@ -1,0 +1,17 @@
+node_modules/
+.pnpm-store/
+dist/
+
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Generated search indexes are hundreds of MB and can be rebuilt with package scripts.
+data/**/*.sqlite
+data/**/*.sqlite-*
+data/**/*.jsonl
+
+.env
+.env.*
+!.env.example
+*.log

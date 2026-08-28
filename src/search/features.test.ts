@@ -1,0 +1,2 @@
+import { describe,expect,it } from 'vitest';import type { QueryEvent } from '../types';import { collapseTies,sounding } from './features';
+describe('ties as sounding events',()=>{it('merges adjacent tied equal pitches and sums duration',()=>{const events:QueryEvent[]=[{id:'a',kind:'note',pitchMidi:67,durationRatio:1,tieGroup:'t1'},{id:'b',kind:'note',pitchMidi:67,durationRatio:1.5,tieGroup:'t1'}];expect(collapseTies(events)).toHaveLength(1);expect(sounding(events)[0].durationRatio).toBe(2.5)});});

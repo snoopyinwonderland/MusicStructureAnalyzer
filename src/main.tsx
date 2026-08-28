@@ -1,0 +1,13 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './styles.css';
+import './score.css';
+import './detail-overrides.css';
+import './locator.css';
+import './score-fixes.css';
+import './score-scale.css';
+import './locator-click.css';
+import './xml-excerpt.css';
+import './result-xml.css';
+ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);

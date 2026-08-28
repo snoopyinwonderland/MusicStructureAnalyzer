@@ -1,0 +1,34 @@
+{
+  "name": "musicanote-similarity-search-lab",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "eval": "vitest run src/search/evaluation.test.ts",
+    "sync:music-analysis": "node scripts/sync-music-analysis.mjs",
+    "youtube:backfill": "node scripts/youtube-backfill.mjs",
+    "youtube:worker": "node scripts/youtube-backfill.mjs --watch",
+    "index:musicxml": "python scripts/build-musicxml-search-index.py",
+    "index:musicxml:sample": "python scripts/build-musicxml-search-index.py --limit 25",
+    "index:finalize": "node scripts/finalize-search-index.mjs"
+    ,"index:sqlite": "node scripts/build-search-sqlite.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "verovio": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vitest": "latest"
+  }
+}

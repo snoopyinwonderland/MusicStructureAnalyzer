@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "source": "data/search-index-v1/works.jsonl",
+  "completedAt": "2026-08-27T11:34:05.409Z",
+  "works": 8111,
+  "streams": 26216,
+  "notes": 7969626,
+  "droppedZeroDurationEvents": 1317,
+  "bytes": 605504953
+}
