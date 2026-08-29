@@ -68,7 +68,7 @@ pnpm sync:music-analysis
 
 - `QueryEvent[]`가 유일한 입력 상태이며 여기서 MEI를 생성합니다.
 - Verovio WASM이 MEI를 SVG로 렌더링합니다. abcjs는 사용하지 않습니다.
-- C2–C6 건반, 검은 건반, 쉼표, 64분음표–온음표 snap, Undo/Redo/Clear/Delete, 박자와 모드 선택, Web Audio 재생을 제공합니다.
+- C2–E6 건반, 검은 건반, 쉼표, 64분음표–온음표 snap, Undo/Redo/Clear/Delete, 박자와 모드 선택, Web Audio 재생을 제공합니다.
 - 음가 증감은 `1/16, 1/8, 1/4, 1/2, 1, 1.5, 2, 3, 4 beat`만 사용합니다. 인접한 같은 음 두 개를 선택해 Tie로 묶을 수 있으며 검색에서는 합산된 하나의 sounding event로 처리합니다.
 - 음정/윤곽 q-gram 후보화, downbeat 제한 exact search, 장식음 비용을 낮춘 weighted DTW를 제공합니다.
 - Exact/Similar bucket, alignment, component score, occurrence importance, analysis confidence를 분리해 표시합니다.

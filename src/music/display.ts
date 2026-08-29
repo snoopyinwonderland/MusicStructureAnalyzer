@@ -1,3 +1,40 @@
 import type { CorpusNote, QueryEvent } from '../types';
-type Meta={clefShape?:string;clefLine?:number;meterCount?:number;meterUnit?:number};
-export function withMeasureRests(notes:CorpusNote[],beats?:number){const output:QueryEvent[]=[];if(!notes.length)return output;const meta=notes[0] as CorpusNote&Meta,meterBeats=beats??meta.meterCount??4,expanded:CorpusNote[]=[];for(const original of notes){let remaining=original.durationRatio,measure=original.measure,beat=original.beat,part=0;const spans=remaining>meterBeats-beat+1+.001,group=spans?`source-tie-${original.id}`:undefined;while(remaining>.001){const duration=Math.min(remaining,meterBeats-beat+1);expanded.push({...original,id:part?`${original.id}-tie-${part}`:original.id,measure,beat,durationRatio:duration,tieGroup:group} as CorpusNote);remaining-=duration;measure++;beat=1;part++}}const firstMeasure=Math.min(...expanded.map(n=>n.measure)),lastMeasure=Math.max(...expanded.map(n=>n.measure));for(let measure=firstMeasure;measure<=lastMeasure;measure++){const group=expanded.filter(n=>n.measure===measure).sort((a,b)=>a.beat-b.beat),pushRest=(beat:number,duration:number)=>{let left=duration,index=0;for(const value of [4,3,2,1.5,1,.5,.25,.125,.0625])while(left>=value-.0001){output.push({id:`rest-${measure}-${beat}-${index++}`,kind:'rest',pitchMidi:null,durationRatio:value,measure,beat} as QueryEvent);beat+=value;left-=value}};let cursor=1;for(const note of group){if(note.beat>cursor+.001)pushRest(cursor,note.beat-cursor);output.push(note);cursor=Math.max(cursor,note.beat+note.durationRatio)}if(cursor<meterBeats+1-.001)pushRest(cursor,meterBeats+1-cursor)}if(output[0])Object.assign(output[0],meta);return output}
+
+type Meta = { clefShape?: string; clefLine?: number; meterCount?: number; meterUnit?: number; keyFifths?: number; partName?: string };
+
+export function withMeasureRests(notes: CorpusNote[], beats?: number) {
+  const output: QueryEvent[] = [];
+  if (!notes.length) return output;
+  const source = notes[0] as CorpusNote & Meta;
+  const meta: Meta = { clefShape: source.clefShape, clefLine: source.clefLine, meterCount: source.meterCount, meterUnit: source.meterUnit, keyFifths: source.keyFifths, partName: source.partName };
+  const meterBeats = beats ?? meta.meterCount ?? 4, expanded: CorpusNote[] = [];
+  for (const original of notes) {
+    let remaining = original.durationRatio, measure = original.measure, beat = original.beat, part = 0;
+    const spans = remaining > meterBeats - beat + 1 + .001, group = spans ? `source-tie-${original.id}` : undefined;
+    while (remaining > .001) {
+      const duration = Math.min(remaining, meterBeats - beat + 1);
+      expanded.push({ ...original, id: part ? `${original.id}-tie-${part}` : original.id, measure, beat, durationRatio: duration, tieGroup: group } as CorpusNote);
+      remaining -= duration; measure++; beat = 1; part++;
+    }
+  }
+  const firstMeasure = Math.min(...expanded.map(n => n.measure)), lastMeasure = Math.max(...expanded.map(n => n.measure));
+  for (let measure = firstMeasure; measure <= lastMeasure; measure++) {
+    const group = expanded.filter(n => n.measure === measure).sort((a, b) => a.beat - b.beat);
+    const pushRest = (beat: number, duration: number) => {
+      let left = duration, index = 0;
+      for (const value of [4, 3, 2, 1.5, 1, .5, .25, .125, .0625]) while (left >= value - .0001) {
+        output.push({ id: `rest-${measure}-${beat}-${index++}`, kind: 'rest', pitchMidi: null, durationRatio: value, measure, beat } as QueryEvent);
+        beat += value; left -= value;
+      }
+    };
+    let cursor = 1;
+    for (const note of group) {
+      if (note.beat > cursor + .001) pushRest(cursor, note.beat - cursor);
+      output.push(note);
+      cursor = Math.max(cursor, note.beat + note.durationRatio);
+    }
+    if (cursor < meterBeats + 1 - .001) pushRest(cursor, meterBeats + 1 - cursor);
+  }
+  if (output[0]) Object.assign(output[0], meta);
+  return output;
+}

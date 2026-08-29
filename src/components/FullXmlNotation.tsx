@@ -17,6 +17,40 @@ const midi = (n: Element) => {
   return (o + 1) * 12 + pc[s] + a;
 };
 const tieTypes = (n: Element) => [...n.getElementsByTagName('tie')].map(x => x.getAttribute('type'));
+const isShortFirstMeasure = (measure: Element) => {
+  const attributes = measure.getElementsByTagName('attributes')[0];
+  const divisions = +(attributes?.getElementsByTagName('divisions')[0]?.textContent || 1);
+  const beatsText = attributes?.getElementsByTagName('beats')[0]?.textContent || '4';
+  const beats = beatsText.split('+').reduce((sum, value) => sum + (+value || 0), 0);
+  const beatType = +(attributes?.getElementsByTagName('beat-type')[0]?.textContent || 4);
+  const nominal = divisions * beats * 4 / beatType;
+  let cursor = 0, maximum = 0;
+  for (const element of [...measure.children]) {
+    const duration = +(element.getElementsByTagName('duration')[0]?.textContent || 0);
+    if (element.tagName === 'backup') cursor -= duration;
+    else if (element.tagName === 'forward') { cursor += duration; maximum = Math.max(maximum, cursor); }
+    else if (element.tagName === 'note' && !element.getElementsByTagName('chord').length && !element.getElementsByTagName('grace').length) {
+      cursor += duration; maximum = Math.max(maximum, cursor);
+    }
+  }
+  return nominal > 0 && maximum > 0 && maximum < nominal - .001;
+};
+const normalizePickupMeasures = (doc: XMLDocument) => {
+  for (const part of [...doc.getElementsByTagName('part')]) {
+    const measures = [...part.children].filter(child => child.tagName === 'measure');
+    const first = measures[0];
+    if (!first) continue;
+    const pickup = first.getAttribute('implicit')?.toLowerCase() === 'yes' || isShortFirstMeasure(first);
+    if (!pickup) continue;
+    const firstNumber = Number(first.getAttribute('number'));
+    const shift = Number.isFinite(firstNumber) && firstNumber > 0 ? firstNumber : 0;
+    for (const [index, measure] of measures.entries()) {
+      const declared = Number(measure.getAttribute('number'));
+      if (Number.isFinite(declared)) measure.setAttribute('number', String(declared - shift));
+      else if (index === 0) measure.setAttribute('number', '0');
+    }
+  }
+};
 const effectiveAttributes = (doc: XMLDocument, measures: Element[], first: Element) => {
   let attrs = first.getElementsByTagName('attributes')[0];
   if (!attrs) { attrs = doc.createElement('attributes'); first.insertBefore(attrs, first.firstChild); }
@@ -57,6 +91,7 @@ export function FullXmlNotation({ xml, start, end, targets, streamId, excerpt = 
       const doc = new DOMParser().parseFromString(xml, 'application/xml');
       const [partId, staff = '1', voice = '1'] = streamId.split(':');
       for (const tag of ['credit', 'work', 'movement-title']) for (const n of [...doc.getElementsByTagName(tag)]) n.remove();
+      normalizePickupMeasures(doc);
       if (excerpt) trimToExcerpt(doc, partId, start, end);
       const part = [...doc.getElementsByTagName('part')].find(x => x.getAttribute('id') === partId);
       const ordered = [...(part?.getElementsByTagName('note') || [])];

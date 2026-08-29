@@ -55,14 +55,17 @@ def parse_musicxml(path:Path):
     streams=defaultdict(list); measure_meta={}; max_end=Fraction(0); note_count=0
     for part_index,part in enumerate(x for x in root if tag(x)=="part"):
         pid=part.attrib.get("id",f"P{part_index+1}");divisions=1;measure_start=Fraction(0);beats=4;beat_type=4
-        for measure_index,measure in enumerate(x for x in part if tag(x)=="measure"):
-            cursor=Fraction(0);last_onset=Fraction(0);measure_max=Fraction(0);number=measure.attrib.get("number",str(measure_index+1))
+        measures=[x for x in part if tag(x)=="measure"]
+        pickup_shift=0
+        for measure_index,measure in enumerate(measures):
+            cursor=Fraction(0);last_onset=Fraction(0);measure_max=Fraction(0);declared_number=measure.attrib.get("number",str(measure_index+1))
             attributes=child(measure,"attributes")
             if attributes is not None:
                 divisions=int(text(attributes,"divisions",str(divisions)))
                 ts=child(attributes,"time")
-                if ts is not None:beats=int(text(ts,"beats",str(beats)).split("+")[0]);beat_type=int(text(ts,"beat-type",str(beat_type)))
-            nominal=Fraction(beats*4,beat_type);measure_meta[(pid,measure_index)]={"number":number,"start":fnum(measure_start),"beats":beats,"beatType":beat_type}
+                if ts is not None:beats=sum(int(x) for x in text(ts,"beats",str(beats)).split("+"));beat_type=int(text(ts,"beat-type",str(beat_type)))
+            nominal=Fraction(beats*4,beat_type)
+            pending=[]
             for element in measure:
                 kind=tag(element)
                 if kind in ("backup","forward"):
@@ -72,13 +75,19 @@ def parse_musicxml(path:Path):
                 is_chord=child(element,"chord") is not None;onset=last_onset if is_chord else cursor
                 if not is_chord:last_onset=onset
                 if child(element,"grace") is not None:duration=Fraction(0)
-                voice=text(element,"voice","1");staff=text(element,"staff","1");midi,spelling=pitch_midi(element)
+                voice=text(element,"voice",None) or (pending[-1][0] if is_chord and pending else "1");staff=text(element,"staff",None) or (pending[-1][1] if is_chord and pending else "1");midi,spelling=pitch_midi(element)
                 if midi is not None:
                     ties=[x.attrib.get("type") for x in element if tag(x)=="tie"]
-                    streams[(pid,staff,voice)].append({"m":measure_index+1,"mn":number,"b":fnum(onset)+1,"o":fnum(measure_start+onset),"d":fnum(duration),"p":midi,"s":spelling,"ts":"start" in ties,"te":"stop" in ties,"g":duration==0})
-                    note_count+=1
+                    pending.append((voice,staff,{"m":measure_index+1,"b":fnum(onset)+1,"o":fnum(measure_start+onset),"d":fnum(duration),"p":midi,"s":spelling,"ts":"start" in ties,"te":"stop" in ties,"g":duration==0}));note_count+=1
                 if not is_chord:cursor+=duration
                 measure_max=max(measure_max,onset+duration)
+            if measure_index==0 and (measure.attrib.get("implicit","").lower()=="yes" or (measure_max>0 and measure_max<nominal)):
+                try: pickup_shift=int(declared_number)
+                except ValueError: pickup_shift=0
+            try:number=str(int(declared_number)-pickup_shift)
+            except ValueError:number="0" if measure_index==0 and pickup_shift else declared_number
+            measure_meta[(pid,measure_index)]={"number":number,"start":fnum(measure_start),"beats":beats,"beatType":beat_type}
+            for voice,staff,item in pending:item["mn"]=number;streams[(pid,staff,voice)].append(item)
             measure_start+=max(nominal,measure_max);max_end=max(max_end,measure_start)
     compact=[]
     for (pid,staff,voice),notes in streams.items():

@@ -9,6 +9,8 @@ export interface QueryEvent {
   spelling?: string;
   durationRatio: number;
   tieGroup?: string;
+  onset?: number;
+  contourShapeConfidence?: number;
 }
 
 export interface Query { version: 1; mode: QueryMode; meter: Meter; startsOnDownbeat: true; events: QueryEvent[] }
