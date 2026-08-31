@@ -7,7 +7,9 @@ export function withMeasureRests(notes: CorpusNote[], beats?: number) {
   if (!notes.length) return output;
   const source = notes[0] as CorpusNote & Meta;
   const meta: Meta = { clefShape: source.clefShape, clefLine: source.clefLine, meterCount: source.meterCount, meterUnit: source.meterUnit, keyFifths: source.keyFifths, partName: source.partName };
-  const meterBeats = beats ?? meta.meterCount ?? 4, expanded: CorpusNote[] = [];
+  // Corpus beat positions use quarter-note units regardless of the notated
+  // denominator, so 6/8 occupies 3 here rather than 6.
+  const meterBeats = beats ?? (meta.meterCount && meta.meterUnit ? meta.meterCount * 4 / meta.meterUnit : meta.meterCount) ?? 4, expanded: CorpusNote[] = [];
   for (const original of notes) {
     let remaining = original.durationRatio, measure = original.measure, beat = original.beat, part = 0;
     const spans = remaining > meterBeats - beat + 1 + .001, group = spans ? `source-tie-${original.id}` : undefined;

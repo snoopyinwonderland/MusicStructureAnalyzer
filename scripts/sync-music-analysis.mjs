@@ -6,7 +6,7 @@ const destination = path.resolve('src/search/music-analysis-corpus.json');
 const ir = JSON.parse(fs.readFileSync(source, 'utf8'));
 const youtubeCachePath=path.resolve('data/youtube-matches.json');
 const youtubeCache=fs.existsSync(youtubeCachePath)?JSON.parse(fs.readFileSync(youtubeCachePath,'utf8')):{works:{}};
-const youtubeKey=ir.score.title.replace(/\.musicxml$/i,'').replace(/^\s*\d+\.?\s*/,'').replace(/\b(?:piano\s+solo|melody|violin|viola|cello|contrabass|duet|trio|quartet|string\s+orchestra|piano\s+quintet)\b/gi,' ').replace(/[,_]+/g,' ').replace(/\s+/g,' ').trim().toLocaleLowerCase('en-US');
+const youtubeKey=ir.score.title.replace(/\.musicxml$/i,'').replace(/^\s*\d+\.?\s*/,'').replace(/\b(?:piano\s+(?:solo|duet|trio|quartet|quintet)|melody|violin|viola|cello|contrabass|duet|trio|quartet|string\s+orchestra)\b/gi,' ').replace(/[,_]+/g,' ').replace(/\s+/g,' ').trim().replace(/\s+(?:and|&)\s*$/i,'').trim().toLocaleLowerCase('en-US');
 const q = value => value.numerator / value.denominator;
 const measureById = new Map(ir.measures.map(m => [m.measure_id, m]));
 const noteById = new Map(ir.note_events.map(n => [n.note_id, n]));

@@ -17,6 +17,26 @@ const midi = (n: Element) => {
   return (o + 1) * 12 + pc[s] + a;
 };
 const tieTypes = (n: Element) => [...n.getElementsByTagName('tie')].map(x => x.getAttribute('type'));
+const positionedNotes = (part: Element | undefined) => {
+  const positions = new Map<Element, { beat: number; staff: string; voice: string }>();
+  let divisions = 1;
+  for (const measure of [...(part?.children || [])].filter(child => child.tagName === 'measure')) {
+    const declared = +(measure.getElementsByTagName('attributes')[0]?.getElementsByTagName('divisions')[0]?.textContent || 0);
+    if (declared > 0) divisions = declared;
+    let cursor = 0, lastOnset = 0;
+    for (const element of [...measure.children]) {
+      const duration = +(element.getElementsByTagName('duration')[0]?.textContent || 0);
+      if (element.tagName === 'backup') { cursor -= duration; continue; }
+      if (element.tagName === 'forward') { cursor += duration; continue; }
+      if (element.tagName !== 'note') continue;
+      const chord = Boolean(element.getElementsByTagName('chord').length), grace = Boolean(element.getElementsByTagName('grace').length), onset = chord ? lastOnset : cursor;
+      positions.set(element, { beat: 1 + onset / divisions, staff: element.getElementsByTagName('staff')[0]?.textContent || '1', voice: element.getElementsByTagName('voice')[0]?.textContent || '1' });
+      if (!chord) lastOnset = onset;
+      if (!chord && !grace) cursor += duration;
+    }
+  }
+  return positions;
+};
 const isShortFirstMeasure = (measure: Element) => {
   const attributes = measure.getElementsByTagName('attributes')[0];
   const divisions = +(attributes?.getElementsByTagName('divisions')[0]?.textContent || 1);
@@ -95,6 +115,7 @@ export function FullXmlNotation({ xml, start, end, targets, streamId, excerpt = 
       if (excerpt) trimToExcerpt(doc, partId, start, end);
       const part = [...doc.getElementsByTagName('part')].find(x => x.getAttribute('id') === partId);
       const ordered = [...(part?.getElementsByTagName('note') || [])];
+      const positions = positionedNotes(part);
       const used = new Set<Element>();
       const marked = new Set<Element>();
       const mark = (n: Element) => { if (!marked.has(n)) { n.setAttribute('id', `search-match-${marked.size}`); marked.add(n); } };
@@ -106,7 +127,7 @@ export function FullXmlNotation({ xml, start, end, targets, streamId, excerpt = 
         for (let j = i + 1; j < ordered.length && ordered[j].getElementsByTagName('chord').length; j++) mark(ordered[j]);
       };
       for (const target of targets) {
-        const note = ordered.find(n => !used.has(n) && n.closest('measure')?.getAttribute('number') === String(target.measure) && !n.getElementsByTagName('rest').length && (n.getElementsByTagName('staff')[0]?.textContent || '1') === staff && (n.getElementsByTagName('voice')[0]?.textContent || '1') === voice && midi(n) === target.pitchMidi);
+        const note = ordered.find(n => { const position = positions.get(n); return !used.has(n) && n.closest('measure')?.getAttribute('number') === String(target.measure) && !n.getElementsByTagName('rest').length && position?.staff === staff && position?.voice === voice && Math.abs(position.beat - Number(target.beat)) < 1e-6 && midi(n) === target.pitchMidi });
         if (!note) continue;
         used.add(note);
         markChord(note);

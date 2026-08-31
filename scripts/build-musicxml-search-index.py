@@ -78,7 +78,7 @@ def parse_musicxml(path:Path):
                 voice=text(element,"voice",None) or (pending[-1][0] if is_chord and pending else "1");staff=text(element,"staff",None) or (pending[-1][1] if is_chord and pending else "1");midi,spelling=pitch_midi(element)
                 if midi is not None:
                     ties=[x.attrib.get("type") for x in element if tag(x)=="tie"]
-                    pending.append((voice,staff,{"m":measure_index+1,"b":fnum(onset)+1,"o":fnum(measure_start+onset),"d":fnum(duration),"p":midi,"s":spelling,"ts":"start" in ties,"te":"stop" in ties,"g":duration==0}));note_count+=1
+                    pending.append((voice,staff,{"m":measure_index+1,"b":fnum(onset)+1,"o":fnum(measure_start+onset),"d":fnum(duration),"p":midi,"s":spelling,"ts":"start" in ties,"te":"stop" in ties,"g":duration==0,"u":child(element,"cue") is not None}));note_count+=1
                 if not is_chord:cursor+=duration
                 measure_max=max(measure_max,onset+duration)
             if measure_index==0 and (measure.attrib.get("implicit","").lower()=="yes" or (measure_max>0 and measure_max<nominal)):
@@ -101,12 +101,25 @@ def parse_musicxml(path:Path):
                 active["d"]=round((n["o"]+n["d"])-active["o"],6);active["tm"]=n["m"]
                 if not n["ts"]:active=None
                 continue
-            item={k:n[k] for k in ("m","mn","b","o","d","p","s")};merged.append(item);active=item if n["ts"] else None
+            item={k:n[k] for k in ("m","mn","b","o","d","p","s")};
+            # Preserve attack provenance. The merged sounding event is used for
+            # search, while the notated tie pieces remain recoverable from XML.
+            if n.get("ts"):item["ts"]=True
+            if n.get("u"):item["u"]=True
+            merged.append(item);active=item if n["ts"] else None
         if len(merged)<3:continue
         pitches=[n["p"] for n in merged];durations=[max(n["d"],1/64) for n in merged];intervals=[b-a for a,b in zip(pitches,pitches[1:])];mean_d=sum(durations)/len(durations)
         unique_onsets=len({n["o"] for n in merged});monophony=unique_onsets/max(1,len(notes));avg_pitch=sum(pitches)/len(pitches)
         role=min(1,.35+.25*monophony+.2*min(1,len(merged)/64)+.2*max(0,min(1,(avg_pitch-48)/36)))
         compact.append({"id":f"{pid}:{staff}:{voice}","part":pid,"partName":part_names.get(pid,""),"staff":staff,"voice":voice,"role":round(role,4),"notes":merged,"i":intervals,"c":[contour(i) for i in intervals],"r":[round(d/mean_d,5) for d in durations]})
+        # Some editions explicitly engrave accompaniment/figuration as cue-sized
+        # notes while leaving the structural melody at normal size (e.g. Chopin
+        # Op.25 No.1). Only this strong source evidence justifies a sparse stream.
+        pillars=[n for n in merged if not n.get("u")]
+        auxiliaries=[n for n in merged if n.get("u")]
+        if len(pillars)>=3 and len(auxiliaries)>=2*len(pillars):
+            pp=[n["p"] for n in pillars];dd=[max(n["d"],1/64) for n in pillars];ii=[b-a for a,b in zip(pp,pp[1:])];md=sum(dd)/len(dd)
+            compact.append({"id":f"{pid}:{staff}:{voice}:structural","part":pid,"partName":part_names.get(pid,""),"staff":staff,"voice":voice,"role":round(min(1,role+.15),4),"structuralStream":True,"notes":pillars,"i":ii,"c":[contour(i) for i in ii],"r":[round(d/md,5) for d in dd]})
     compact.sort(key=lambda s:(-s["role"],-len(s["notes"])))
     digest=hashlib.sha256(path.read_bytes()).hexdigest()
     return {"v":1,"id":f"work-{digest[:16]}","source":path.name,"hash":digest,"title":title or movement or normalized_title(path.name),"normalizedTitle":normalized_title(title or movement or path.name),"composer":creators[0] if creators else None,"duration":fnum(max_end),"noteCount":note_count,"streams":compact[:4]}

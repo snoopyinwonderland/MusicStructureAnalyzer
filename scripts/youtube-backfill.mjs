@@ -7,8 +7,10 @@ const cachePath=path.resolve('data/youtube-matches.json');
 const statePath=path.resolve('data/youtube-backfill-state.json');
 const maxDaily=Math.min(100,Math.max(1,Number(process.env.YOUTUBE_DAILY_SEARCH_LIMIT||100)));
 const watch=process.argv.includes('--watch');
-const arrangement=/\b(?:piano\s+solo|melody|violin|viola|cello|contrabass|duet|trio|quartet|string\s+orchestra|piano\s+quintet)\b/gi;
-export const normalizeWorkTitle=name=>path.basename(name).replace(/\.musicxml(?:\.xml)?$|\.xml$/i,'').replace(/^\s*\d+\.?\s*/,'').replace(arrangement,' ').replace(/[,_]+/g,' ').replace(/\s+/g,' ').trim();
+const priorityAt=process.argv.indexOf('--priority-title');
+const priorityTitle=priorityAt>=0?process.argv[priorityAt+1]?.trim():'';
+const arrangement=/\b(?:piano\s+(?:solo|duet|trio|quartet|quintet)|melody|violin|viola|cello|contrabass|duet|trio|quartet|string\s+orchestra)\b/gi;
+export const normalizeWorkTitle=name=>path.basename(name).replace(/\.musicxml(?:\.xml)?$|\.xml$/i,'').replace(/^\s*\d+\.?\s*/,'').replace(arrangement,' ').replace(/[,_]+/g,' ').replace(/\s+/g,' ').trim().replace(/\s+(?:and|&)\s*$/i,'').trim();
 const keyFor=title=>normalizeWorkTitle(title).toLocaleLowerCase('en-US');
 const pacificDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const load=(file,fallback)=>fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):fallback;
@@ -30,9 +32,9 @@ async function searchRepresentative(title){
 async function runOnce(){
   if(!process.env.YOUTUBE_API_KEY){console.log('YOUTUBE_API_KEY is not set; no API calls were made.');return}
   const inventory=load(inventoryPath,{files:[]});const cache=load(cachePath,{schemaVersion:1,updatedAt:null,works:{}});let state=load(statePath,{pacificDate:null,searchCalls:0,cursor:0});const today=pacificDate();if(state.pacificDate!==today)state={pacificDate:today,searchCalls:0,cursor:state.cursor||0};
-  const works=[...new Map(inventory.files.filter(f=>!f.duplicate_of&&!f.excluded_reason).map(f=>{const title=normalizeWorkTitle(f.relative_path);return[keyFor(title),title]})).entries()];
-  let handled=0;while(state.searchCalls<maxDaily&&handled<works.length){const [key,title]=works[state.cursor%works.length];state.cursor=(state.cursor+1)%works.length;handled++;if(cache.works[key]?.videoId)continue;
-    try{const match=await searchRepresentative(title);state.searchCalls++;cache.works[key]={normalizedTitle:title,...(match||{videoId:null,reason:'no-embeddable-result'}),arrangementShared:true};console.log(`${state.searchCalls}/${maxDaily} ${title}: ${match?.videoId||'no match'}`)}catch(error){console.error(`${title}: ${error.message}`);break}save(statePath,state);save(cachePath,{...cache,updatedAt:new Date().toISOString()});
+  const inventoryWorks=[...new Map(inventory.files.filter(f=>!f.duplicate_of&&!f.excluded_reason).map(f=>{const title=normalizeWorkTitle(f.relative_path);return[keyFor(title),title]})).entries()],priority=priorityTitle?[keyFor(priorityTitle),normalizeWorkTitle(priorityTitle)]:null,works=priority?[priority,...inventoryWorks.filter(([key])=>key!==priority[0])]:inventoryWorks;
+  let handled=0;while(state.searchCalls<maxDaily&&handled<works.length){const selected=priority&&handled===0?priority:works[state.cursor%works.length];const [key,title]=selected;if(!(priority&&handled===0))state.cursor=(state.cursor+1)%works.length;handled++;const prior=cache.works[key];if(prior?.videoId||prior?.lastAttemptPacificDate===today)continue;
+    try{const match=await searchRepresentative(title);state.searchCalls++;cache.works[key]={normalizedTitle:title,titleKey:key,...(match||{videoId:null,reason:'no-embeddable-result'}),arrangementShared:true,lastAttemptPacificDate:today};state.lastError=null;console.log(`${state.searchCalls}/${maxDaily} ${title}: ${match?.videoId||'no match'}`)}catch(error){state.lastError={at:new Date().toISOString(),message:error.message};if(/quotaExceeded|dailyLimitExceeded|rateLimitExceeded/i.test(error.message))state.exhausted=true;console.error(`${title}: ${error.message}`);break}save(statePath,state);save(cachePath,{...cache,updatedAt:new Date().toISOString()});
   }
   save(statePath,state);save(cachePath,{...cache,updatedAt:new Date().toISOString()});console.log(`Backfill complete: ${state.searchCalls}/${maxDaily} search calls for ${today} PT.`)
 }
