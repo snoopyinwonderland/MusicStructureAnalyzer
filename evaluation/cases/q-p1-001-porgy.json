@@ -1,0 +1,221 @@
+{
+  "caseId": "Q-P1-001",
+  "createdAt": "2026-09-02",
+  "status": "draft",
+  "source": "user",
+  "tags": [
+    "melody_rhythm",
+    "pitch-substitution",
+    "interval-double-penalty",
+    "candidate-recall",
+    "internal-note"
+  ],
+  "query": {
+    "version": 1,
+    "mode": "melody_rhythm",
+    "meter": "4/4",
+    "startsOnDownbeat": true,
+    "events": [
+      {
+        "id": "q-75167189-fe21-4948-95ac-237280682d4e",
+        "kind": "note",
+        "pitchMidi": 65,
+        "spelling": "F4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-bc84c181-352b-427c-9612-c6b5e1fab840",
+        "kind": "note",
+        "pitchMidi": 69,
+        "spelling": "A4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-e52d9b59-050b-482c-a7d6-bcbdf96cb761",
+        "kind": "note",
+        "pitchMidi": 72,
+        "spelling": "C5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-20abf462-df3c-4854-ad62-21475b758f6a",
+        "kind": "note",
+        "pitchMidi": 76,
+        "spelling": "E5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-62ba08a4-b9a6-42f9-be3f-e0e415cd892c",
+        "kind": "note",
+        "pitchMidi": 79,
+        "spelling": "G5",
+        "durationRatio": 1.5
+      },
+      {
+        "id": "q-6079f4ef-1c83-4e28-adbf-b15f1bdf6294",
+        "kind": "rest",
+        "pitchMidi": null,
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-26b02a0e-0081-44cf-bdb9-bea4ae8582b5",
+        "kind": "note",
+        "pitchMidi": 77,
+        "spelling": "F5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-11a0f07d-9240-40a9-9102-1e228b9953cd",
+        "kind": "note",
+        "pitchMidi": 72,
+        "spelling": "C5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-7b9615c2-f5da-4c53-8dfc-e8c911c61bc1",
+        "kind": "note",
+        "pitchMidi": 67,
+        "spelling": "G4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-c54aaebd-c338-421a-8ca2-1fefe1d909dd",
+        "kind": "note",
+        "pitchMidi": 69,
+        "spelling": "A4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-7a659d20-140d-4dae-92d9-b1e2ec795000",
+        "kind": "note",
+        "pitchMidi": 72,
+        "spelling": "C5",
+        "durationRatio": 1.5
+      }
+    ],
+    "absoluteExactOnly": false
+  },
+  "userObservation": "중간 음이 조금 바뀌어도 I Loves You, Porgy가 검색되어야 한다. 한 pitch 변화가 앞뒤 interval 두 개에 중복 영향을 주는 문제를 줄여야 한다.",
+  "expected": {
+    "primaryTitles": [
+      "I LOVES YOU, PORGY"
+    ],
+    "confirmation": "user-stated",
+    "workIds": [
+      "work-b8cc4108e0a864c2",
+      "work-6abb02d4abbbf7c5",
+      "work-3f9bff93881026bf"
+    ]
+  },
+  "baseline": {
+    "resultCount": 71,
+    "latencyMs": 20527,
+    "primaryRank": null,
+    "topTitle": "WET HANDS",
+    "topRanking": 78.1229731632558,
+    "directAlignment": {
+      "workId": "work-b8cc4108e0a864c2",
+      "similarity": 91.98206519932764,
+      "pitch": 98,
+      "interval": 93.77777777777777,
+      "contour": 88.88888888888889
+    }
+  },
+  "diagnosis": "The target stream aligns strongly when scanned directly, but aggregate-by-sum work evidence excludes it from the top full-stream refinement set. Adjacent-interval scoring also counts one pitch displacement in two edges.",
+  "runs": [
+    {
+      "recordType": "run",
+      "parentCaseId": "Q-P1-001",
+      "runId": "Q-P1-001-R1",
+      "createdAt": "2026-09-02",
+      "change": "feature-separated retrieval, interval-4 equivalent seeds, deep per-work starts, robust note-wise interval scoring, bounded metric adjustment",
+      "before": {
+        "primaryRank": null,
+        "latencyMs": 20527
+      },
+      "intermediate": {
+        "primaryRank": 2,
+        "latencyMs": 5207,
+        "primaryTitle": "I LOVES YOU, PORGY",
+        "measures": [
+          22,
+          24
+        ],
+        "pitch": 98,
+        "interval": 93.77777777777777,
+        "rhythm": 100
+      },
+      "verification": "pending-full-suite"
+    },
+    {
+      "recordType": "run",
+      "parentCaseId": "Q-P1-001",
+      "runId": "Q-P1-001-R2",
+      "createdAt": "2026-09-02",
+      "change": "final generalized fix",
+      "result": {
+        "primaryRank": 1,
+        "primaryTitle": "I LOVES YOU, PORGY",
+        "measures": [
+          22,
+          24
+        ],
+        "pitch": 97.2,
+        "interval": 95.14666666666666,
+        "contour": 88.88888888888889,
+        "rhythm": 100,
+        "localSimilarity": 88.47907026710365,
+        "ranking": 92.16147026710365,
+        "measuredLatencyMs": [
+          5337,
+          2766
+        ]
+      },
+      "regressionSmoke": [
+        {
+          "case": "Trepak-15-note",
+          "rank": 1,
+          "localSimilarity": 83.65201095926928,
+          "latencyMs": 22181
+        },
+        {
+          "case": "Porgy-Gsharp",
+          "rank": 1,
+          "localSimilarity": 87.40455886681202,
+          "latencyMs": 8304
+        }
+      ],
+      "unitTests": {
+        "passed": 76,
+        "files": 8
+      },
+      "verification": "resolved-smoke-suite",
+      "remainingRisk": "Cold and per-query latency variance remains too high; full Phase 1 latency harness is required."
+    }
+  ],
+  "schema": "musicanote-evaluation-case/v1",
+  "observations": [
+    {
+      "kind": "user-observation",
+      "message": "중간 음이 조금 바뀌어도 I Loves You, Porgy가 검색되어야 한다. 한 pitch 변화가 앞뒤 interval 두 개에 중복 영향을 주는 문제를 줄여야 한다."
+    }
+  ],
+  "diagnoses": [
+    {
+      "stage": "candidate-retrieval-and-scoring",
+      "message": "The target stream aligns strongly when scanned directly, but aggregate-by-sum work evidence excludes it from the top full-stream refinement set. Adjacent-interval scoring also counts one pitch displacement in two edges."
+    }
+  ],
+  "proposals": [],
+  "legacySource": {
+    "path": "evaluation/cases/user-queries-phase1.jsonl",
+    "caseRecordLine": 1,
+    "caseId": "Q-P1-001",
+    "runRecordLines": [
+      2,
+      3
+    ],
+    "originalRuns": []
+  },
+  "replayable": true
+}

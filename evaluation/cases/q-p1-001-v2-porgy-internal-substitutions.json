@@ -1,0 +1,104 @@
+{
+  "recordType": "variant",
+  "parentCaseId": "Q-P1-001",
+  "caseId": "Q-P1-001-V2",
+  "createdAt": "2026-09-02",
+  "status": "diagnosed",
+  "mutation": {
+    "description": "Two substantial internal pitch substitutions relative to the preceding verified variant",
+    "changes": [
+      {
+        "eventIndex": 1,
+        "fromPitchMidi": 69,
+        "toPitchMidi": 64,
+        "semitones": -5
+      },
+      {
+        "eventIndex": 8,
+        "fromPitchMidi": 67,
+        "toPitchMidi": 61,
+        "semitones": -6
+      }
+    ]
+  },
+  "result": {
+    "primaryTitle": "I LOVES YOU, PORGY",
+    "primaryRank": 4,
+    "distinctTitleRank": 2,
+    "resultCount": 73,
+    "measures": [
+      22,
+      24
+    ],
+    "pitch": 82.66666666666666,
+    "interval": 73.86666666666666,
+    "contour": 87.5,
+    "rhythm": 94.21692477849695,
+    "localSimilarity": 66.3640881594496,
+    "ranking": 70.0464881594496,
+    "latencyMs": 8667,
+    "topTitle": "YOU'RE BEAUTIFUL",
+    "topRanking": 72.73165
+  },
+  "assessment": "Recall@5 passes while the target is appropriately demoted after two large pitch errors. This is positive evidence for robustness plus discrimination, but one case is not proof of general quality; negative controls and broader mutation sweeps remain required.",
+  "remainingRisk": "Three edition duplicates occupy ranks 1-3, so the target is effectively second by distinct title; latency remains high.",
+  "schema": "musicanote-evaluation-case/v1",
+  "originalStatus": "verified-observation",
+  "query": {},
+  "expected": {
+    "primaryTitles": [
+      "I LOVES YOU, PORGY"
+    ],
+    "confirmation": "user-stated",
+    "workIds": [
+      "work-b8cc4108e0a864c2",
+      "work-6abb02d4abbbf7c5",
+      "work-3f9bff93881026bf"
+    ],
+    "sourceCaseId": "Q-P1-001"
+  },
+  "observations": [
+    {
+      "kind": "legacy-observed-result",
+      "result": {
+        "primaryTitle": "I LOVES YOU, PORGY",
+        "primaryRank": 4,
+        "distinctTitleRank": 2,
+        "resultCount": 73,
+        "measures": [
+          22,
+          24
+        ],
+        "pitch": 82.66666666666666,
+        "interval": 73.86666666666666,
+        "contour": 87.5,
+        "rhythm": 94.21692477849695,
+        "localSimilarity": 66.3640881594496,
+        "ranking": 70.0464881594496,
+        "latencyMs": 8667,
+        "topTitle": "YOU'RE BEAUTIFUL",
+        "topRanking": 72.73165
+      },
+      "assessment": "Recall@5 passes while the target is appropriately demoted after two large pitch errors. This is positive evidence for robustness plus discrimination, but one case is not proof of general quality; negative controls and broader mutation sweeps remain required."
+    }
+  ],
+  "diagnoses": [
+    {
+      "stage": "case-provenance",
+      "message": "The legacy variant records two pitch changes relative to a preceding verified variant but does not include that complete query or identify its exact source. Applying those changes to Q-P1-001 would guess the other events; this record is not replayable."
+    }
+  ],
+  "proposals": [],
+  "runs": [],
+  "legacySource": {
+    "path": "evaluation/cases/user-queries-phase1.jsonl",
+    "caseRecordLine": 4,
+    "caseId": "Q-P1-001-V2",
+    "parentCaseId": "Q-P1-001"
+  },
+  "replayable": false,
+  "queryAvailability": {
+    "status": "missing-full-query",
+    "message": "Preserved mutation metadata is not a complete original user Query. Supply the original full Query before replay; do not reconstruct it from the parent by assumption."
+  }
+}

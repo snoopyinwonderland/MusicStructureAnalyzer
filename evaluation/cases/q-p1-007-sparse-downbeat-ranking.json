@@ -1,0 +1,41 @@
+{
+  "schema": "musicanote-query-regression/v1",
+  "caseId": "Q-P1-007",
+  "issue": "A one-note-per-measure sparse alignment receives Downbeat Weight 100, and displayed local similarity order differs from final ranking order.",
+  "query": {
+    "version": 1,
+    "mode": "melody_rhythm",
+    "meter": "4/4",
+    "startsOnDownbeat": true,
+    "events": [
+      {"id":"q-98a07e9b-2975-4549-bcf7-313ab0ab55b0","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":0.5},
+      {"id":"q-0258e1b6-2e03-447d-87e6-12e925d218d9","kind":"note","pitchMidi":65,"spelling":"F4","durationRatio":1},
+      {"id":"q-7d891a24-03a1-4d5a-9548-5868d28b7b9f","kind":"note","pitchMidi":69,"spelling":"A4","durationRatio":1},
+      {"id":"q-3164de68-4982-4591-9ff8-20534c8de2a7","kind":"note","pitchMidi":67,"spelling":"G4","durationRatio":2},
+      {"id":"q-42298be8-f573-4a6a-95dc-b94dbe66cf1a","kind":"rest","pitchMidi":null,"durationRatio":2},
+      {"id":"q-7a220bbe-8b20-4ab6-9f2e-7fe1f6ec1156","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":0.5},
+      {"id":"q-b986456b-0947-4205-b242-c93cc2920a4b","kind":"note","pitchMidi":65,"spelling":"F4","durationRatio":1},
+      {"id":"q-5cf2f411-7135-4e8f-8448-9742433fad0a","kind":"note","pitchMidi":69,"spelling":"A4","durationRatio":1},
+      {"id":"q-6e0491c0-2f58-40b3-b6d2-6689dc49d629","kind":"note","pitchMidi":67,"spelling":"G4","durationRatio":0.75},
+      {"id":"q-24efb792-aae1-4a50-bdf1-6bd03bbab9de","kind":"note","pitchMidi":62,"spelling":"D4","durationRatio":0.5},
+      {"id":"q-81c6cff9-b7e2-4887-a620-3fc594e2a775","kind":"note","pitchMidi":65,"spelling":"F4","durationRatio":1},
+      {"id":"q-e7ac8940-35da-4ab5-89a3-dd33596c16ea","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":1},
+      {"id":"q-3e9533f7-6f3e-40fd-8c56-22764924f2a9","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":1}
+    ],
+    "absoluteExactOnly": false,
+    "exactIntervalOnly": false,
+    "exactPitchOnly": false,
+    "exactRhythmOnly": false,
+    "includeRests": true,
+    "downbeatWeightBoost": false
+  },
+  "observed": {
+    "workId": "work-2bdac4f77d835660-a71ddd21",
+    "startMeasure": 4,
+    "endMeasure": 15,
+    "reportedProblem": "Downbeat Weight 100 despite one note per measure; displayed 92 appears above 93.",
+    "before": {"rank":9,"localSimilarity":88.57002214502145,"ranking":94.00911114502145,"downbeatWeight":100,"rhythm":44.011556578745044},
+    "after": {"rank":14,"localSimilarity":83.90335547835478,"ranking":89.34244447835478,"downbeatWeight":63,"rhythm":44.011556578745044},
+    "resolution": "Penalize weak-query-note to strong-candidate-beat over-accenting; display final ranking rather than local similarity. Exact bucket remains ahead of Similar bucket."
+  }
+}

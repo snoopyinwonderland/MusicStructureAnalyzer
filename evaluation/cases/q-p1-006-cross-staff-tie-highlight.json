@@ -1,0 +1,215 @@
+{
+  "schema": "musicanote-evaluation-case/v1",
+  "caseId": "Q-P1-006",
+  "createdAt": "2026-09-05",
+  "status": "diagnosed",
+  "replayable": true,
+  "tags": [
+    "cross-staff",
+    "tie-highlight",
+    "voice-provenance",
+    "query-duration"
+  ],
+  "query": {
+    "version": 1,
+    "mode": "melody_rhythm",
+    "meter": "4/4",
+    "startsOnDownbeat": true,
+    "events": [
+      {
+        "id": "q-a7733057-bec7-47b8-8549-1e09cdf60aeb",
+        "kind": "note",
+        "pitchMidi": 64,
+        "spelling": "E4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-d4042c46-e06a-400e-81ad-66d5a6da6ca4",
+        "kind": "note",
+        "pitchMidi": 67,
+        "spelling": "G4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-59082eaf-d22e-4947-b499-4fba346e99ba",
+        "kind": "note",
+        "pitchMidi": 67,
+        "spelling": "G4",
+        "durationRatio": 1.5
+      },
+      {
+        "id": "q-ab40c781-16c5-4ea7-8a2c-70b886514f75",
+        "kind": "note",
+        "pitchMidi": 69,
+        "spelling": "A4",
+        "durationRatio": 1.5
+      },
+      {
+        "id": "q-d972b964-7b06-4abd-8639-511daf75bb66",
+        "kind": "note",
+        "pitchMidi": 67,
+        "spelling": "G4",
+        "durationRatio": 0.25
+      },
+      {
+        "id": "q-ed853ed0-0f59-4cb9-8c04-5d1cbce2f7c4",
+        "kind": "note",
+        "pitchMidi": 65,
+        "spelling": "F4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-7b10e1c2-eef4-4533-bba6-1ce8eb2d8b78",
+        "kind": "note",
+        "pitchMidi": 64,
+        "spelling": "E4",
+        "durationRatio": 0.25
+      },
+      {
+        "id": "q-67248a71-d75b-48ec-a413-2b552c9f0af5",
+        "kind": "note",
+        "pitchMidi": 60,
+        "spelling": "C4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-3a3c57da-33bf-4fca-a200-53e3b1b5e4ed",
+        "kind": "rest",
+        "pitchMidi": null,
+        "durationRatio": 1
+      },
+      {
+        "id": "q-c8f1b523-e39a-46d4-b42e-929cd05c86a4",
+        "kind": "note",
+        "pitchMidi": 57,
+        "spelling": "A3",
+        "durationRatio": 1
+      },
+      {
+        "id": "q-40ec0be4-f9cd-4c8b-9b61-3212b15de169",
+        "kind": "note",
+        "pitchMidi": 60,
+        "spelling": "C4",
+        "durationRatio": 1.5
+      },
+      {
+        "id": "q-fefe1b76-edec-43bc-abdb-d05ccb3e15e5",
+        "kind": "note",
+        "pitchMidi": 60,
+        "spelling": "C4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-35112a8f-aabe-4305-8f46-d0aa7a968841",
+        "kind": "note",
+        "pitchMidi": 62,
+        "spelling": "D4",
+        "durationRatio": 1
+      },
+      {
+        "id": "q-7c276fca-9c70-4a35-a21e-4719094f7710",
+        "kind": "note",
+        "pitchMidi": 60,
+        "spelling": "C4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-58276456-7769-49e6-946a-6bae87b8b1ef",
+        "kind": "note",
+        "pitchMidi": 62,
+        "spelling": "D4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "q-dcd8d0f0-12c7-47a7-9837-822eaa066fb1",
+        "kind": "note",
+        "pitchMidi": 64,
+        "spelling": "E4",
+        "durationRatio": 1
+      }
+    ],
+    "absoluteExactOnly": false
+  },
+  "expected": {
+    "primaryTitles": [],
+    "confirmation": "retrieval-quality-unjudged",
+    "notation": {
+      "workId": "work-af9d06a2cc0ef485-a71ddd21",
+      "streamId": "P3:1:1",
+      "soundingEvent": {
+        "onset": 99,
+        "pitchMidi": 65,
+        "duration": 1.5
+      },
+      "tieSegments": [
+        {
+          "measure": 25,
+          "beat": 4,
+          "staff": "1",
+          "voice": "1"
+        },
+        {
+          "measure": 26,
+          "beat": 1,
+          "staff": "1",
+          "voice": "1"
+        }
+      ],
+      "mustNotHighlight": {
+        "measure": 25,
+        "beat": 3,
+        "staff": "2",
+        "voice": "5",
+        "pitchMidi": 65
+      }
+    }
+  },
+  "observations": [
+    {
+      "kind": "cross-staff-highlight",
+      "message": "사용자는 중간 F4가 staff 2에 표시되어 다른 voice/part 선율을 섞어 검색했는지 질문했다.",
+      "workId": "work-af9d06a2cc0ef485-a71ddd21",
+      "start": 23,
+      "end": 29,
+      "targets": "88:68,90:68,92:70,94:72,95:68,99:65,100.5:68,105.5:68,108:70,111:68,111.5:70,112:72"
+    },
+    {
+      "kind": "duration-input",
+      "message": "8분음표와 4분음표 사이에 점8분음표(0.75박) 추가 요청."
+    }
+  ],
+  "diagnoses": [
+    {
+      "stage": "source-provenance",
+      "message": "DB와 원본 U:/KYSing_MusicXML/57982.xml 대조: 검색 stream은 P3:1:1. F4 최초 어택은 25마디4박 staff1/voice1, 타이 종결은26마디1박 staff1/voice1. 검색 인덱스가 이 F4를 staff2에서 가져온 것은 아니다."
+    },
+    {
+      "stage": "notation-highlight",
+      "message": "FullXmlNotation의 타이 확장 루프가 DOM상 뒤의 동일pitch tie-stop만 찾아 staff2/voice5의 25마디3박 F4로 잘못 이동할 수 있다. part/staff/voice 및 시간상 연속성 확인이 필요하다."
+    }
+  ],
+  "proposals": [
+    {
+      "id": "scoped-tie-highlight",
+      "status": "implemented",
+      "message": "동일 part/staff/voice의 음악 시간 순서에서 바로 다음 onset의 tie-stop만 추적한다. 다른 staff/voice, 중간 쉼표나 새 어택 뒤의 관계없는 타이를 제외한다.",
+      "verification": {
+        "method": "source/index comparison and unit regression tests",
+        "testFile": "src/components/FullXmlNotation.test.ts",
+        "coverage": ["cross-staff F4 exclusion", "stop/start continuation chain", "interrupted tie exclusion"],
+        "browserVisualCheck": "pending"
+      }
+    },
+    {
+      "id": "dotted-eighth-input",
+      "status": "implemented",
+      "message": "Query 음가 목록에 .75 추가하고 MEI dur8 dots1 검사."
+    }
+  ],
+  "runs": [],
+  "provenance": {
+    "inputEncoding": "HTML whitespace entities and escaped underscore normalized; note values/IDs unchanged",
+    "rawSource": "kysing/57982.xml",
+    "legacyInput": "user-message-2026-09-05"
+  }
+}

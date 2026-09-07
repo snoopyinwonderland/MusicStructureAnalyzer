@@ -1,0 +1,8 @@
+{
+  "createdAt": "2026-09-05T00:32:00Z",
+  "query": "evaluation/cases/q-p1-004-repeated-note-query.json",
+  "strategy": "baseline",
+  "note": "Fresh Node processes; OS filesystem cache not cleared. Same six results returned.",
+  "initialPopulation": {"elapsedMs":7124,"retrievalMs":693,"meterLookupMs":4265,"meterPersistMs":93,"totalMs":7123},
+  "reuseAfterRestart": {"elapsedMs":2322,"retrievalMs":656,"meterLookupMs":83,"meterPersistMs":0,"totalMs":2320}
+}

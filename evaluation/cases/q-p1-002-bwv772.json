@@ -1,0 +1,31 @@
+{
+  "schema": "musicanote-evaluation-case/v1",
+  "caseId": "Q-P1-002",
+  "createdAt": "2026-09-03",
+  "status": "verified",
+  "tags": ["melody-rhythm", "ranking", "cross-corpus"],
+  "expected": {"primaryTitles":["Invention No. 1 in C major BWV 772", "Invention in C major BWV 772"],"confirmation":"user-stated", "titleAliasEvidence":"2026-09-05: actual indexed title omits 'No. 1'; BWV 772 identity confirmed from the result metadata. This is an evaluation title alias, not a product ranking exception."},
+  "observations": [{"kind":"ranking-error","message":"Bach Invention No. 1을 기대했으나 한국 가요 기억 속의 멜로디가 1위였다."}],
+  "diagnoses": [],
+  "proposals": [],
+  "runs": [],
+  "query": {
+    "version": 1,
+    "mode": "melody_rhythm",
+    "meter": "4/4",
+    "startsOnDownbeat": true,
+    "events": [
+      { "id": "q-ce6aa34a-9242-4631-8df4-2efbd03f0a8f", "kind": "note", "pitchMidi": 60, "spelling": "C4", "durationRatio": 1 },
+      { "id": "q-f121ef72-c2b5-45c0-9a1b-7fa276cf2c7e", "kind": "note", "pitchMidi": 62, "spelling": "D4", "durationRatio": 1 },
+      { "id": "q-0d22473a-2171-487d-a65b-fa0365cfbdf8", "kind": "note", "pitchMidi": 64, "spelling": "E4", "durationRatio": 1 },
+      { "id": "q-e646463f-c51b-4fb5-8e25-a68eece1a990", "kind": "note", "pitchMidi": 65, "spelling": "F4", "durationRatio": 1 },
+      { "id": "q-022c5c08-dc95-4837-a298-38aaf2f938ef", "kind": "note", "pitchMidi": 62, "spelling": "D4", "durationRatio": 1 },
+      { "id": "q-16086c8d-ff22-4701-be16-d6438da5ca85", "kind": "note", "pitchMidi": 64, "spelling": "E4", "durationRatio": 1 },
+      { "id": "q-7695b263-bd4-49b1-8f57-75f765176cee", "kind": "note", "pitchMidi": 60, "spelling": "C4", "durationRatio": 1 },
+      { "id": "q-f7a4cc29-fcd2-41bb-a18b-350f3075a69f", "kind": "note", "pitchMidi": 67, "spelling": "G4", "durationRatio": 1 },
+      { "id": "q-fd008603-720c-4aac-9ad5-3c4bfbeb713c", "kind": "note", "pitchMidi": 72, "spelling": "C5", "durationRatio": 1 },
+      { "id": "q-5b46bb9a-cd86-4473-bb4c-d24fa2d69f48", "kind": "note", "pitchMidi": 71, "spelling": "B4", "durationRatio": 1 }
+    ],
+    "absoluteExactOnly": false
+  }
+}

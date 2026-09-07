@@ -1,0 +1,78 @@
+{
+  "jsonPath": "K:\\MusicSearch\\data\\kysing-metadata\\kumyoung-2026-09-03-all.json",
+  "uniqueSongs": 45758,
+  "minimumNumber": "101",
+  "maximumNumber": "99983",
+  "missingTitle": 0,
+  "missingSinger": 10,
+  "xmlRoot": "U:\\KYSing_MusicXML",
+  "xmlFiles": 50874,
+  "matchedXmlFiles": 37826,
+  "unmatchedXmlFiles": 13048,
+  "matchRate": 74.35,
+  "unmatchedSample": [
+    "00114.xml",
+    "00120.xml",
+    "00121.xml",
+    "00122.xml",
+    "00125.xml",
+    "00126.xml",
+    "00128.xml",
+    "00133.xml",
+    "00134.xml",
+    "00136.xml",
+    "00137.xml",
+    "00142.xml",
+    "00143.xml",
+    "00144.xml",
+    "00145.xml",
+    "00146.xml",
+    "00148.xml",
+    "00149.xml",
+    "00150.xml",
+    "00151.xml",
+    "00152.xml",
+    "00153.xml",
+    "00154.xml",
+    "00156.xml",
+    "00157.xml"
+  ],
+  "requests": [
+    {
+      "digit": 1,
+      "rows": 15723
+    },
+    {
+      "digit": 2,
+      "rows": 18703
+    },
+    {
+      "digit": 3,
+      "rows": 15636
+    },
+    {
+      "digit": 4,
+      "rows": 21680
+    },
+    {
+      "digit": 5,
+      "rows": 16463
+    },
+    {
+      "digit": 6,
+      "rows": 18974
+    },
+    {
+      "digit": 7,
+      "rows": 18523
+    },
+    {
+      "digit": 8,
+      "rows": 22849
+    },
+    {
+      "digit": 9,
+      "rows": 21043
+    }
+  ]
+}

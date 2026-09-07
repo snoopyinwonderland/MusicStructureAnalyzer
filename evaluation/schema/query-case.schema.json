@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://musicanote.local/schema/query-case.schema.json",
+  "title": "MUSICANOTE Query Evaluation Case",
+  "type": "object",
+  "required": ["schema", "caseId", "createdAt", "status", "query", "expected", "observations", "diagnoses", "proposals", "runs"],
+  "properties": {
+    "schema": { "const": "musicanote-evaluation-case/v1" },
+    "caseId": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date" },
+    "status": { "enum": ["draft", "diagnosed", "verified", "resolved"] },
+    "query": { "type": "object" },
+    "expected": { "type": "object" },
+    "observations": { "type": "array", "items": { "type": "object" } },
+    "diagnoses": { "type": "array", "items": { "type": "object" } },
+    "proposals": { "type": "array", "items": { "type": "object" } },
+    "runs": { "type": "array", "items": { "type": "object" } },
+    "tags": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

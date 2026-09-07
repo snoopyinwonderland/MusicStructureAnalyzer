@@ -1,0 +1,61 @@
+{
+  "schema": "musicanote-evaluation-case/v1",
+  "caseId": "Q-P1-003",
+  "createdAt": "2026-09-03",
+  "status": "diagnosed",
+  "tags": ["metrical-skeleton", "downbeat", "ornament-tolerance", "candidate-retrieval"],
+  "observations": [
+    {"kind":"missing-expected-result","message":"Downbeat Weight가 유효하다면 Bach Minuet BWV Anh. 114가 검색되어야 하지만 상위 200개 결과에 없었다."}
+  ],
+  "diagnoses": [
+    {"stage":"candidate-retrieval","message":"직접 정렬은 contour 100, rhythm 92.5였으나 interval n-gram 후보 회수 단계에서 제거되어 최종 Downbeat Weight가 적용될 기회가 없었다."}
+  ],
+  "proposals": [
+    {"id":"metrical-skeleton-retrieval","status":"implemented","message":"contour gram의 75% 이상이 확인된 소수 작품만 실제 박자표의 강박과 프레이즈 단서로 축약한 선율 골격으로 재검증한다. 기둥음 coverage 85%, 골격 유사도 86, 조옮김 후 기둥음 음높이 84, 골격 contour 88, Downbeat evidence 55를 각각 넘어야 한다. 리듬 35는 오탐 방지 하한일 뿐 가산점의 중심이 아니며 결과 수를 채우기 위한 완화는 하지 않는다."}
+  ],
+  "runs": [],
+  "userObservation": "Downbeat Weight가 제대로 반영된다면 Bach Minuet BWV 114가 검색되어야 한다.",
+  "expected": {
+    "primaryTitles": ["Minuet in G major BWV Anh. 114"],
+    "confirmation": "user-stated"
+  },
+  "baseline": {
+    "resultLimit": 200,
+    "primaryRank": null,
+    "latencyMs": 24723,
+    "directTargetAlignment": {
+      "workId": "work-85e28e3daf4b185a",
+      "streamId": "P1:1:1",
+      "measure": 18,
+      "similarity": 79.60167903147318,
+      "pitch": 73.55555555555556,
+      "interval": 73.67222222222222,
+      "contour": 100,
+      "rhythm": 92.5
+    },
+    "diagnosis": "The target aligns coherently on a downbeat with perfect contour and strong rhythm, but interval n-gram retrieval/admission does not preserve it in the refined candidate set. A metrical-skeleton retrieval channel is needed; a final-score-only Downbeat Weight increase cannot recover a candidate that was dropped earlier."
+  },
+  "query": {
+    "version": 1,
+    "mode": "melody_rhythm",
+    "meter": "4/4",
+    "startsOnDownbeat": true,
+    "events": [
+      {"id":"q-050951e7-1d6a-4a96-a81d-8340e4ac048f","kind":"note","pitchMidi":67,"spelling":"G4","durationRatio":1},
+      {"id":"q-c4ad2947-dd1b-41b5-a602-0a694226d6f1","kind":"note","pitchMidi":60,"spelling":"C4","durationRatio":0.5},
+      {"id":"q-e71ccf5c-7987-4f95-8f2e-90a1aa603c6f","kind":"rest","pitchMidi":null,"durationRatio":0.5},
+      {"id":"q-b2be20d8-7aba-4c65-ba8b-ec7052d39d75","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":0.5},
+      {"id":"q-c424e134-533e-4659-bc14-0db71d9f0f05","kind":"rest","pitchMidi":null,"durationRatio":0.5},
+      {"id":"q-d54ec6f1-00ba-4154-8fbe-5d9ea84a6479","kind":"note","pitchMidi":67,"spelling":"G4","durationRatio":1},
+      {"id":"q-48387ea6-95b5-4277-97b5-03f7335a3a3f","kind":"note","pitchMidi":60,"spelling":"C4","durationRatio":1},
+      {"id":"q-e8678d2c-6c9d-4dd8-a0a7-83ffd2c01907","kind":"rest","pitchMidi":null,"durationRatio":1},
+      {"id":"q-7c2ebf90-5144-4c8b-bc65-8e418e6ff947","kind":"note","pitchMidi":69,"spelling":"A4","durationRatio":1},
+      {"id":"q-e4edcb81-7d25-4017-9bab-4a89ec5acbed","kind":"note","pitchMidi":65,"spelling":"F4","durationRatio":0.5},
+      {"id":"q-e516d168-b0fa-4e4b-8b6d-1d567a574b86","kind":"rest","pitchMidi":null,"durationRatio":0.5},
+      {"id":"q-02cb9e87-f2a1-4580-bceb-fa016cc9a3f0","kind":"note","pitchMidi":69,"spelling":"A4","durationRatio":0.5},
+      {"id":"q-5574fc4a-0c7f-45e0-ab53-96e7ddafb06b","kind":"rest","pitchMidi":null,"durationRatio":0.5},
+      {"id":"q-d10189f4-10c9-4d5a-92a8-946a90e498da","kind":"note","pitchMidi":72,"spelling":"C5","durationRatio":1}
+    ],
+    "absoluteExactOnly": false
+  }
+}

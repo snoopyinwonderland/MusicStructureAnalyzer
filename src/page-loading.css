@@ -1,0 +1,32 @@
+.xml-score:not(.xml-excerpt) .xml-page-loading {
+  aspect-ratio: var(--score-page-ratio, 1900 / 2700);
+  display: grid;
+  place-items: center;
+  color: #837d72;
+  background: #f8f6f0;
+  font: 10px DM Mono;
+}
+
+.xml-render-progress {
+  position: sticky;
+  top: 78px;
+  z-index: 15;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 16px;
+  align-items: center;
+  margin: 0 auto 12px;
+  padding: 10px 14px;
+  max-width: 1080px;
+  color: #3f4d47;
+  background: rgba(255, 252, 245, .94);
+  border: 1px solid #cec7b9;
+  font: 10px DM Mono;
+  box-shadow: 0 3px 12px rgba(40, 35, 25, .1);
+}
+
+.xml-render-progress i { grid-column: 1 / -1; height: 3px; background: #ddd7cb; }
+.xml-render-progress em { display: block; height: 100%; background: #52736a; transition: width .2s ease; }
+.xml-render-progress button { justify-self: end; border: 1px solid #bcb4a7; padding: 5px 8px; color: #43564e; background: #fffdf8; font: inherit; cursor: pointer; }
+.xml-render-progress:not(:has(i)) { animation: xml-render-pulse 1.2s ease-in-out infinite alternate; }
+@keyframes xml-render-pulse { from { opacity: .65; } to { opacity: 1; } }

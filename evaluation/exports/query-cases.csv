@@ -1,0 +1,8 @@
+"caseId","createdAt","status","mode","meter","eventCount","expectedTitles","observationCount","proposalCount"
+"Q-P1-001","2026-09-02","draft","melody_rhythm","4/4","11","I LOVES YOU, PORGY","1","0"
+"Q-P1-001-V2","2026-09-02","diagnosed","","","0","I LOVES YOU, PORGY","1","0"
+"Q-P1-002","2026-09-03","verified","melody_rhythm","4/4","10","Invention No. 1 in C major BWV 772 | Invention in C major BWV 772","1","0"
+"Q-P1-003","2026-09-03","diagnosed","melody_rhythm","4/4","14","Minuet in G major BWV Anh. 114","1","1"
+"Q-P1-004","2026-09-04","diagnosed","melody_rhythm","4/4","13","","2","2"
+"Q-P1-005","2026-09-04","diagnosed","melody_rhythm","4/4","7","","1","0"
+"Q-P1-006","2026-09-05","diagnosed","melody_rhythm","4/4","16","","2","2"

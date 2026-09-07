@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-import argparse, hashlib, json, math, re, sys, time, zipfile
+import argparse, hashlib, json, math, os, re, sys, time, zipfile
+from concurrent.futures import ProcessPoolExecutor
 from collections import defaultdict
 from fractions import Fraction
 from pathlib import Path
@@ -14,6 +15,40 @@ def tag(e): return NS_RE.sub("", e.tag)
 def child(e, name): return next((x for x in e if tag(x)==name), None)
 def text(e, name, default=None):
     x=child(e,name); return x.text.strip() if x is not None and x.text else default
+def repair_metadata_text(value):
+    """Repair UTF-8/CJK bytes that an XML declaration exposed as Latin-1."""
+    if not value: return value
+    latin_accents = re.findall(r"[\u00c0-\u024f]", value)
+    if latin_accents and len(latin_accents) <= max(2, len(value) * .15) and not re.search(r"[ÃÂÐÑ\x00-\x1f\x7f-\x9f]", value):
+        return value
+    # Some converters interpreted UTF-8 bytes as a multibyte East-Asian
+    # encoding first (for example, é became 챕). Reverse that decode before
+    # falling back to the older Latin-1-byte repair path.
+    for encoding in ("cp949", "shift_jis", "gb18030", "big5"):
+        try:
+            candidate=value.encode(encoding).decode("utf-8")
+            if candidate != value: return candidate
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            pass
+    try: raw=value.encode("latin-1")
+    except UnicodeEncodeError: return value # already genuine Unicode
+    def quality(candidate):
+        hangul=sum("\uac00" <= c <= "\ud7a3" for c in candidate)
+        kana=sum("\u3040" <= c <= "\u30ff" for c in candidate)
+        han=sum("\u3400" <= c <= "\u9fff" for c in candidate)
+        chinese_hints=sum(c in "简体标题汉语乐曲谱爱国门听见这为与后里发广风云繁體標題漢語樂曲譜愛國門聽見這為與後裡發廣風雲" for c in candidate)
+        controls=sum(ord(c)<32 and c not in "\t\r\n" for c in candidate)
+        mixed_penalty=12*min(hangul,han) if not kana else 0
+        return 10*(hangul+kana)+4*han+12*chinese_hints-20*controls-mixed_penalty
+    candidates=[]
+    for encoding in ("utf-8","cp949","shift_jis","gb18030","big5"):
+        try:
+            candidate=raw.decode(encoding)
+            if "\ufffd" not in candidate:candidates.append((quality(candidate),candidate))
+        except UnicodeDecodeError: pass
+    if not candidates:return value
+    score,repaired=max(candidates,key=lambda item:item[0])
+    return repaired if score>quality(value) and score>0 else value
 def frac(n, d=1): return Fraction(int(n), int(d))
 def fnum(x): return float(x.numerator/x.denominator)
 def normalized_title(name):
@@ -42,16 +77,16 @@ def contour(interval):
 def parse_musicxml(path:Path):
     root=read_root(path)
     if tag(root)!="score-partwise": raise ValueError(f"unsupported_root:{tag(root)}")
-    work=child(root,"work"); title=text(work,"work-title") if work is not None else None
-    movement=text(root,"movement-title"); creators=[]
+    work=child(root,"work"); title=repair_metadata_text(text(work,"work-title")) if work is not None else None
+    movement=repair_metadata_text(text(root,"movement-title")); creators=[]
     identification=child(root,"identification")
     if identification is not None:
-        creators=[x.text.strip() for x in identification if tag(x)=="creator" and x.text and x.attrib.get("type") in (None,"composer")]
+        creators=[repair_metadata_text(x.text.strip()) for x in identification if tag(x)=="creator" and x.text and x.attrib.get("type") in (None,"composer")]
     part_names={}
     part_list=child(root,"part-list")
     if part_list is not None:
         for sp in part_list:
-            if tag(sp)=="score-part":part_names[sp.attrib.get("id","")]=text(sp,"part-name","")
+            if tag(sp)=="score-part":part_names[sp.attrib.get("id","")]=repair_metadata_text(text(sp,"part-name",""))
     streams=defaultdict(list); measure_meta={}; max_end=Fraction(0); note_count=0
     for part_index,part in enumerate(x for x in root if tag(x)=="part"):
         pid=part.attrib.get("id",f"P{part_index+1}");divisions=1;measure_start=Fraction(0);beats=4;beat_type=4
@@ -122,10 +157,32 @@ def parse_musicxml(path:Path):
             compact.append({"id":f"{pid}:{staff}:{voice}:structural","part":pid,"partName":part_names.get(pid,""),"staff":staff,"voice":voice,"role":round(min(1,role+.15),4),"structuralStream":True,"notes":pillars,"i":ii,"c":[contour(i) for i in ii],"r":[round(d/md,5) for d in dd]})
     compact.sort(key=lambda s:(-s["role"],-len(s["notes"])))
     digest=hashlib.sha256(path.read_bytes()).hexdigest()
-    return {"v":1,"id":f"work-{digest[:16]}","source":path.name,"hash":digest,"title":title or movement or normalized_title(path.name),"normalizedTitle":normalized_title(title or movement or path.name),"composer":creators[0] if creators else None,"duration":fnum(max_end),"noteCount":note_count,"streams":compact[:4]}
+    return {"v":1,"id":f"work-{digest[:16]}","source":path.name,"hash":digest,"title":title or movement or normalized_title(path.name),"normalizedTitle":normalized_title(title or movement or path.name),"composer":creators[0] if creators else None,"duration":fnum(max_end),"noteCount":note_count,"streams":compact}
+
+def parse_inventory_record(payload):
+    root_text,record=payload;source=record["relative_path"]
+    try:
+        parsed=parse_musicxml(Path(root_text)/source);parsed["source"]=record.get("source_id",source)
+        metadata=record.get("metadata")
+        if metadata:
+            parsed["metadata"]=metadata
+            parsed["title"]=metadata.get("title") or parsed["title"]
+            parsed["normalizedTitle"]=normalized_title(parsed["title"])
+            # The UI's secondary credit is performer for karaoke and composer for scores.
+            # Preserve the actual composer separately in metadata.
+            parsed["composer"]=metadata.get("singer") or metadata.get("composer") or parsed.get("composer")
+        pdmx=record.get("pdmx")
+        if pdmx:
+            parsed["pdmx"]=pdmx
+            parsed["title"]=pdmx.get("song_name") or pdmx.get("title") or parsed["title"]
+            parsed["normalizedTitle"]=normalized_title(parsed["title"])
+            parsed["composer"]=pdmx.get("composer_name") or pdmx.get("artist_name") or parsed.get("composer")
+        return True,source,parsed
+    except Exception as exc:
+        return False,source,f"{type(exc).__name__}:{exc}"
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument("--inventory",default="K:/Music Analysis/output/corpus_inventory.json");ap.add_argument("--output",default="K:/MusicSearch/data/search-index-v1/works.jsonl");ap.add_argument("--failures",default="K:/MusicSearch/data/search-index-v1/failures.jsonl");ap.add_argument("--limit",type=int);args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument("--inventory",default="K:/Music Analysis/output/corpus_inventory.json");ap.add_argument("--output",default="K:/MusicSearch/data/search-index-v1/works.jsonl");ap.add_argument("--failures",default="K:/MusicSearch/data/search-index-v1/failures.jsonl");ap.add_argument("--limit",type=int);ap.add_argument("--workers",type=int,default=max(1,min(8,(os.cpu_count() or 2)-1)));args=ap.parse_args()
     inventory=json.loads(Path(args.inventory).read_text(encoding="utf-8"));root=Path(inventory["root"]);records=[r for r in inventory["files"] if not r.get("duplicate_of")]
     out=Path(args.output);fail=Path(args.failures);out.parent.mkdir(parents=True,exist_ok=True)
     done=set()
@@ -134,18 +191,17 @@ def main():
             for line in f:
                 try:done.add(json.loads(line)["source"])
                 except Exception:pass
-    pending=[r for r in records if r["relative_path"] not in done]
+    pending=[r for r in records if r.get("source_id",r["relative_path"]) not in done]
     if args.limit:pending=pending[:args.limit]
     started=time.time();ok=bad=0
     with out.open("a",encoding="utf-8") as target,fail.open("a",encoding="utf-8") as errors:
-        for index,record in enumerate(pending,1):
-            source=record["relative_path"]
-            try:
-                parsed=parse_musicxml(root/source);parsed["source"]=source;target.write(json.dumps(parsed,ensure_ascii=False,separators=(",",":"))+"\n");target.flush();ok+=1
-            except Exception as exc:
-                errors.write(json.dumps({"source":source,"error":f"{type(exc).__name__}:{exc}"},ensure_ascii=False)+"\n");errors.flush();bad+=1
+        payloads=((str(root),record) for record in pending)
+        with ProcessPoolExecutor(max_workers=args.workers) as executor:
+          for index,(success,source,result) in enumerate(executor.map(parse_inventory_record,payloads,chunksize=8),1):
+            if success:target.write(json.dumps(result,ensure_ascii=False,separators=(",",":"))+"\n");ok+=1
+            else:errors.write(json.dumps({"source":source,"error":result},ensure_ascii=False)+"\n");bad+=1
             if index%25==0:
-                rate=index/max(.001,time.time()-started);print(f"{index}/{len(pending)} ok={ok} failed={bad} {rate:.2f} files/s",flush=True)
+                target.flush();errors.flush();rate=index/max(.001,time.time()-started);print(f"{index}/{len(pending)} ok={ok} failed={bad} workers={args.workers} {rate:.2f} files/s",flush=True)
     manifest={"version":1,"completedAt":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"inventory":str(Path(args.inventory)),"works":len(done)+ok,"newWorks":ok,"failuresThisRun":bad,"outputBytes":out.stat().st_size if out.exists() else 0}
     (out.parent/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8");print(json.dumps(manifest,ensure_ascii=False,indent=2))
 if __name__=="__main__":main()

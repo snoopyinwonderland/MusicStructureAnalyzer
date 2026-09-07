@@ -1,0 +1,41 @@
+{
+  "schema": "musicanote-evaluation-case/v1",
+  "caseId": "Q-P1-004",
+  "createdAt": "2026-09-04",
+  "status": "diagnosed",
+  "tags": ["repeated-notes", "low-information-query", "strict-admission", "playback-latency"],
+  "expected": {"primaryTitles": [], "confirmation": "not-yet-specified"},
+  "observations": [
+    {"kind":"too-many-similar-results","message":"동일 음이 여러 번 반복되는 Query에서 비슷한 결과가 지나치게 많이 나온다."},
+    {"kind":"query-playback-latency","message":"Query 재생 버튼을 누른 뒤 첫 소리가 늦게 시작한다."}
+  ],
+  "diagnoses": [
+    {"stage":"admission","message":"13개 sounding note 중 B4가 7회 등장하여 음표 수에 비해 interval·contour 정보량이 낮다. 일반 Query와 같은 하한은 반복 위치가 다른 후보도 통과시킨다."},
+    {"stage":"playback","message":"각 음 시작 시점마다 새 AudioContext를 만들고 JavaScript timer로 oscillator를 생성하여 초기화 지연과 timer 밀림이 발생한다."}
+  ],
+  "proposals": [
+    {"id":"strict-repeated-query-admission","status":"implemented","message":"dominant pitch와 repeated-unison 비율로 low-information Query를 자동 감지하고, 전체 coverage·gap 수·반복 위치 관계·조옮김 후 음높이·Downbeat·리듬의 독립 하한을 모두 적용한다."},
+    {"id":"query-audio-prewarm","status":"implemented","message":"첫 입력 pointer gesture에서 interactive AudioContext를 미리 활성화하고, 전체 phrase를 Web Audio clock에 한 번에 예약한다."}
+  ],
+  "runs": [
+    {"at":"2026-09-04","index":"search-index-v2","limit":100,"status":"aborted","latencyMsLowerBound":90000,"message":"90초를 넘겨 중단. 후보별 원본 XML meter 조회와 full-stream local alignment 병목을 별도 성능 개선 과제로 확정."}
+  ],
+  "query": {
+    "version": 1, "mode": "melody_rhythm", "meter": "4/4", "startsOnDownbeat": true, "absoluteExactOnly": false,
+    "events": [
+      {"id":"q-e7aed026-cb97-4f8f-93a0-e4c648796257","kind":"note","pitchMidi":71,"spelling":"B4","durationRatio":0.5},
+      {"id":"q-c0fb58ba-d18e-44c9-adad-7a1bd3497f73","kind":"note","pitchMidi":71,"spelling":"B4","durationRatio":0.5},
+      {"id":"q-387fc07e-110e-4c66-b458-9734eb226f43","kind":"note","pitchMidi":71,"spelling":"B4","durationRatio":0.5},
+      {"id":"q-84761501-801a-4ed9-a438-4331777f89d3","kind":"note","pitchMidi":71,"spelling":"B4","durationRatio":0.5},
+      {"id":"q-10105b72-bf83-460e-a8ba-adb1400104e7","kind":"note","pitchMidi":71,"spelling":"B4","durationRatio":0.5},
+      {"id":"q-31bdfe4b-7347-46f3-9421-b8c211283f43","kind":"note","pitchMidi":73,"spelling":"C♯5","durationRatio":0.5},
+      {"id":"q-c33a392a-4c47-4885-9e63-9bc8a6994711","kind":"note","pitchMidi":71,"spelling":"B4","durationRatio":0.5},
+      {"id":"q-fff7ea97-35a4-4fec-a406-8fe5d19edd3c","kind":"note","pitchMidi":75,"spelling":"D♯5","durationRatio":1},
+      {"id":"q-e81f0b83-ef2a-4042-9498-71a39c83fade","kind":"rest","pitchMidi":null,"durationRatio":1},
+      {"id":"q-1e250a90-31b7-4193-a8dc-1712c8efe663","kind":"note","pitchMidi":75,"spelling":"D♯5","durationRatio":1},
+      {"id":"q-a3882931-32be-443a-a3f8-f66e70ef7f8a","kind":"note","pitchMidi":73,"spelling":"C♯5","durationRatio":0.5},
+      {"id":"q-9513cd9e-3cd2-4ece-8eef-b41867750be2","kind":"note","pitchMidi":73,"spelling":"C♯5","durationRatio":1},
+      {"id":"q-3c2717e2-38fe-4985-ac04-be4faa4afece","kind":"note","pitchMidi":71,"spelling":"B4","durationRatio":1}
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "musicanote-evaluation-case/v1",
+  "caseId": "Q-P1-005",
+  "createdAt": "2026-09-04",
+  "status": "diagnosed",
+  "originalStatus": "fixed",
+  "tags": ["highlighting", "empty-measures", "measure-numbering"],
+  "query": {
+    "version": 1, "mode": "melody_rhythm", "meter": "4/4", "startsOnDownbeat": true, "absoluteExactOnly": false,
+    "events": [
+      {"id":"q-c2c5ca30-a885-425e-bbb3-57769d7cbf4e","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":0.25},
+      {"id":"q-e0e14da6-eade-4853-b397-456705f584bf","kind":"note","pitchMidi":62,"spelling":"D4","durationRatio":0.25},
+      {"id":"q-7f8faa86-6f4a-441f-8e80-cbea253d9829","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":1},
+      {"id":"q-956bfed6-774d-4894-b3b3-cccc1a3fab01","kind":"note","pitchMidi":62,"spelling":"D4","durationRatio":1},
+      {"id":"q-59028cc5-362e-4050-9694-a2d67a9ba1b9","kind":"note","pitchMidi":60,"spelling":"C4","durationRatio":1},
+      {"id":"q-cde80e00-4f02-4890-b02d-2fef493064be","kind":"note","pitchMidi":59,"spelling":"B3","durationRatio":1},
+      {"id":"q-b03573e8-1cad-40c0-b1b9-d7ff58167aca","kind":"note","pitchMidi":57,"spelling":"A3","durationRatio":1}
+    ]
+  },
+  "observations": [{"kind":"missing-highlight","message":"Mystery of Love, work-bb6a37e0f54a2bf6: displayed range 32–33 had no red notes."}],
+  "targets": "96:76,97.5:74,98:76,98.5:74,98.75:72,99.5:71,100:69",
+  "expected": {"primaryTitles": [], "confirmation": "not-yet-specified"},
+  "diagnoses": [{"stage":"score-excerpt","message":"Self-closing measure tags swallowed subsequent measures in regex extraction. Correct source range is 25–26, not 32–33."}],
+  "proposals": [],
+  "runs": [],
+  "verification": {"status":"browser-verification-pending","message":"The original resolution reports unit-test and API-excerpt checks; no new run or browser verification is asserted by schema normalization."},
+  "resolution": "Expand empty measure tags in the in-memory XML before shared metadata/excerpt processing; original XML unchanged. 93 unit tests pass. API excerpt verified; browser visual verification pending."
+}

@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "completedAt": "2026-09-05T00:21:29Z",
+  "inventory": "data\\kysing-metadata\\kumyoung-official-backfill-inventory.json",
+  "works": 105,
+  "newWorks": 105,
+  "failuresThisRun": 0,
+  "outputBytes": 6896838
+}

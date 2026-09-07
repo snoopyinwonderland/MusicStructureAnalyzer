@@ -15,7 +15,11 @@
     "index:musicxml": "python scripts/build-musicxml-search-index.py",
     "index:musicxml:sample": "python scripts/build-musicxml-search-index.py --limit 25",
     "index:finalize": "node scripts/finalize-search-index.mjs"
-    ,"index:sqlite": "node scripts/build-search-sqlite.mjs"
+    ,"index:sqlite": "node scripts/build-search-sqlite.mjs",
+    "harness:export": "node scripts/export-evaluation-cases.mjs",
+    "harness:phrase": "node scripts/evaluate-phrase-search.mjs --variant both --output evaluation/runs/phrase-context-latest.json",
+    "harness:import-query-100": "node scripts/import-query-100-report.mjs",
+    "harness:motif-100": "node scripts/motif-100-benchmark.mjs all"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

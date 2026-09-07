@@ -1,0 +1,1692 @@
+{
+  "version": 1,
+  "root": "U:\\KYSing_MusicXML",
+  "accessPolicy": "research-preview",
+  "files": [
+    {
+      "relative_path": "00114.xml",
+      "source_id": "kysing/00114.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "114",
+        "title": "강원도 아리랑",
+        "singer": "조용필",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-03T00:37:35.767Z"
+      }
+    },
+    {
+      "relative_path": "00120.xml",
+      "source_id": "kysing/00120.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "120",
+        "title": "거울도 안 보는 여자",
+        "singer": "태진아",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-03T00:37:38.138Z"
+      }
+    },
+    {
+      "relative_path": "00121.xml",
+      "source_id": "kysing/00121.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "121",
+        "title": "검은 상처의 블루스",
+        "singer": "김치켓",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-03T00:37:40.385Z"
+      }
+    },
+    {
+      "relative_path": "00122.xml",
+      "source_id": "kysing/00122.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "122",
+        "title": "검은 장갑",
+        "singer": "손시향",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-03T00:37:43.050Z"
+      }
+    },
+    {
+      "relative_path": "00125.xml",
+      "source_id": "kysing/00125.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "125",
+        "title": "경상도 아가씨",
+        "singer": "박재홍",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-03T00:37:45.486Z"
+      }
+    },
+    {
+      "relative_path": "00126.xml",
+      "source_id": "kysing/00126.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "126",
+        "title": "경상도 청년",
+        "singer": "김상희",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:02:50.524Z"
+      }
+    },
+    {
+      "relative_path": "00128.xml",
+      "source_id": "kysing/00128.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "128",
+        "title": "고목 나무",
+        "singer": "장욱조",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:02:53.879Z"
+      }
+    },
+    {
+      "relative_path": "00133.xml",
+      "source_id": "kysing/00133.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "133",
+        "title": "고향 아줌마",
+        "singer": "김상진",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:02:57.398Z"
+      }
+    },
+    {
+      "relative_path": "00134.xml",
+      "source_id": "kysing/00134.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "134",
+        "title": "고향에 찾아 와도",
+        "singer": "최갑석",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:00.941Z"
+      }
+    },
+    {
+      "relative_path": "00136.xml",
+      "source_id": "kysing/00136.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "136",
+        "title": "고향의 강",
+        "singer": "남상규",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:04.469Z"
+      }
+    },
+    {
+      "relative_path": "00137.xml",
+      "source_id": "kysing/00137.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "137",
+        "title": "고향의 그림자",
+        "singer": "남인수",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:07.810Z"
+      }
+    },
+    {
+      "relative_path": "00142.xml",
+      "source_id": "kysing/00142.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "142",
+        "title": "공항의 이별",
+        "singer": "문주란",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:10.907Z"
+      }
+    },
+    {
+      "relative_path": "00143.xml",
+      "source_id": "kysing/00143.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "143",
+        "title": "꼭 필요합니다",
+        "singer": "문주란",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:14.335Z"
+      }
+    },
+    {
+      "relative_path": "00144.xml",
+      "source_id": "kysing/00144.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "144",
+        "title": "꽃마차",
+        "singer": "진방남",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:17.609Z"
+      }
+    },
+    {
+      "relative_path": "00145.xml",
+      "source_id": "kysing/00145.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "145",
+        "title": "꽃반지 끼고",
+        "singer": "은희",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:21.112Z"
+      }
+    },
+    {
+      "relative_path": "00146.xml",
+      "source_id": "kysing/00146.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "146",
+        "title": "꽃밭에서",
+        "singer": "동요",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:24.345Z"
+      }
+    },
+    {
+      "relative_path": "00148.xml",
+      "source_id": "kysing/00148.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "148",
+        "title": "꽃 중의 꽃",
+        "singer": "송민도,원방현",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:27.588Z"
+      }
+    },
+    {
+      "relative_path": "00149.xml",
+      "source_id": "kysing/00149.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "149",
+        "title": "꽃타령 (신민요)",
+        "singer": "신민요",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:31.108Z"
+      }
+    },
+    {
+      "relative_path": "00150.xml",
+      "source_id": "kysing/00150.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "150",
+        "title": "과거는 흘러갔다",
+        "singer": "여운",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:34.501Z"
+      }
+    },
+    {
+      "relative_path": "00151.xml",
+      "source_id": "kysing/00151.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "151",
+        "title": "과거를 묻지 마세요",
+        "singer": "나애심",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:38.057Z"
+      }
+    },
+    {
+      "relative_path": "00152.xml",
+      "source_id": "kysing/00152.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "152",
+        "title": "과수원 길",
+        "singer": "서수남,하청일",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:41.334Z"
+      }
+    },
+    {
+      "relative_path": "00153.xml",
+      "source_id": "kysing/00153.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "153",
+        "title": "구름 나그네",
+        "singer": "최헌",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:44.822Z"
+      }
+    },
+    {
+      "relative_path": "00154.xml",
+      "source_id": "kysing/00154.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "154",
+        "title": "구월의 노래",
+        "singer": "패티김",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:48.109Z"
+      }
+    },
+    {
+      "relative_path": "00156.xml",
+      "source_id": "kysing/00156.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "156",
+        "title": "굳세어라 금순아",
+        "singer": "현인",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:51.325Z"
+      }
+    },
+    {
+      "relative_path": "00157.xml",
+      "source_id": "kysing/00157.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "157",
+        "title": "꿈꾸는 백마강",
+        "singer": "이인권",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:54.884Z"
+      }
+    },
+    {
+      "relative_path": "00159.xml",
+      "source_id": "kysing/00159.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "159",
+        "title": "꿈에 본 내 고향",
+        "singer": "한정무",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:03:58.546Z"
+      }
+    },
+    {
+      "relative_path": "00160.xml",
+      "source_id": "kysing/00160.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "160",
+        "title": "꿈은 사라지고",
+        "singer": "최무룡",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:01.805Z"
+      }
+    },
+    {
+      "relative_path": "00161.xml",
+      "source_id": "kysing/00161.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "161",
+        "title": "꿈을 먹는 젊은이",
+        "singer": "남궁옥분",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:05.214Z"
+      }
+    },
+    {
+      "relative_path": "00162.xml",
+      "source_id": "kysing/00162.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "162",
+        "title": "꿈이여 다시 한 번",
+        "singer": "현인",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:08.897Z"
+      }
+    },
+    {
+      "relative_path": "00164.xml",
+      "source_id": "kysing/00164.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "164",
+        "title": "그건 너",
+        "singer": "이장희",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:12.129Z"
+      }
+    },
+    {
+      "relative_path": "00166.xml",
+      "source_id": "kysing/00166.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "166",
+        "title": "그네",
+        "singer": "가곡",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:15.649Z"
+      }
+    },
+    {
+      "relative_path": "00168.xml",
+      "source_id": "kysing/00168.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "168",
+        "title": "그대가 나에게",
+        "singer": "이승철",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:18.779Z"
+      }
+    },
+    {
+      "relative_path": "00169.xml",
+      "source_id": "kysing/00169.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "169",
+        "title": "그대는 나의 인생",
+        "singer": "한울타리",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:22.258Z"
+      }
+    },
+    {
+      "relative_path": "00170.xml",
+      "source_id": "kysing/00170.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "170",
+        "title": "그대 먼 곳에",
+        "singer": "마음과마음",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:25.736Z"
+      }
+    },
+    {
+      "relative_path": "00171.xml",
+      "source_id": "kysing/00171.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "171",
+        "title": "그대 발길 머무는 곳에",
+        "singer": "조용필",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:29.514Z"
+      }
+    },
+    {
+      "relative_path": "00172.xml",
+      "source_id": "kysing/00172.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "172",
+        "title": "그대 변치 않는다면",
+        "singer": "방주연",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:32.743Z"
+      }
+    },
+    {
+      "relative_path": "00173.xml",
+      "source_id": "kysing/00173.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "173",
+        "title": "그대 슬픔까지 사랑해",
+        "singer": "심신",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:36.322Z"
+      }
+    },
+    {
+      "relative_path": "00174.xml",
+      "source_id": "kysing/00174.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "174",
+        "title": "그대여",
+        "singer": "이정희",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:39.593Z"
+      }
+    },
+    {
+      "relative_path": "00178.xml",
+      "source_id": "kysing/00178.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "178",
+        "title": "그리움은 가슴마다",
+        "singer": "이미자",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:42.993Z"
+      }
+    },
+    {
+      "relative_path": "00179.xml",
+      "source_id": "kysing/00179.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "179",
+        "title": "그 사람 바보야",
+        "singer": "정훈희",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:46.245Z"
+      }
+    },
+    {
+      "relative_path": "00184.xml",
+      "source_id": "kysing/00184.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "184",
+        "title": "금산 아가씨",
+        "singer": "김하정",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:49.703Z"
+      }
+    },
+    {
+      "relative_path": "00185.xml",
+      "source_id": "kysing/00185.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "185",
+        "title": "기다리는 여심",
+        "singer": "계은숙",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:53.072Z"
+      }
+    },
+    {
+      "relative_path": "00187.xml",
+      "source_id": "kysing/00187.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "187",
+        "title": "기러기 아빠",
+        "singer": "이미자",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:04:56.512Z"
+      }
+    },
+    {
+      "relative_path": "00189.xml",
+      "source_id": "kysing/00189.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "189",
+        "title": "기쁘다 구주 오셨네 (Joy to the World)",
+        "singer": "캐롤(Carol)",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:00.041Z"
+      }
+    },
+    {
+      "relative_path": "00192.xml",
+      "source_id": "kysing/00192.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "192",
+        "title": "기타 부기",
+        "singer": "윤일로",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:03.611Z"
+      }
+    },
+    {
+      "relative_path": "00193.xml",
+      "source_id": "kysing/00193.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "193",
+        "title": "긴 머리 소녀",
+        "singer": "둘다섯",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:08.709Z"
+      }
+    },
+    {
+      "relative_path": "00194.xml",
+      "source_id": "kysing/00194.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "194",
+        "title": "길가에 앉아서",
+        "singer": "김세환",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:12.372Z"
+      }
+    },
+    {
+      "relative_path": "00195.xml",
+      "source_id": "kysing/00195.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "195",
+        "title": "길 잃은 철새",
+        "singer": "최희준",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:15.677Z"
+      }
+    },
+    {
+      "relative_path": "00196.xml",
+      "source_id": "kysing/00196.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "196",
+        "title": "나그네 설움",
+        "singer": "백년설",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:19.271Z"
+      }
+    },
+    {
+      "relative_path": "00197.xml",
+      "source_id": "kysing/00197.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "197",
+        "title": "나 그대에게 모두 드리리",
+        "singer": "이장희",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:22.783Z"
+      }
+    },
+    {
+      "relative_path": "00198.xml",
+      "source_id": "kysing/00198.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "198",
+        "title": "나는 가야지",
+        "singer": "문정숙",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:25.945Z"
+      }
+    },
+    {
+      "relative_path": "00200.xml",
+      "source_id": "kysing/00200.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "200",
+        "title": "나는 못난이",
+        "singer": "딕훼밀리",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:29.616Z"
+      }
+    },
+    {
+      "relative_path": "00201.xml",
+      "source_id": "kysing/00201.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "201",
+        "title": "나는 어떡하라고",
+        "singer": "윤항기",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:33.076Z"
+      }
+    },
+    {
+      "relative_path": "00202.xml",
+      "source_id": "kysing/00202.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "202",
+        "title": "나는 열일곱 살이예요",
+        "singer": "박단마",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:36.674Z"
+      }
+    },
+    {
+      "relative_path": "00203.xml",
+      "source_id": "kysing/00203.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "203",
+        "title": "나는 외로움 그대는 그리움",
+        "singer": "박영미",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:39.880Z"
+      }
+    },
+    {
+      "relative_path": "00204.xml",
+      "source_id": "kysing/00204.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "204",
+        "title": "나는 울었네",
+        "singer": "손인호",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:43.322Z"
+      }
+    },
+    {
+      "relative_path": "00205.xml",
+      "source_id": "kysing/00205.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "205",
+        "title": "나니미",
+        "singer": "이순길",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:46.531Z"
+      }
+    },
+    {
+      "relative_path": "00209.xml",
+      "source_id": "kysing/00209.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "209",
+        "title": "나의 노래",
+        "singer": "문정선",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:49.844Z"
+      }
+    },
+    {
+      "relative_path": "00210.xml",
+      "source_id": "kysing/00210.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "210",
+        "title": "나침반",
+        "singer": "설운도",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:53.298Z"
+      }
+    },
+    {
+      "relative_path": "00211.xml",
+      "source_id": "kysing/00211.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "211",
+        "title": "나 하나의 사랑",
+        "singer": "송민도",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:56.528Z"
+      }
+    },
+    {
+      "relative_path": "00212.xml",
+      "source_id": "kysing/00212.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "212",
+        "title": "낙엽따라 가버린 사랑",
+        "singer": "차중락",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:05:59.754Z"
+      }
+    },
+    {
+      "relative_path": "00213.xml",
+      "source_id": "kysing/00213.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "213",
+        "title": "낙엽은 지는데",
+        "singer": "백호빈",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:03.162Z"
+      }
+    },
+    {
+      "relative_path": "00214.xml",
+      "source_id": "kysing/00214.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "214",
+        "title": "낙엽이 가는 길",
+        "singer": "나훈아",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:06.311Z"
+      }
+    },
+    {
+      "relative_path": "00215.xml",
+      "source_id": "kysing/00215.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "215",
+        "title": "난 너에게",
+        "singer": "정수라",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:09.665Z"
+      }
+    },
+    {
+      "relative_path": "00216.xml",
+      "source_id": "kysing/00216.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "216",
+        "title": "난 정말 몰랐었네",
+        "singer": "최병걸",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:12.872Z"
+      }
+    },
+    {
+      "relative_path": "00217.xml",
+      "source_id": "kysing/00217.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "217",
+        "title": "날개",
+        "singer": "허영란",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:16.044Z"
+      }
+    },
+    {
+      "relative_path": "00218.xml",
+      "source_id": "kysing/00218.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "218",
+        "title": "날 보러와요",
+        "singer": "방미",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:19.107Z"
+      }
+    },
+    {
+      "relative_path": "00219.xml",
+      "source_id": "kysing/00219.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "219",
+        "title": "날이 갈수록",
+        "singer": "김정호",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:22.236Z"
+      }
+    },
+    {
+      "relative_path": "00220.xml",
+      "source_id": "kysing/00220.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "220",
+        "title": "남남",
+        "singer": "최성수",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:25.871Z"
+      }
+    },
+    {
+      "relative_path": "00222.xml",
+      "source_id": "kysing/00222.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "222",
+        "title": "남원의 애수",
+        "singer": "김용만",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:29.255Z"
+      }
+    },
+    {
+      "relative_path": "00223.xml",
+      "source_id": "kysing/00223.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "223",
+        "title": "남자는 배 여자는 항구",
+        "singer": "심수봉",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:33.153Z"
+      }
+    },
+    {
+      "relative_path": "00224.xml",
+      "source_id": "kysing/00224.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "224",
+        "title": "남포동 블루스",
+        "singer": "김수희",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:36.646Z"
+      }
+    },
+    {
+      "relative_path": "00227.xml",
+      "source_id": "kysing/00227.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "227",
+        "title": "내 곁에 있어주",
+        "singer": "이수미",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:40.403Z"
+      }
+    },
+    {
+      "relative_path": "00228.xml",
+      "source_id": "kysing/00228.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "228",
+        "title": "내 고향으로 마차는 간다",
+        "singer": "명국환",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:43.891Z"
+      }
+    },
+    {
+      "relative_path": "00229.xml",
+      "source_id": "kysing/00229.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "229",
+        "title": "내 마음 갈 곳을 잃어",
+        "singer": "최백호",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:47.369Z"
+      }
+    },
+    {
+      "relative_path": "00230.xml",
+      "source_id": "kysing/00230.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "230",
+        "title": "내 마음 당신 곁으로",
+        "singer": "김정수와 급행열차",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:50.768Z"
+      }
+    },
+    {
+      "relative_path": "00232.xml",
+      "source_id": "kysing/00232.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "232",
+        "title": "내 이름은 소녀",
+        "singer": "조애희",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:54.504Z"
+      }
+    },
+    {
+      "relative_path": "00235.xml",
+      "source_id": "kysing/00235.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "235",
+        "title": "너",
+        "singer": "이종용",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:06:57.836Z"
+      }
+    },
+    {
+      "relative_path": "00236.xml",
+      "source_id": "kysing/00236.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "236",
+        "title": "너를 사랑하고도",
+        "singer": "전유나",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:01.387Z"
+      }
+    },
+    {
+      "relative_path": "00237.xml",
+      "source_id": "kysing/00237.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "237",
+        "title": "너무 늦었잖아요",
+        "singer": "변진섭",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:04.718Z"
+      }
+    },
+    {
+      "relative_path": "00242.xml",
+      "source_id": "kysing/00242.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "242",
+        "title": "노들강변",
+        "singer": "민요",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:08.259Z"
+      }
+    },
+    {
+      "relative_path": "00244.xml",
+      "source_id": "kysing/00244.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "244",
+        "title": "노랫가락 차차차",
+        "singer": "황정자",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:11.649Z"
+      }
+    },
+    {
+      "relative_path": "00245.xml",
+      "source_id": "kysing/00245.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "245",
+        "title": "노래하는 곳에",
+        "singer": "윤항기",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:14.939Z"
+      }
+    },
+    {
+      "relative_path": "00247.xml",
+      "source_id": "kysing/00247.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "247",
+        "title": "녹슬은 기찻길",
+        "singer": "나훈아",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:18.594Z"
+      }
+    },
+    {
+      "relative_path": "00248.xml",
+      "source_id": "kysing/00248.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "248",
+        "title": "누가 울어",
+        "singer": "배호",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:21.927Z"
+      }
+    },
+    {
+      "relative_path": "00249.xml",
+      "source_id": "kysing/00249.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "249",
+        "title": "누가 이 사람을 모르시나요",
+        "singer": "곽순옥",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:25.526Z"
+      }
+    },
+    {
+      "relative_path": "00251.xml",
+      "source_id": "kysing/00251.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "251",
+        "title": "눈동자",
+        "singer": "이승재",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:29.125Z"
+      }
+    },
+    {
+      "relative_path": "00253.xml",
+      "source_id": "kysing/00253.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "253",
+        "title": "눈물을 감추고",
+        "singer": "위키리",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:32.755Z"
+      }
+    },
+    {
+      "relative_path": "00254.xml",
+      "source_id": "kysing/00254.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "254",
+        "title": "눈물의 연평도",
+        "singer": "최숙자",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:36.260Z"
+      }
+    },
+    {
+      "relative_path": "00257.xml",
+      "source_id": "kysing/00257.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "257",
+        "title": "늦지 않았어요",
+        "singer": "이지연",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:39.597Z"
+      }
+    },
+    {
+      "relative_path": "00258.xml",
+      "source_id": "kysing/00258.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "258",
+        "title": "닐니리 맘보",
+        "singer": "김정애",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:42.983Z"
+      }
+    },
+    {
+      "relative_path": "00259.xml",
+      "source_id": "kysing/00259.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "259",
+        "title": "닐니리야 (전래민요)",
+        "singer": "전래민요",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:46.704Z"
+      }
+    },
+    {
+      "relative_path": "00260.xml",
+      "source_id": "kysing/00260.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "260",
+        "title": "님",
+        "singer": "박재란",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:50.280Z"
+      }
+    },
+    {
+      "relative_path": "00261.xml",
+      "source_id": "kysing/00261.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "261",
+        "title": "님은 먼 곳에",
+        "singer": "김추자",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:53.902Z"
+      }
+    },
+    {
+      "relative_path": "00262.xml",
+      "source_id": "kysing/00262.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "262",
+        "title": "다락방",
+        "singer": "논두렁 밭두렁",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:07:57.149Z"
+      }
+    },
+    {
+      "relative_path": "00263.xml",
+      "source_id": "kysing/00263.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "263",
+        "title": "단골 손님",
+        "singer": "조미미",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:00.384Z"
+      }
+    },
+    {
+      "relative_path": "00264.xml",
+      "source_id": "kysing/00264.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "264",
+        "title": "단장의 미아리 고개",
+        "singer": "이해연",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:03.816Z"
+      }
+    },
+    {
+      "relative_path": "00265.xml",
+      "source_id": "kysing/00265.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "265",
+        "title": "달맞이 꽃",
+        "singer": "이용복",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:07.253Z"
+      }
+    },
+    {
+      "relative_path": "00266.xml",
+      "source_id": "kysing/00266.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "266",
+        "title": "달무리",
+        "singer": "영사운드",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:10.515Z"
+      }
+    },
+    {
+      "relative_path": "00268.xml",
+      "source_id": "kysing/00268.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "268",
+        "title": "당신",
+        "singer": "김정수",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:13.973Z"
+      }
+    },
+    {
+      "relative_path": "00269.xml",
+      "source_id": "kysing/00269.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "269",
+        "title": "당신",
+        "singer": "배호",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:17.312Z"
+      }
+    },
+    {
+      "relative_path": "00270.xml",
+      "source_id": "kysing/00270.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "270",
+        "title": "당신께만",
+        "singer": "이은하",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:20.824Z"
+      }
+    },
+    {
+      "relative_path": "00272.xml",
+      "source_id": "kysing/00272.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "272",
+        "title": "당신만을 사랑해",
+        "singer": "혜은이",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:24.412Z"
+      }
+    },
+    {
+      "relative_path": "00273.xml",
+      "source_id": "kysing/00273.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "273",
+        "title": "당신은 모르실 거야",
+        "singer": "혜은이",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:27.849Z"
+      }
+    },
+    {
+      "relative_path": "00274.xml",
+      "source_id": "kysing/00274.xml",
+      "metadata": {
+        "catalog": "kumyoung",
+        "songNumber": "274",
+        "title": "당신은 몰라",
+        "singer": "최헌",
+        "composer": "",
+        "lyricist": "",
+        "release": "",
+        "accessPolicy": "research-preview",
+        "metadataSource": "https://kysing.kr/search/",
+        "metadataVerifiedAt": "2026-09-05T00:08:31.400Z"
+      }
+    }
+  ],
+  "summary": {
+    "records": 105,
+    "indexable": 105,
+    "missingXml": 0
+  }
+}

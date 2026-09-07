@@ -1,0 +1,4330 @@
+{
+  "schema": "musicanote-motif-100-run/v1",
+  "suite": "motif-100",
+  "status": "incomplete",
+  "startedAt": "2026-09-05T17:38:23.623Z",
+  "completedAt": null,
+  "total": 100,
+  "limit": 100,
+  "snapshot": {
+    "database": {
+      "path": "K:\\MusicSearch\\data\\search-index-v2\\search.sqlite",
+      "sizeBytes": 28657737728,
+      "mtime": "2026-09-05T00:24:05.875Z"
+    },
+    "codeHash": "a1e29637944f162d953dde3d943e8fb289bcaef2e495845cbc89202a6901767b"
+  },
+  "cases": [
+    {
+      "caseId": "Q-M100-001",
+      "status": "completed",
+      "queryHash": "4728055f8a5b8058bfb5107e760c9dd1558df5020be115ddec248f7e90b99b5e",
+      "result": {
+        "caseId": "Q-M100-001",
+        "queryNotation": "D6(1.5) C6(0.5) Bb5(1) D6(1) G5(4) A♯5(1.5) F5(0.5) C6(2) F6(0.5) D6(0.5)",
+        "expected": {
+          "workId": "work-f4cecfd9cc7c1541",
+          "sourceId": "kysing/00183.xml",
+          "streamId": "P2:1:1",
+          "title": "그 집 앞",
+          "composer": "가곡",
+          "partName": "Oboe d’amore, S3",
+          "family": "KYSing",
+          "baseStartIndex": 7,
+          "baseStartMeasure": 4,
+          "baseEndMeasure": 7,
+          "baseTargets": [
+            {
+              "onset": 12,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 1
+            },
+            {
+              "onset": 13.5,
+              "pitchMidi": 84,
+              "measure": 4,
+              "beat": 2.5
+            },
+            {
+              "onset": 14,
+              "pitchMidi": 82,
+              "measure": 4,
+              "beat": 3
+            },
+            {
+              "onset": 15,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 4
+            },
+            {
+              "onset": 16,
+              "pitchMidi": 79,
+              "measure": 5,
+              "beat": 1
+            },
+            {
+              "onset": 20,
+              "pitchMidi": 81,
+              "measure": 6,
+              "beat": 1
+            },
+            {
+              "onset": 21.5,
+              "pitchMidi": 77,
+              "measure": 6,
+              "beat": 2.5
+            },
+            {
+              "onset": 22,
+              "pitchMidi": 84,
+              "measure": 6,
+              "beat": 3
+            },
+            {
+              "onset": 24,
+              "pitchMidi": 89,
+              "measure": 7,
+              "beat": 1
+            },
+            {
+              "onset": 24.5,
+              "pitchMidi": 86,
+              "measure": 7,
+              "beat": 1.5
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "pitch",
+          "label": "중간 음높이 ±1"
+        },
+        "selection": {
+          "motifScore": 89.054,
+          "repeatedInStream": 4,
+          "role": 0.9444,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 8977,
+        "resultCount": 77,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 2,
+          "alignmentStart": 7,
+          "alignmentEnd": 16,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 97.7807,
+          "localSimilarity": 100,
+          "scores": {
+            "pitch": 98.6,
+            "interval": 97.5733,
+            "contour": 100,
+            "rhythm": 100
+          },
+          "metric": 100,
+          "structural": 89.9146,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-f4cecfd9cc7c1541",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "그 집 앞",
+            "workId": "work-f4cecfd9cc7c1541",
+            "sourceId": "kysing/00183.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              4,
+              7
+            ],
+            "ranking": 100,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 98.6,
+              "interval": 97.57333333333332,
+              "contour": 100,
+              "rhythm": 100,
+              "meter": 100,
+              "structural": 90,
+              "skeleton": 96,
+              "pillarPitch": 98,
+              "specificity": 72,
+              "repeatPattern": 98,
+              "phrase": 50
+            },
+            "targets": [
+              "12:86",
+              "13.5:84",
+              "14:82",
+              "15:86",
+              "16:79",
+              "20:81",
+              "21.5:77",
+              "22:84",
+              "24:89",
+              "24.5:86"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "그 집 앞",
+            "workId": "work-f4cecfd9cc7c1541-d08f9a8a",
+            "sourceId": "kysing/00183.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              20,
+              23
+            ],
+            "ranking": 100,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 98.6,
+              "interval": 97.57333333333332,
+              "contour": 100,
+              "rhythm": 100,
+              "meter": 100,
+              "structural": 90,
+              "skeleton": 96,
+              "pillarPitch": 98,
+              "specificity": 72,
+              "repeatPattern": 98,
+              "phrase": 50
+            },
+            "targets": [
+              "76:71",
+              "77.5:69",
+              "78:67",
+              "79:71",
+              "80:64",
+              "84:66",
+              "85.5:62",
+              "86:69",
+              "88:74",
+              "88.5:71"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "가슴에 새긴다 (드라마\"황금의 제국\")",
+            "workId": "work-fe275cbe6987b9af-d08f9a8a",
+            "sourceId": "kysing/59029.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              18,
+              20
+            ],
+            "ranking": 82.3028,
+            "localSimilarity": 78.5496,
+            "scores": {
+              "pitch": 88.8,
+              "interval": 91.78666666666666,
+              "contour": 100,
+              "rhythm": 38.16712497073341,
+              "meter": 15,
+              "structural": 24,
+              "skeleton": 62,
+              "pillarPitch": 83,
+              "specificity": 72,
+              "repeatPattern": 84,
+              "phrase": 50
+            },
+            "targets": [
+              "69:78",
+              "69.25:76",
+              "69.5:74",
+              "70:78",
+              "71.5:71",
+              "71.75:76",
+              "73.75:71",
+              "74:78",
+              "74.5:83",
+              "75:78"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "바람처럼",
+            "workId": "work-848ac79bf6ee204b-a71ddd21",
+            "sourceId": "kysing/07700.xml",
+            "streamId": "P3:1:1",
+            "range": [
+              37,
+              39
+            ],
+            "ranking": 79.4912,
+            "localSimilarity": 76.3272,
+            "scores": {
+              "pitch": 87.4,
+              "interval": 84.69333333333333,
+              "contour": 100,
+              "rhythm": 72.0663524417065,
+              "meter": 15,
+              "structural": 23,
+              "skeleton": 67,
+              "pillarPitch": 93,
+              "specificity": 72,
+              "repeatPattern": 87,
+              "phrase": 50
+            },
+            "targets": [
+              "146.5:69",
+              "147:67",
+              "147.5:65",
+              "147.75:69",
+              "148.25:62",
+              "148.75:65",
+              "151.25:62",
+              "151.5:65",
+              "151.75:74",
+              "152.25:72"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "비야 (I Can't Let Go)",
+            "workId": "work-a80ba228ad5a65b0-57f4f3bb",
+            "sourceId": "kysing/66668.xml",
+            "streamId": "P1:2:5",
+            "range": [
+              65,
+              67
+            ],
+            "ranking": 78.3602,
+            "localSimilarity": 75.0954,
+            "scores": {
+              "pitch": 94.4,
+              "interval": 90.29333333333334,
+              "contour": 100,
+              "rhythm": 45.640362757846034,
+              "meter": 29,
+              "structural": 77,
+              "skeleton": 64,
+              "pillarPitch": 90,
+              "specificity": 72,
+              "repeatPattern": 91,
+              "phrase": 50
+            },
+            "targets": [
+              "258.5:66",
+              "258.75:64",
+              "259.25:62",
+              "259.75:66",
+              "261.75:59",
+              "262:62",
+              "262.75:59",
+              "263:62",
+              "264:69",
+              "265.5:66"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-002",
+      "status": "completed",
+      "queryHash": "0c2bc91a8a7ba521497189513dfa771d17fdfc7900d6e41db267c7adb858e3ac",
+      "result": {
+        "caseId": "Q-M100-002",
+        "queryNotation": "D6(1.5) C6(0.5) Bb5(1) D6(1) G6(4) A5(1.5) F5(0.5) C6(2) F6(0.5) D6(0.5)",
+        "expected": {
+          "workId": "work-f4cecfd9cc7c1541",
+          "sourceId": "kysing/00183.xml",
+          "streamId": "P2:1:1",
+          "title": "그 집 앞",
+          "composer": "가곡",
+          "partName": "Oboe d’amore, S3",
+          "family": "KYSing",
+          "baseStartIndex": 7,
+          "baseStartMeasure": 4,
+          "baseEndMeasure": 7,
+          "baseTargets": [
+            {
+              "onset": 12,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 1
+            },
+            {
+              "onset": 13.5,
+              "pitchMidi": 84,
+              "measure": 4,
+              "beat": 2.5
+            },
+            {
+              "onset": 14,
+              "pitchMidi": 82,
+              "measure": 4,
+              "beat": 3
+            },
+            {
+              "onset": 15,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 4
+            },
+            {
+              "onset": 16,
+              "pitchMidi": 79,
+              "measure": 5,
+              "beat": 1
+            },
+            {
+              "onset": 20,
+              "pitchMidi": 81,
+              "measure": 6,
+              "beat": 1
+            },
+            {
+              "onset": 21.5,
+              "pitchMidi": 77,
+              "measure": 6,
+              "beat": 2.5
+            },
+            {
+              "onset": 22,
+              "pitchMidi": 84,
+              "measure": 6,
+              "beat": 3
+            },
+            {
+              "onset": 24,
+              "pitchMidi": 89,
+              "measure": 7,
+              "beat": 1
+            },
+            {
+              "onset": 24.5,
+              "pitchMidi": 86,
+              "measure": 7,
+              "beat": 1.5
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "octave",
+          "label": "내부 음 옥타브 이동"
+        },
+        "selection": {
+          "motifScore": 89.054,
+          "repeatedInStream": 4,
+          "role": 0.9444,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 11707.2,
+        "resultCount": 55,
+        "expectedWorkRank": null,
+        "expectedSourceRank": null,
+        "equivalentTitleRank": null,
+        "assessment": "missed-retrieval",
+        "problem": "원곡 직접 정렬은 입장 기준을 통과하지만 n-gram 후보에서 Top100에 회수되지 않음",
+        "improvement": "한 음 변형에도 남는 분할 interval seed 또는 bounded fallback 후보를 검토",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 2,
+          "alignmentStart": 7,
+          "alignmentEnd": 16,
+          "coverage": 0.9,
+          "gaps": 2,
+          "alignmentSimilarity": 67.157,
+          "localSimilarity": 75.1802,
+          "scores": {
+            "pitch": 89.1111,
+            "interval": 85.1444,
+            "contour": 100,
+            "rhythm": 100
+          },
+          "metric": 71.6667,
+          "structural": 46.7637,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "top1-fallback",
+          "workId": "work-f7fb04a57119303e",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "Cello Suite No.5 in C minor BWV 1011",
+            "workId": "work-f7fb04a57119303e",
+            "sourceId": "mxl/4/6/Qme7gyxLXgWu2uu1CPbcQGrs5mJE9J2vEAX5yJAPG6VVT6.mxl",
+            "streamId": "P1:1:1",
+            "range": [
+              211,
+              213
+            ],
+            "ranking": 76.3886,
+            "localSimilarity": 72.7278,
+            "scores": {
+              "pitch": 84.6,
+              "interval": 80.77333333333334,
+              "contour": 100,
+              "rhythm": 61.36766948822749,
+              "meter": 15,
+              "structural": 65,
+              "skeleton": 56,
+              "pillarPitch": 91,
+              "specificity": 76,
+              "repeatPattern": 84,
+              "phrase": 50
+            },
+            "targets": [
+              "380.75:60",
+              "381:59",
+              "381.25:57",
+              "381.75:59",
+              "382:64",
+              "382.5:57",
+              "382.75:55",
+              "383.25:57",
+              "383.5:63",
+              "383.75:60"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "Der erste Frühlingstag Op. 48",
+            "workId": "work-382c531aff293623",
+            "sourceId": "mxl/3/7/Qmd8YSR3vV6wrvFjStFVK3QYZa8zgSqpas99PqRPE2yiB4.mxl",
+            "streamId": "P1:1:1",
+            "range": [
+              11,
+              15
+            ],
+            "ranking": 74.2787,
+            "localSimilarity": 70.2063,
+            "scores": {
+              "pitch": 89.11111111111111,
+              "interval": 91.44444444444444,
+              "contour": 100,
+              "rhythm": 43.834649448825886,
+              "meter": 43,
+              "structural": 54,
+              "skeleton": 67,
+              "pillarPitch": 86,
+              "specificity": 76,
+              "repeatPattern": 81,
+              "phrase": 50
+            },
+            "targets": [
+              "31.5:75",
+              "32.5:73",
+              "33:71",
+              "36:75",
+              "39:80",
+              "42:70",
+              "43:71",
+              "43.5:75",
+              "44:73"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "Frühlingsahnung Op. 48 No. 1",
+            "workId": "work-4a97671e2762c57b",
+            "sourceId": "mxl/8/31/QmQmhEPzH5TF6SXvfEkicRrK1Ss6DpwwjVtmkGAmnY2Foe.mxl",
+            "streamId": "P1:1:1",
+            "range": [
+              11,
+              15
+            ],
+            "ranking": 74.0927,
+            "localSimilarity": 70.2063,
+            "scores": {
+              "pitch": 89.11111111111111,
+              "interval": 91.44444444444444,
+              "contour": 100,
+              "rhythm": 43.834649448825886,
+              "meter": 43,
+              "structural": 54,
+              "skeleton": 67,
+              "pillarPitch": 86,
+              "specificity": 76,
+              "repeatPattern": 81,
+              "phrase": 50
+            },
+            "targets": [
+              "31.5:75",
+              "32.5:73",
+              "33:71",
+              "36:75",
+              "39:80",
+              "42:70",
+              "43:71",
+              "43.5:75",
+              "44:73"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "Dido and Aeneas Z.626",
+            "workId": "work-8a0f1703d30c0948",
+            "sourceId": "mxl/0/25/QmaiVgivyKRqDRrVGCBm7RntRAS8ycfhXNZPfisacyq8xB.mxl",
+            "streamId": "P2:1:1",
+            "range": [
+              51,
+              52
+            ],
+            "ranking": 73.2953,
+            "localSimilarity": 69.1953,
+            "scores": {
+              "pitch": 79.77777777777777,
+              "interval": 82.46111111111111,
+              "contour": 100,
+              "rhythm": 57.84863914130104,
+              "meter": 43,
+              "structural": 40,
+              "skeleton": 59,
+              "pillarPitch": 76,
+              "specificity": 76,
+              "repeatPattern": 83,
+              "phrase": 50
+            },
+            "targets": [
+              "201.5:69",
+              "201.75:67",
+              "202:65",
+              "202.5:69",
+              "203:74",
+              "204.5:67",
+              "205:72",
+              "206.5:74",
+              "206.75:72"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "Partita No. 1 for solo violin BWV 1002",
+            "workId": "work-58577c32b6cc7b20",
+            "sourceId": "mxl/4/20/QmeF6kyG8cp4Ad5Hi4YsUPdL7dRTudK56TcHBQro78J9vL.mxl",
+            "streamId": "P1:1:1",
+            "range": [
+              40,
+              41
+            ],
+            "ranking": 72.3832,
+            "localSimilarity": 69.3272,
+            "scores": {
+              "pitch": 89.11111111111111,
+              "interval": 88.29444444444445,
+              "contour": 100,
+              "rhythm": 55.14660478784895,
+              "meter": 15,
+              "structural": 42,
+              "skeleton": 44,
+              "pillarPitch": 58,
+              "specificity": 76,
+              "repeatPattern": 94,
+              "phrase": 50
+            },
+            "targets": [
+              "679.5:54",
+              "679.75:52",
+              "680:50",
+              "680.25:54",
+              "680.5:59",
+              "681:49",
+              "681.25:52",
+              "681.5:57",
+              "682:47"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-003",
+      "status": "completed",
+      "queryHash": "34717e20ed6fee5a25d33c537448cb032e87f3963ef0e44637cd9f6debd362d3",
+      "result": {
+        "caseId": "Q-M100-003",
+        "queryNotation": "D6(1.5) C6(0.75) Bb5(0.75) D6(1) G5(4) A5(1.5) F5(0.5) C6(2) F6(0.5) D6(0.5)",
+        "expected": {
+          "workId": "work-f4cecfd9cc7c1541",
+          "sourceId": "kysing/00183.xml",
+          "streamId": "P2:1:1",
+          "title": "그 집 앞",
+          "composer": "가곡",
+          "partName": "Oboe d’amore, S3",
+          "family": "KYSing",
+          "baseStartIndex": 7,
+          "baseStartMeasure": 4,
+          "baseEndMeasure": 7,
+          "baseTargets": [
+            {
+              "onset": 12,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 1
+            },
+            {
+              "onset": 13.5,
+              "pitchMidi": 84,
+              "measure": 4,
+              "beat": 2.5
+            },
+            {
+              "onset": 14,
+              "pitchMidi": 82,
+              "measure": 4,
+              "beat": 3
+            },
+            {
+              "onset": 15,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 4
+            },
+            {
+              "onset": 16,
+              "pitchMidi": 79,
+              "measure": 5,
+              "beat": 1
+            },
+            {
+              "onset": 20,
+              "pitchMidi": 81,
+              "measure": 6,
+              "beat": 1
+            },
+            {
+              "onset": 21.5,
+              "pitchMidi": 77,
+              "measure": 6,
+              "beat": 2.5
+            },
+            {
+              "onset": 22,
+              "pitchMidi": 84,
+              "measure": 6,
+              "beat": 3
+            },
+            {
+              "onset": 24,
+              "pitchMidi": 89,
+              "measure": 7,
+              "beat": 1
+            },
+            {
+              "onset": 24.5,
+              "pitchMidi": 86,
+              "measure": 7,
+              "beat": 1.5
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "rhythm",
+          "label": "국소 리듬 재분배"
+        },
+        "selection": {
+          "motifScore": 89.054,
+          "repeatedInStream": 4,
+          "role": 0.9444,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 13485.9,
+        "resultCount": 81,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 2,
+          "alignmentStart": 7,
+          "alignmentEnd": 16,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 98.924,
+          "localSimilarity": 100,
+          "scores": {
+            "pitch": 100,
+            "interval": 100,
+            "contour": 100,
+            "rhythm": 76.0626
+          },
+          "metric": 100,
+          "structural": 100,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-f4cecfd9cc7c1541",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "그 집 앞",
+            "workId": "work-f4cecfd9cc7c1541",
+            "sourceId": "kysing/00183.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              4,
+              7
+            ],
+            "ranking": 100,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 100,
+              "interval": 100,
+              "contour": 100,
+              "rhythm": 85.28238859703687,
+              "meter": 100,
+              "structural": 100,
+              "skeleton": 88,
+              "pillarPitch": 89,
+              "specificity": 76,
+              "repeatPattern": 100,
+              "phrase": 70
+            },
+            "targets": [
+              "12:86",
+              "13.5:84",
+              "14:82",
+              "15:86",
+              "16:79",
+              "20:81",
+              "21.5:77",
+              "22:84",
+              "24:89",
+              "24.5:86"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "그 집 앞",
+            "workId": "work-f4cecfd9cc7c1541-d08f9a8a",
+            "sourceId": "kysing/00183.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              20,
+              23
+            ],
+            "ranking": 98.9132,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 100,
+              "interval": 100,
+              "contour": 100,
+              "rhythm": 85.28238859703687,
+              "meter": 100,
+              "structural": 100,
+              "skeleton": 88,
+              "pillarPitch": 89,
+              "specificity": 76,
+              "repeatPattern": 100,
+              "phrase": 58
+            },
+            "targets": [
+              "76:71",
+              "77.5:69",
+              "78:67",
+              "79:71",
+              "80:64",
+              "84:66",
+              "85.5:62",
+              "86:69",
+              "88:74",
+              "88.5:71"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "부루와 숲 속 친구들 (만화\"부루와 숲 속..\")",
+            "workId": "work-e92dab3a4c4f05f0",
+            "sourceId": "kysing/87321.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              19,
+              23
+            ],
+            "ranking": 79.0424,
+            "localSimilarity": 75.156,
+            "scores": {
+              "pitch": 79.77777777777777,
+              "interval": 83.51111111111112,
+              "contour": 87.5,
+              "rhythm": 36.89525536442934,
+              "meter": 66,
+              "structural": 54,
+              "skeleton": 100,
+              "pillarPitch": 100,
+              "specificity": 76,
+              "repeatPattern": 92,
+              "phrase": 50
+            },
+            "targets": [
+              "72:80",
+              "73:78",
+              "74:77",
+              "76:70",
+              "80:72",
+              "81.75:68",
+              "84:75",
+              "86.75:80",
+              "88:80"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "Begone Unbelief",
+            "workId": "work-ce4cccd91ae8f01c-a71ddd21",
+            "sourceId": "mxl/9/57/QmRZYTC2ftFCDwrgnkguJgAMW5fe589n1L5hRSihAuuGjr.mxl",
+            "streamId": "P3:1:1",
+            "range": [
+              21,
+              25
+            ],
+            "ranking": 77.965,
+            "localSimilarity": 75.5534,
+            "scores": {
+              "pitch": 89.11111111111111,
+              "interval": 91.44444444444444,
+              "contour": 100,
+              "rhythm": 52.774418078608406,
+              "meter": 79,
+              "structural": 33,
+              "skeleton": 54,
+              "pillarPitch": 77,
+              "specificity": 76,
+              "repeatPattern": 81,
+              "phrase": 50
+            },
+            "targets": [
+              "41:59",
+              "42:57",
+              "42.5:55",
+              "43:59",
+              "44:52",
+              "46:50",
+              "47:55",
+              "48:59",
+              "49:57"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "Salve intemerata",
+            "workId": "work-e30f405b40b78fff-88a85b71",
+            "sourceId": "mxl/8/55/QmQYXvXXk7cbuVsjLH7S6xrxMgZMk9Y9wtXJyJuQWGwBFY.mxl",
+            "streamId": "P2:1:1",
+            "range": [
+              166,
+              167
+            ],
+            "ranking": 77.8142,
+            "localSimilarity": 74.3622,
+            "scores": {
+              "pitch": 93.77777777777777,
+              "interval": 91.21111111111111,
+              "contour": 100,
+              "rhythm": 36.524335224187176,
+              "meter": 15,
+              "structural": 92,
+              "skeleton": 77,
+              "pillarPitch": 90,
+              "specificity": 76,
+              "repeatPattern": 86,
+              "phrase": 50
+            },
+            "targets": [
+              "1142:66",
+              "1143:64",
+              "1144:62",
+              "1145:66",
+              "1147:59",
+              "1149:61",
+              "1150:66",
+              "1153:69",
+              "1154:68"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-004",
+      "status": "completed",
+      "queryHash": "4fcf0e19ee9ace324c6a49ee9d8b4e243d30ed0a39729bc9002dd07946922684",
+      "result": {
+        "caseId": "Q-M100-004",
+        "queryNotation": "D6(1.5) C6(0.5) Bb5(1) D6(1) A♯5(4) A5(1.5) F5(0.5) C6(2) F6(0.5) D6(0.5)",
+        "expected": {
+          "workId": "work-f4cecfd9cc7c1541",
+          "sourceId": "kysing/00183.xml",
+          "streamId": "P2:1:1",
+          "title": "그 집 앞",
+          "composer": "가곡",
+          "partName": "Oboe d’amore, S3",
+          "family": "KYSing",
+          "baseStartIndex": 7,
+          "baseStartMeasure": 4,
+          "baseEndMeasure": 7,
+          "baseTargets": [
+            {
+              "onset": 12,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 1
+            },
+            {
+              "onset": 13.5,
+              "pitchMidi": 84,
+              "measure": 4,
+              "beat": 2.5
+            },
+            {
+              "onset": 14,
+              "pitchMidi": 82,
+              "measure": 4,
+              "beat": 3
+            },
+            {
+              "onset": 15,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 4
+            },
+            {
+              "onset": 16,
+              "pitchMidi": 79,
+              "measure": 5,
+              "beat": 1
+            },
+            {
+              "onset": 20,
+              "pitchMidi": 81,
+              "measure": 6,
+              "beat": 1
+            },
+            {
+              "onset": 21.5,
+              "pitchMidi": 77,
+              "measure": 6,
+              "beat": 2.5
+            },
+            {
+              "onset": 22,
+              "pitchMidi": 84,
+              "measure": 6,
+              "beat": 3
+            },
+            {
+              "onset": 24,
+              "pitchMidi": 89,
+              "measure": 7,
+              "beat": 1
+            },
+            {
+              "onset": 24.5,
+              "pitchMidi": 86,
+              "measure": 7,
+              "beat": 1.5
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "leap",
+          "label": "특징적 도약 축소"
+        },
+        "selection": {
+          "motifScore": 89.054,
+          "repeatedInStream": 4,
+          "role": 0.9444,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 8774.9,
+        "resultCount": 85,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 2,
+          "alignmentStart": 7,
+          "alignmentEnd": 16,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 86.9169,
+          "localSimilarity": 90.1522,
+          "scores": {
+            "pitch": 95.8,
+            "interval": 92.72,
+            "contour": 88.8889,
+            "rhythm": 100
+          },
+          "metric": 71.6667,
+          "structural": 64.7149,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-f4cecfd9cc7c1541",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "그 집 앞",
+            "workId": "work-f4cecfd9cc7c1541",
+            "sourceId": "kysing/00183.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              4,
+              7
+            ],
+            "ranking": 94.485,
+            "localSimilarity": 90.1522,
+            "scores": {
+              "pitch": 95.8,
+              "interval": 92.72,
+              "contour": 88.88888888888889,
+              "rhythm": 100,
+              "meter": 72,
+              "structural": 65,
+              "skeleton": 70,
+              "pillarPitch": 78,
+              "specificity": 72,
+              "repeatPattern": 98,
+              "phrase": 50
+            },
+            "targets": [
+              "12:86",
+              "13.5:84",
+              "14:82",
+              "15:86",
+              "16:79",
+              "20:81",
+              "21.5:77",
+              "22:84",
+              "24:89",
+              "24.5:86"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "그 집 앞",
+            "workId": "work-f4cecfd9cc7c1541-d08f9a8a",
+            "sourceId": "kysing/00183.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              20,
+              23
+            ],
+            "ranking": 93.5768,
+            "localSimilarity": 89.8236,
+            "scores": {
+              "pitch": 95.8,
+              "interval": 92.72,
+              "contour": 88.88888888888889,
+              "rhythm": 100,
+              "meter": 72,
+              "structural": 65,
+              "skeleton": 70,
+              "pillarPitch": 78,
+              "specificity": 72,
+              "repeatPattern": 98,
+              "phrase": 50
+            },
+            "targets": [
+              "76:71",
+              "77.5:69",
+              "78:67",
+              "79:71",
+              "80:64",
+              "84:66",
+              "85.5:62",
+              "86:69",
+              "88:74",
+              "88.5:71"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "Duo pour Deux Violoncelles Op. 49",
+            "workId": "work-ee3c740cc44d3218",
+            "sourceId": "mxl/14/54/QmWy47xAg5hPDo352AhZLkiS1M1vAX9TcCqxC3qAcFjuPC.mxl",
+            "streamId": "P1:1:1",
+            "range": [
+              18,
+              21
+            ],
+            "ranking": 83.4406,
+            "localSimilarity": 80.6714,
+            "scores": {
+              "pitch": 87.4,
+              "interval": 91.22666666666666,
+              "contour": 100,
+              "rhythm": 48.6636582891379,
+              "meter": 43,
+              "structural": 90,
+              "skeleton": 62,
+              "pillarPitch": 72,
+              "specificity": 72,
+              "repeatPattern": 78,
+              "phrase": 50
+            },
+            "targets": [
+              "51:54",
+              "52.5:52",
+              "54:50",
+              "56:54",
+              "56.5:50",
+              "57:49",
+              "58.5:45",
+              "60:50",
+              "62:54",
+              "62.5:50"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "Benedictus qui venit MH 391 - Johann Michael Haydn",
+            "workId": "work-ab4096ec72cd368b-d01e9b95",
+            "sourceId": "mxl/5/47/QmfUEUxJBJeY2T6KHLvUqt6FaidRwZJnmFpFkP7MYxG8jV.mxl",
+            "streamId": "P7:1:1",
+            "range": [
+              11,
+              14
+            ],
+            "ranking": 83.3623,
+            "localSimilarity": 80.5331,
+            "scores": {
+              "pitch": 90.2,
+              "interval": 92.34666666666666,
+              "contour": 100,
+              "rhythm": 41.125115904824625,
+              "meter": 58,
+              "structural": 50,
+              "skeleton": 56,
+              "pillarPitch": 81,
+              "specificity": 72,
+              "repeatPattern": 82,
+              "phrase": 50
+            },
+            "targets": [
+              "32:57",
+              "32.5:55",
+              "33:53",
+              "34:57",
+              "35:53",
+              "36:52",
+              "37:48",
+              "38:53",
+              "39:57",
+              "40:55"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "WHEN I GET OLD",
+            "workId": "work-1e3c71c75363406f-88a85b71",
+            "sourceId": "4. When I Get Old, Violin, Cello and Piano Trio.musicxml.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              82,
+              84
+            ],
+            "ranking": 81.9631,
+            "localSimilarity": 78.7703,
+            "scores": {
+              "pitch": 97.2,
+              "interval": 95.14666666666666,
+              "contour": 100,
+              "rhythm": 74.73864064987517,
+              "meter": 43,
+              "structural": 46,
+              "skeleton": 65,
+              "pillarPitch": 86,
+              "specificity": 72,
+              "repeatPattern": 91,
+              "phrase": 50
+            },
+            "targets": [
+              "325.75:64",
+              "326:62",
+              "326.5:60",
+              "326.75:62",
+              "327:60",
+              "328:59",
+              "329:55",
+              "330:62",
+              "331:67",
+              "332:64"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-005",
+      "status": "completed",
+      "queryHash": "1911bc8bbbbc098abdca0a3446c644032f5e83c439e8df650738b0c7455e1244",
+      "result": {
+        "caseId": "Q-M100-005",
+        "queryNotation": "D6(1.5) C6(0.5) Bb5(1) D6(1) G5(4) A5(1.5) Rest(0.5) F5(0.5) C6(2) F6(0.5) D6(0.5)",
+        "expected": {
+          "workId": "work-f4cecfd9cc7c1541",
+          "sourceId": "kysing/00183.xml",
+          "streamId": "P2:1:1",
+          "title": "그 집 앞",
+          "composer": "가곡",
+          "partName": "Oboe d’amore, S3",
+          "family": "KYSing",
+          "baseStartIndex": 7,
+          "baseStartMeasure": 4,
+          "baseEndMeasure": 7,
+          "baseTargets": [
+            {
+              "onset": 12,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 1
+            },
+            {
+              "onset": 13.5,
+              "pitchMidi": 84,
+              "measure": 4,
+              "beat": 2.5
+            },
+            {
+              "onset": 14,
+              "pitchMidi": 82,
+              "measure": 4,
+              "beat": 3
+            },
+            {
+              "onset": 15,
+              "pitchMidi": 86,
+              "measure": 4,
+              "beat": 4
+            },
+            {
+              "onset": 16,
+              "pitchMidi": 79,
+              "measure": 5,
+              "beat": 1
+            },
+            {
+              "onset": 20,
+              "pitchMidi": 81,
+              "measure": 6,
+              "beat": 1
+            },
+            {
+              "onset": 21.5,
+              "pitchMidi": 77,
+              "measure": 6,
+              "beat": 2.5
+            },
+            {
+              "onset": 22,
+              "pitchMidi": 84,
+              "measure": 6,
+              "beat": 3
+            },
+            {
+              "onset": 24,
+              "pitchMidi": 89,
+              "measure": 7,
+              "beat": 1
+            },
+            {
+              "onset": 24.5,
+              "pitchMidi": 86,
+              "measure": 7,
+              "beat": 1.5
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "rest",
+          "label": "내부 쉼표 삽입/길이 변화"
+        },
+        "selection": {
+          "motifScore": 89.054,
+          "repeatedInStream": 4,
+          "role": 0.9444,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 10436.6,
+        "resultCount": 67,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 2,
+          "alignmentStart": 7,
+          "alignmentEnd": 16,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 100,
+          "localSimilarity": 100,
+          "scores": {
+            "pitch": 100,
+            "interval": 100,
+            "contour": 100,
+            "rhythm": 92.8734
+          },
+          "metric": 83,
+          "structural": 54.3026,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-f4cecfd9cc7c1541",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "그 집 앞",
+            "workId": "work-f4cecfd9cc7c1541",
+            "sourceId": "kysing/00183.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              4,
+              7
+            ],
+            "ranking": 97.2024,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 100,
+              "interval": 100,
+              "contour": 100,
+              "rhythm": 96.00488750216347,
+              "meter": 83,
+              "structural": 54,
+              "skeleton": 83,
+              "pillarPitch": 100,
+              "specificity": 76,
+              "repeatPattern": 100,
+              "phrase": 46
+            },
+            "targets": [
+              "12:86",
+              "13.5:84",
+              "14:82",
+              "15:86",
+              "16:79",
+              "20:81",
+              "21.5:77",
+              "22:84",
+              "24:89",
+              "24.5:86"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "그 집 앞",
+            "workId": "work-f4cecfd9cc7c1541-d08f9a8a",
+            "sourceId": "kysing/00183.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              20,
+              23
+            ],
+            "ranking": 95.1828,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 100,
+              "interval": 100,
+              "contour": 100,
+              "rhythm": 96.00488750216347,
+              "meter": 83,
+              "structural": 54,
+              "skeleton": 83,
+              "pillarPitch": 100,
+              "specificity": 76,
+              "repeatPattern": 100,
+              "phrase": 34
+            },
+            "targets": [
+              "76:71",
+              "77.5:69",
+              "78:67",
+              "79:71",
+              "80:64",
+              "84:66",
+              "85.5:62",
+              "86:69",
+              "88:74",
+              "88.5:71"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "Missa brevis in D minor",
+            "workId": "work-145bfb562096e48f",
+            "sourceId": "mxl/12/14/QmUCUby7EqCucgco67SEdvW5FWBUVsRFZyVueqzkCBrggM.mxl",
+            "streamId": "P2:1:1",
+            "range": [
+              20,
+              22
+            ],
+            "ranking": 77.4541,
+            "localSimilarity": 74.8249,
+            "scores": {
+              "pitch": 67.8,
+              "interval": 70.18666666666667,
+              "contour": 88.88888888888889,
+              "rhythm": 57.294464031840576,
+              "meter": 83,
+              "structural": 47,
+              "skeleton": 81,
+              "pillarPitch": 78,
+              "specificity": 76,
+              "repeatPattern": 82,
+              "phrase": 50
+            },
+            "targets": [
+              "76:69",
+              "77.5:67",
+              "78:65",
+              "79:69",
+              "80:62",
+              "83:67",
+              "85:65",
+              "85.5:64",
+              "86:65",
+              "87:64"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "Aspice Pater piissimum Filium SWV 73",
+            "workId": "work-f464a1d2de27a0f6-a71ddd21",
+            "sourceId": "mxl/7/50/QmPweHugBiY4EbK6p3Cz5Rh7daWCeYFBwUZqCdyqKazpai.mxl",
+            "streamId": "P3:1:1",
+            "range": [
+              19,
+              20
+            ],
+            "ranking": 75.0825,
+            "localSimilarity": 72.7077,
+            "scores": {
+              "pitch": 83.2,
+              "interval": 78.21333333333334,
+              "contour": 88.88888888888889,
+              "rhythm": 52.56121778891802,
+              "meter": 32,
+              "structural": 82,
+              "skeleton": 57,
+              "pillarPitch": 65,
+              "specificity": 76,
+              "repeatPattern": 89,
+              "phrase": 50
+            },
+            "targets": [
+              "144:59",
+              "145:57",
+              "145.5:55",
+              "146:59",
+              "148:52",
+              "153:57",
+              "154.5:55",
+              "155:54",
+              "157:62",
+              "158.5:60"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "TALESWEAVER REMINISCENCE",
+            "workId": "work-d25776bb157a0be9-5f596005",
+            "sourceId": "4. TalesWeaver Reminiscence, Piano Solo.musicxml.xml",
+            "streamId": "P1:2:2",
+            "range": [
+              6,
+              9
+            ],
+            "ranking": 74.7807,
+            "localSimilarity": 72.0283,
+            "scores": {
+              "pitch": 60,
+              "interval": 72.66666666666666,
+              "contour": 88.88888888888889,
+              "rhythm": 78.62746745164554,
+              "meter": 49,
+              "structural": 54,
+              "skeleton": 74,
+              "pillarPitch": 74,
+              "specificity": 76,
+              "repeatPattern": 93,
+              "phrase": 50
+            },
+            "targets": [
+              "20:65",
+              "22:63",
+              "24:61",
+              "25:65",
+              "28:58",
+              "30:60",
+              "32:41",
+              "32.25:48",
+              "32.5:53",
+              "32.75:55"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-006",
+      "status": "completed",
+      "queryHash": "f29ea9667550d0235769782e07e1208319ae03c58a17a350d74c6bd186a1c1f9",
+      "result": {
+        "caseId": "Q-M100-006",
+        "queryNotation": "C4(2) D4(1) G4(0.75) A4(0.25) Bb4(1.5) G♯4(0.25) Bb4(0.25) D5(1) D4(0.333) Bb4(0.333)",
+        "expected": {
+          "workId": "work-a83aab22aacd3044",
+          "sourceId": "kysing/00413.xml",
+          "streamId": "P3:1:1",
+          "title": "봄날은 간다",
+          "composer": "백설희",
+          "partName": "Violins (section), S3",
+          "family": "KYSing",
+          "baseStartIndex": 70,
+          "baseStartMeasure": 25,
+          "baseEndMeasure": 26,
+          "baseTargets": [
+            {
+              "onset": 96,
+              "pitchMidi": 60,
+              "measure": 25,
+              "beat": 1
+            },
+            {
+              "onset": 98,
+              "pitchMidi": 62,
+              "measure": 25,
+              "beat": 3
+            },
+            {
+              "onset": 99,
+              "pitchMidi": 67,
+              "measure": 25,
+              "beat": 4
+            },
+            {
+              "onset": 99.75,
+              "pitchMidi": 69,
+              "measure": 25,
+              "beat": 4.75
+            },
+            {
+              "onset": 100,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 1
+            },
+            {
+              "onset": 101.5,
+              "pitchMidi": 69,
+              "measure": 26,
+              "beat": 2.5
+            },
+            {
+              "onset": 101.75,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 2.75
+            },
+            {
+              "onset": 102,
+              "pitchMidi": 74,
+              "measure": 26,
+              "beat": 3
+            },
+            {
+              "onset": 103,
+              "pitchMidi": 62,
+              "measure": 26,
+              "beat": 4
+            },
+            {
+              "onset": 103.33333333333333,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 4.333333333333334
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "pitch",
+          "label": "중간 음높이 ±1"
+        },
+        "selection": {
+          "motifScore": 88.2105,
+          "repeatedInStream": 3,
+          "role": 0.9203,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 15853,
+        "resultCount": 54,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 65,
+          "alignmentStart": 70,
+          "alignmentEnd": 79,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 98.3817,
+          "localSimilarity": 100,
+          "scores": {
+            "pitch": 98.6,
+            "interval": 97.5733,
+            "contour": 100,
+            "rhythm": 100
+          },
+          "metric": 100,
+          "structural": 100,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-a83aab22aacd3044",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "봄날은 간다",
+            "workId": "work-a83aab22aacd3044",
+            "sourceId": "kysing/00413.xml",
+            "streamId": "P3:1:1",
+            "range": [
+              25,
+              26
+            ],
+            "ranking": 100,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 98.6,
+              "interval": 97.57333333333332,
+              "contour": 100,
+              "rhythm": 100,
+              "meter": 100,
+              "structural": 89,
+              "skeleton": 100,
+              "pillarPitch": 100,
+              "specificity": 76,
+              "repeatPattern": 98,
+              "phrase": 50
+            },
+            "targets": [
+              "96:60",
+              "98:62",
+              "99:67",
+              "99.75:69",
+              "100:70",
+              "101.5:69",
+              "101.75:70",
+              "102:74",
+              "103:62",
+              "103.33333333333333:70"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "STAY THE NIGHT",
+            "workId": "work-ab632845ec079fe6-88a85b71",
+            "sourceId": "4. Stay the Night, Violin, Viola, Cello and Piano Quartet.musicxml.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              6,
+              13
+            ],
+            "ranking": 75.7717,
+            "localSimilarity": 72.3329,
+            "scores": {
+              "pitch": 79.77777777777777,
+              "interval": 79.3111111111111,
+              "contour": 75,
+              "rhythm": 69.17603411905682,
+              "meter": 79,
+              "structural": 43,
+              "skeleton": 77,
+              "pillarPitch": 72,
+              "specificity": 76,
+              "repeatPattern": 86,
+              "phrase": 50
+            },
+            "targets": [
+              "20:52",
+              "24:54",
+              "28:59",
+              "32:61",
+              "36:62",
+              "40:59",
+              "44:57",
+              "46:61",
+              "51:64"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "Trio Sonata No.4 in e-moll from 12 Trio Sonatas Op.2",
+            "workId": "work-e7ba94d87823ee35-a71ddd21",
+            "sourceId": "mxl/10/29/QmSKpxnq6GugWZyd8YdcPhzYUunRwXdL7p6g29Pm9VRUtB.mxl",
+            "streamId": "P3:1:1",
+            "range": [
+              7,
+              10
+            ],
+            "ranking": 75.0545,
+            "localSimilarity": 72.1305,
+            "scores": {
+              "pitch": 78.8,
+              "interval": 74.58666666666666,
+              "contour": 77.77777777777777,
+              "rhythm": 59.95237308352338,
+              "meter": 79,
+              "structural": 36,
+              "skeleton": 81,
+              "pillarPitch": 76,
+              "specificity": 76,
+              "repeatPattern": 84,
+              "phrase": 50
+            },
+            "targets": [
+              "342:48",
+              "343.5:50",
+              "345:55",
+              "346:57",
+              "346.5:58",
+              "347.5:55",
+              "348:54",
+              "349.5:54",
+              "350.5:50",
+              "351:55"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "Paratum cor meum Deus SWV 257",
+            "workId": "work-59fe6ec99652726a-88a85b71",
+            "sourceId": "mxl/2/54/QmcyHnGsczduFp5mUXY9pWhETt6xfZAMh7PBLen3C28MeG.mxl",
+            "streamId": "P2:1:1",
+            "range": [
+              69,
+              71
+            ],
+            "ranking": 74.1643,
+            "localSimilarity": 69.9287,
+            "scores": {
+              "pitch": 84.6,
+              "interval": 75.97333333333333,
+              "contour": 88.88888888888889,
+              "rhythm": 69.3257810619895,
+              "meter": 36,
+              "structural": 61,
+              "skeleton": 81,
+              "pillarPitch": 76,
+              "specificity": 76,
+              "repeatPattern": 89,
+              "phrase": 50
+            },
+            "targets": [
+              "416:62",
+              "418:64",
+              "420:69",
+              "422:71",
+              "424:72",
+              "425:69",
+              "426:72",
+              "427:71",
+              "428:69",
+              "429:72"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "THE NEXT RIGHT THING",
+            "workId": "work-209db29b15127cba",
+            "sourceId": "4. The Next Right Thing, Violin, Viola, Cello and Piano Quartet.musicxml.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              39,
+              42
+            ],
+            "ranking": 73.7443,
+            "localSimilarity": 69.4931,
+            "scores": {
+              "pitch": 82.66666666666667,
+              "interval": 84.66666666666667,
+              "contour": 100,
+              "rhythm": 55.3401598387555,
+              "meter": 43,
+              "structural": 71,
+              "skeleton": 61,
+              "pillarPitch": 72,
+              "specificity": 76,
+              "repeatPattern": 78,
+              "phrase": 50
+            },
+            "targets": [
+              "147:77",
+              "150:79",
+              "153:84",
+              "153.5:86",
+              "154:87",
+              "157:84",
+              "157.5:86",
+              "158:77",
+              "160.75:79"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-007",
+      "status": "completed",
+      "queryHash": "45f6fd67ce5a6f4ce61bf1d3474c575fb793379855291a0c3ab10e515d2ec2a1",
+      "result": {
+        "caseId": "Q-M100-007",
+        "queryNotation": "C4(2) D4(1) G4(0.75) A4(0.25) A♯5(1.5) A4(0.25) Bb4(0.25) D5(1) D4(0.333) Bb4(0.333)",
+        "expected": {
+          "workId": "work-a83aab22aacd3044",
+          "sourceId": "kysing/00413.xml",
+          "streamId": "P3:1:1",
+          "title": "봄날은 간다",
+          "composer": "백설희",
+          "partName": "Violins (section), S3",
+          "family": "KYSing",
+          "baseStartIndex": 70,
+          "baseStartMeasure": 25,
+          "baseEndMeasure": 26,
+          "baseTargets": [
+            {
+              "onset": 96,
+              "pitchMidi": 60,
+              "measure": 25,
+              "beat": 1
+            },
+            {
+              "onset": 98,
+              "pitchMidi": 62,
+              "measure": 25,
+              "beat": 3
+            },
+            {
+              "onset": 99,
+              "pitchMidi": 67,
+              "measure": 25,
+              "beat": 4
+            },
+            {
+              "onset": 99.75,
+              "pitchMidi": 69,
+              "measure": 25,
+              "beat": 4.75
+            },
+            {
+              "onset": 100,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 1
+            },
+            {
+              "onset": 101.5,
+              "pitchMidi": 69,
+              "measure": 26,
+              "beat": 2.5
+            },
+            {
+              "onset": 101.75,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 2.75
+            },
+            {
+              "onset": 102,
+              "pitchMidi": 74,
+              "measure": 26,
+              "beat": 3
+            },
+            {
+              "onset": 103,
+              "pitchMidi": 62,
+              "measure": 26,
+              "beat": 4
+            },
+            {
+              "onset": 103.33333333333333,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 4.333333333333334
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "octave",
+          "label": "내부 음 옥타브 이동"
+        },
+        "selection": {
+          "motifScore": 88.2105,
+          "repeatedInStream": 3,
+          "role": 0.9203,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 6058.4,
+        "resultCount": 7,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 65,
+          "alignmentStart": 70,
+          "alignmentEnd": 79,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 85.032,
+          "localSimilarity": 87.2037,
+          "scores": {
+            "pitch": 90,
+            "interval": 82.6667,
+            "contour": 100,
+            "rhythm": 100
+          },
+          "metric": 78.75,
+          "structural": 28.9732,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-a83aab22aacd3044",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "봄날은 간다",
+            "workId": "work-a83aab22aacd3044",
+            "sourceId": "kysing/00413.xml",
+            "streamId": "P3:1:1",
+            "range": [
+              25,
+              26
+            ],
+            "ranking": 91.2473,
+            "localSimilarity": 87.2037,
+            "scores": {
+              "pitch": 90,
+              "interval": 82.66666666666666,
+              "contour": 100,
+              "rhythm": 100,
+              "meter": 79,
+              "structural": 29,
+              "skeleton": 55,
+              "pillarPitch": 67,
+              "specificity": 80,
+              "repeatPattern": 96,
+              "phrase": 50
+            },
+            "targets": [
+              "96:60",
+              "98:62",
+              "99:67",
+              "99.75:69",
+              "100:70",
+              "101.5:69",
+              "101.75:70",
+              "102:74",
+              "103:62",
+              "103.33333333333333:70"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "ANGEL",
+            "workId": "work-bfef6f9da3828ed1-d08f9a8a",
+            "sourceId": "2. Angel, Piano Solo.musicxml.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              16,
+              18
+            ],
+            "ranking": 61.6725,
+            "localSimilarity": 63.1921,
+            "scores": {
+              "pitch": 58,
+              "interval": 66.4,
+              "contour": 85.71428571428571,
+              "rhythm": 70.82626065708715,
+              "meter": 100,
+              "structural": 53,
+              "skeleton": 47,
+              "pillarPitch": 53,
+              "specificity": 80,
+              "repeatPattern": 82,
+              "phrase": 50
+            },
+            "targets": [
+              "45:55",
+              "46:57",
+              "47:60",
+              "47.5:57",
+              "48:60",
+              "49:62",
+              "51:50",
+              "52.5:55"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "Toccata Op.7",
+            "workId": "work-635c7fe7ae5a9046",
+            "sourceId": "mxl/8/33/QmQn2sjU689p3jyCGDNwWuvq6TrKn2rGjqfRGFu1U72m8m.mxl",
+            "streamId": "P1:1:2",
+            "range": [
+              73,
+              75
+            ],
+            "ranking": 59.4288,
+            "localSimilarity": 55.7776,
+            "scores": {
+              "pitch": 80.5,
+              "interval": 70.25714285714287,
+              "contour": 71.42857142857143,
+              "rhythm": 55.495029476154144,
+              "meter": 15,
+              "structural": 67,
+              "skeleton": 48,
+              "pillarPitch": 57,
+              "specificity": 80,
+              "repeatPattern": 93,
+              "phrase": 50
+            },
+            "targets": [
+              "145.75:62",
+              "146.25:67",
+              "146.5:67",
+              "146.75:69",
+              "147:70",
+              "147.5:74",
+              "147.75:62",
+              "148.25:70"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "ANGEL",
+            "workId": "work-2305bdd988cd222b-3ba9e1fb",
+            "sourceId": "3. Angel, Violin and Piano Duet.musicxml.xml",
+            "streamId": "P2:2:2",
+            "range": [
+              119,
+              126
+            ],
+            "ranking": 58.1174,
+            "localSimilarity": 60.5102,
+            "scores": {
+              "pitch": 67.33333333333334,
+              "interval": 71.18333333333334,
+              "contour": 75,
+              "rhythm": 61.24343463967913,
+              "meter": 36,
+              "structural": 28,
+              "skeleton": 50,
+              "pillarPitch": 47,
+              "specificity": 80,
+              "repeatPattern": 86,
+              "phrase": 50
+            },
+            "targets": [
+              "354:28",
+              "358:28",
+              "360:29",
+              "365:41",
+              "366:29",
+              "370:29",
+              "371:36",
+              "372:24",
+              "375:33"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "ANGEL",
+            "workId": "work-13c6c46a6927b0ce-a22005a1",
+            "sourceId": "3. Angel, Violin, Cello and Piano Trio.musicxml.xml",
+            "streamId": "P3:2:2",
+            "range": [
+              119,
+              126
+            ],
+            "ranking": 58.1174,
+            "localSimilarity": 60.5102,
+            "scores": {
+              "pitch": 67.33333333333334,
+              "interval": 71.18333333333334,
+              "contour": 75,
+              "rhythm": 61.24343463967913,
+              "meter": 36,
+              "structural": 28,
+              "skeleton": 50,
+              "pillarPitch": 47,
+              "specificity": 80,
+              "repeatPattern": 86,
+              "phrase": 50
+            },
+            "targets": [
+              "354:28",
+              "358:28",
+              "360:29",
+              "365:41",
+              "366:29",
+              "370:29",
+              "371:36",
+              "372:24",
+              "375:33"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-008",
+      "status": "completed",
+      "queryHash": "d88dd3303c9c0bc873c479abb9a3743a3773af5367cca12ccfdd86931da72ed2",
+      "result": {
+        "caseId": "Q-M100-008",
+        "queryNotation": "C4(2) D4(1.25) G4(0.5) A4(0.25) Bb4(1.5) A4(0.25) Bb4(0.25) D5(1) D4(0.333) Bb4(0.333)",
+        "expected": {
+          "workId": "work-a83aab22aacd3044",
+          "sourceId": "kysing/00413.xml",
+          "streamId": "P3:1:1",
+          "title": "봄날은 간다",
+          "composer": "백설희",
+          "partName": "Violins (section), S3",
+          "family": "KYSing",
+          "baseStartIndex": 70,
+          "baseStartMeasure": 25,
+          "baseEndMeasure": 26,
+          "baseTargets": [
+            {
+              "onset": 96,
+              "pitchMidi": 60,
+              "measure": 25,
+              "beat": 1
+            },
+            {
+              "onset": 98,
+              "pitchMidi": 62,
+              "measure": 25,
+              "beat": 3
+            },
+            {
+              "onset": 99,
+              "pitchMidi": 67,
+              "measure": 25,
+              "beat": 4
+            },
+            {
+              "onset": 99.75,
+              "pitchMidi": 69,
+              "measure": 25,
+              "beat": 4.75
+            },
+            {
+              "onset": 100,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 1
+            },
+            {
+              "onset": 101.5,
+              "pitchMidi": 69,
+              "measure": 26,
+              "beat": 2.5
+            },
+            {
+              "onset": 101.75,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 2.75
+            },
+            {
+              "onset": 102,
+              "pitchMidi": 74,
+              "measure": 26,
+              "beat": 3
+            },
+            {
+              "onset": 103,
+              "pitchMidi": 62,
+              "measure": 26,
+              "beat": 4
+            },
+            {
+              "onset": 103.33333333333333,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 4.333333333333334
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "rhythm",
+          "label": "국소 리듬 재분배"
+        },
+        "selection": {
+          "motifScore": 88.2105,
+          "repeatedInStream": 3,
+          "role": 0.9203,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 13207.3,
+        "resultCount": 71,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 65,
+          "alignmentStart": 70,
+          "alignmentEnd": 79,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 99.0693,
+          "localSimilarity": 100,
+          "scores": {
+            "pitch": 100,
+            "interval": 100,
+            "contour": 100,
+            "rhythm": 85.8767
+          },
+          "metric": 100,
+          "structural": 49.8123,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-a83aab22aacd3044",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "봄날은 간다",
+            "workId": "work-a83aab22aacd3044",
+            "sourceId": "kysing/00413.xml",
+            "streamId": "P3:1:1",
+            "range": [
+              25,
+              26
+            ],
+            "ranking": 100,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 100,
+              "interval": 100,
+              "contour": 100,
+              "rhythm": 87.5102828671105,
+              "meter": 100,
+              "structural": 100,
+              "skeleton": 100,
+              "pillarPitch": 100,
+              "specificity": 72,
+              "repeatPattern": 100,
+              "phrase": 70
+            },
+            "targets": [
+              "96:60",
+              "98:62",
+              "99:67",
+              "99.75:69",
+              "100:70",
+              "101.5:69",
+              "101.75:70",
+              "102:74",
+              "103:62",
+              "103.33333333333333:70"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "봄날은 간다",
+            "workId": "work-a83aab22aacd3044-d08f9a8a",
+            "sourceId": "kysing/00413.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              25,
+              26
+            ],
+            "ranking": 82.7124,
+            "localSimilarity": 78.9544,
+            "scores": {
+              "pitch": 96.88888888888889,
+              "interval": 96.65555555555557,
+              "contour": 100,
+              "rhythm": 37.99762217579777,
+              "meter": 72,
+              "structural": 54,
+              "skeleton": 74,
+              "pillarPitch": 91,
+              "specificity": 72,
+              "repeatPattern": 97,
+              "phrase": 50
+            },
+            "targets": [
+              "98:62",
+              "99:67",
+              "99.75:69",
+              "100:70",
+              "101.5:69",
+              "101.75:70",
+              "102:74",
+              "103:62",
+              "103.33333333333333:70"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "고향의 그림자",
+            "workId": "work-12ce3933ed059970-d08f9a8a",
+            "sourceId": "kysing/00137.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              41,
+              43
+            ],
+            "ranking": 81.857,
+            "localSimilarity": 77.9826,
+            "scores": {
+              "pitch": 96.88888888888889,
+              "interval": 96.65555555555557,
+              "contour": 100,
+              "rhythm": 39.271283264289174,
+              "meter": 72,
+              "structural": 54,
+              "skeleton": 73,
+              "pillarPitch": 76,
+              "specificity": 72,
+              "repeatPattern": 97,
+              "phrase": 50
+            },
+            "targets": [
+              "160:57",
+              "162:62",
+              "163:64",
+              "164:65",
+              "167:64",
+              "167.5:65",
+              "168:69",
+              "169:57",
+              "170:65"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "남자의 사랑",
+            "workId": "work-4e5d4207b0b699c5",
+            "sourceId": "kysing/83627.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              36,
+              37
+            ],
+            "ranking": 81.3479,
+            "localSimilarity": 77.3919,
+            "scores": {
+              "pitch": 90.66666666666667,
+              "interval": 86.81666666666666,
+              "contour": 100,
+              "rhythm": 70.57085726549938,
+              "meter": 100,
+              "structural": 54,
+              "skeleton": 79,
+              "pillarPitch": 100,
+              "specificity": 72,
+              "repeatPattern": 89,
+              "phrase": 50
+            },
+            "targets": [
+              "140:59",
+              "142:61",
+              "143:66",
+              "143.5:68",
+              "144:69",
+              "145:68",
+              "145.5:69",
+              "146:64",
+              "146.5:66"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "너는 내 남자",
+            "workId": "work-a21fd54b25638f09-d08f9a8a",
+            "sourceId": "kysing/23241.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              46,
+              48
+            ],
+            "ranking": 80.2258,
+            "localSimilarity": 76.3574,
+            "scores": {
+              "pitch": 96.5,
+              "interval": 96.19999999999999,
+              "contour": 85.71428571428571,
+              "rhythm": 62.87189251448321,
+              "meter": 79,
+              "structural": 77,
+              "skeleton": 84,
+              "pillarPitch": 93,
+              "specificity": 72,
+              "repeatPattern": 96,
+              "phrase": 50
+            },
+            "targets": [
+              "178:66",
+              "180:66",
+              "180.5:71",
+              "181.5:73",
+              "182:74",
+              "185:73",
+              "185.5:74",
+              "187:78"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-009",
+      "status": "completed",
+      "queryHash": "dd453fefb747a72b4145a01001736d81f6d4efc1c77c0888b4f4c37b53fb833d",
+      "result": {
+        "caseId": "Q-M100-009",
+        "queryNotation": "C4(2) D4(1) G4(0.75) A4(0.25) Bb4(1.5) A4(0.25) Bb4(0.25) D5(1) F4(0.333) Bb4(0.333)",
+        "expected": {
+          "workId": "work-a83aab22aacd3044",
+          "sourceId": "kysing/00413.xml",
+          "streamId": "P3:1:1",
+          "title": "봄날은 간다",
+          "composer": "백설희",
+          "partName": "Violins (section), S3",
+          "family": "KYSing",
+          "baseStartIndex": 70,
+          "baseStartMeasure": 25,
+          "baseEndMeasure": 26,
+          "baseTargets": [
+            {
+              "onset": 96,
+              "pitchMidi": 60,
+              "measure": 25,
+              "beat": 1
+            },
+            {
+              "onset": 98,
+              "pitchMidi": 62,
+              "measure": 25,
+              "beat": 3
+            },
+            {
+              "onset": 99,
+              "pitchMidi": 67,
+              "measure": 25,
+              "beat": 4
+            },
+            {
+              "onset": 99.75,
+              "pitchMidi": 69,
+              "measure": 25,
+              "beat": 4.75
+            },
+            {
+              "onset": 100,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 1
+            },
+            {
+              "onset": 101.5,
+              "pitchMidi": 69,
+              "measure": 26,
+              "beat": 2.5
+            },
+            {
+              "onset": 101.75,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 2.75
+            },
+            {
+              "onset": 102,
+              "pitchMidi": 74,
+              "measure": 26,
+              "beat": 3
+            },
+            {
+              "onset": 103,
+              "pitchMidi": 62,
+              "measure": 26,
+              "beat": 4
+            },
+            {
+              "onset": 103.33333333333333,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 4.333333333333334
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "leap",
+          "label": "특징적 도약 축소"
+        },
+        "selection": {
+          "motifScore": 88.2105,
+          "repeatedInStream": 3,
+          "role": 0.9203,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 9368.8,
+        "resultCount": 77,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 65,
+          "alignmentStart": 70,
+          "alignmentEnd": 79,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 94.5369,
+          "localSimilarity": 100,
+          "scores": {
+            "pitch": 95.8,
+            "interval": 92.72,
+            "contour": 100,
+            "rhythm": 100
+          },
+          "metric": 100,
+          "structural": 100,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-a83aab22aacd3044",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "봄날은 간다",
+            "workId": "work-a83aab22aacd3044",
+            "sourceId": "kysing/00413.xml",
+            "streamId": "P3:1:1",
+            "range": [
+              25,
+              26
+            ],
+            "ranking": 100,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 95.8,
+              "interval": 92.72,
+              "contour": 100,
+              "rhythm": 100,
+              "meter": 100,
+              "structural": 89,
+              "skeleton": 100,
+              "pillarPitch": 100,
+              "specificity": 76,
+              "repeatPattern": 98,
+              "phrase": 50
+            },
+            "targets": [
+              "96:60",
+              "98:62",
+              "99:67",
+              "99.75:69",
+              "100:70",
+              "101.5:69",
+              "101.75:70",
+              "102:74",
+              "103:62",
+              "103.33333333333333:70"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "남자의 사랑",
+            "workId": "work-4e5d4207b0b699c5",
+            "sourceId": "kysing/83627.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              36,
+              37
+            ],
+            "ranking": 85.0221,
+            "localSimilarity": 81.0661,
+            "scores": {
+              "pitch": 95.33333333333333,
+              "interval": 94.98333333333333,
+              "contour": 100,
+              "rhythm": 56.27526915109029,
+              "meter": 100,
+              "structural": 39,
+              "skeleton": 79,
+              "pillarPitch": 100,
+              "specificity": 76,
+              "repeatPattern": 92,
+              "phrase": 50
+            },
+            "targets": [
+              "140:59",
+              "142:61",
+              "143:66",
+              "143.5:68",
+              "144:69",
+              "145:68",
+              "145.5:69",
+              "146:64",
+              "146.5:66"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "LORD OF THE RINGS",
+            "workId": "work-8973979616f9eb0e",
+            "sourceId": "4. Lord of the Rings, Piano Solo.musicxml.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              29,
+              31
+            ],
+            "ranking": 84.2309,
+            "localSimilarity": 81.5601,
+            "scores": {
+              "pitch": 90.2,
+              "interval": 90.48,
+              "contour": 100,
+              "rhythm": 37.48932684865149,
+              "meter": 58,
+              "structural": 71,
+              "skeleton": 66,
+              "pillarPitch": 69,
+              "specificity": 76,
+              "repeatPattern": 96,
+              "phrase": 50
+            },
+            "targets": [
+              "119.75:60",
+              "120:62",
+              "123.5:67",
+              "123.75:69",
+              "124:70",
+              "125.5:69",
+              "125.75:70",
+              "126:72",
+              "127:64",
+              "127.5:66"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "LORD OF THE RINGS",
+            "workId": "work-54d46160dc7314d2-88a85b71",
+            "sourceId": "4. Lord of the Rings, Violin and Piano Duet.musicxml.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              29,
+              31
+            ],
+            "ranking": 84.2309,
+            "localSimilarity": 81.5601,
+            "scores": {
+              "pitch": 90.2,
+              "interval": 90.48,
+              "contour": 100,
+              "rhythm": 37.48932684865149,
+              "meter": 58,
+              "structural": 71,
+              "skeleton": 66,
+              "pillarPitch": 69,
+              "specificity": 76,
+              "repeatPattern": 96,
+              "phrase": 50
+            },
+            "targets": [
+              "119.75:60",
+              "120:62",
+              "123.5:67",
+              "123.75:69",
+              "124:70",
+              "125.5:69",
+              "125.75:70",
+              "126:72",
+              "127:64",
+              "127.5:66"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "LORD OF THE RINGS",
+            "workId": "work-48cfc7c0bdec0868-a71ddd21",
+            "sourceId": "4. Lord of the Rings, Violin, Cello and Piano Trio.musicxml.xml",
+            "streamId": "P3:1:1",
+            "range": [
+              29,
+              31
+            ],
+            "ranking": 84.2309,
+            "localSimilarity": 81.5601,
+            "scores": {
+              "pitch": 90.2,
+              "interval": 90.48,
+              "contour": 100,
+              "rhythm": 37.48932684865149,
+              "meter": 58,
+              "structural": 71,
+              "skeleton": 66,
+              "pillarPitch": 69,
+              "specificity": 76,
+              "repeatPattern": 96,
+              "phrase": 50
+            },
+            "targets": [
+              "119.75:60",
+              "120:62",
+              "123.5:67",
+              "123.75:69",
+              "124:70",
+              "125.5:69",
+              "125.75:70",
+              "126:72",
+              "127:64",
+              "127.5:66"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-010",
+      "status": "completed",
+      "queryHash": "0dd4c75967c1002340f5ccf454d76b87db6fef8a54b22d2d6e7cf0f3cd46b362",
+      "result": {
+        "caseId": "Q-M100-010",
+        "queryNotation": "C4(2) D4(1) G4(0.75) A4(0.25) Bb4(1.5) A4(0.25) Rest(0.5) Bb4(0.25) D5(1) D4(0.333) Bb4(0.333)",
+        "expected": {
+          "workId": "work-a83aab22aacd3044",
+          "sourceId": "kysing/00413.xml",
+          "streamId": "P3:1:1",
+          "title": "봄날은 간다",
+          "composer": "백설희",
+          "partName": "Violins (section), S3",
+          "family": "KYSing",
+          "baseStartIndex": 70,
+          "baseStartMeasure": 25,
+          "baseEndMeasure": 26,
+          "baseTargets": [
+            {
+              "onset": 96,
+              "pitchMidi": 60,
+              "measure": 25,
+              "beat": 1
+            },
+            {
+              "onset": 98,
+              "pitchMidi": 62,
+              "measure": 25,
+              "beat": 3
+            },
+            {
+              "onset": 99,
+              "pitchMidi": 67,
+              "measure": 25,
+              "beat": 4
+            },
+            {
+              "onset": 99.75,
+              "pitchMidi": 69,
+              "measure": 25,
+              "beat": 4.75
+            },
+            {
+              "onset": 100,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 1
+            },
+            {
+              "onset": 101.5,
+              "pitchMidi": 69,
+              "measure": 26,
+              "beat": 2.5
+            },
+            {
+              "onset": 101.75,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 2.75
+            },
+            {
+              "onset": 102,
+              "pitchMidi": 74,
+              "measure": 26,
+              "beat": 3
+            },
+            {
+              "onset": 103,
+              "pitchMidi": 62,
+              "measure": 26,
+              "beat": 4
+            },
+            {
+              "onset": 103.33333333333333,
+              "pitchMidi": 70,
+              "measure": 26,
+              "beat": 4.333333333333334
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "rest",
+          "label": "내부 쉼표 삽입/길이 변화"
+        },
+        "selection": {
+          "motifScore": 88.2105,
+          "repeatedInStream": 3,
+          "role": 0.9203,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 8943.9,
+        "resultCount": 100,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 65,
+          "alignmentStart": 70,
+          "alignmentEnd": 79,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 99.9999,
+          "localSimilarity": 100,
+          "scores": {
+            "pitch": 100,
+            "interval": 100,
+            "contour": 100,
+            "rhythm": 79.6926
+          },
+          "metric": 100,
+          "structural": 43.3432,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-a83aab22aacd3044",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "봄날은 간다",
+            "workId": "work-a83aab22aacd3044",
+            "sourceId": "kysing/00413.xml",
+            "streamId": "P3:1:1",
+            "range": [
+              25,
+              26
+            ],
+            "ranking": 96.8744,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 100,
+              "interval": 100,
+              "contour": 100,
+              "rhythm": 78.54351173810636,
+              "meter": 100,
+              "structural": 39,
+              "skeleton": 79,
+              "pillarPitch": 100,
+              "specificity": 72,
+              "repeatPattern": 100,
+              "phrase": 46
+            },
+            "targets": [
+              "96:60",
+              "98:62",
+              "99:67",
+              "99.75:69",
+              "100:70",
+              "101.5:69",
+              "101.75:70",
+              "102:74",
+              "103:62",
+              "103.33333333333333:70"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "고향의 그림자",
+            "workId": "work-12ce3933ed059970-d08f9a8a",
+            "sourceId": "kysing/00137.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              41,
+              43
+            ],
+            "ranking": 86.7839,
+            "localSimilarity": 83.7986,
+            "scores": {
+              "pitch": 96.88888888888889,
+              "interval": 96.65555555555557,
+              "contour": 100,
+              "rhythm": 43.13262134942825,
+              "meter": 100,
+              "structural": 39,
+              "skeleton": 64,
+              "pillarPitch": 81,
+              "specificity": 72,
+              "repeatPattern": 97,
+              "phrase": 50
+            },
+            "targets": [
+              "160:57",
+              "162:62",
+              "163:64",
+              "164:65",
+              "167:64",
+              "167.5:65",
+              "168:69",
+              "169:57",
+              "170:65"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "QUANDO, QUANDO, QUANDO",
+            "workId": "work-38e8a3552c95546c-d08f9a8a",
+            "sourceId": "4. Quando, Quando, Quando, Piano Solo.musicxml.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              107,
+              108
+            ],
+            "ranking": 79.8708,
+            "localSimilarity": 77.692,
+            "scores": {
+              "pitch": 95.33333333333333,
+              "interval": 92.88333333333333,
+              "contour": 100,
+              "rhythm": 50.76372610003076,
+              "meter": 72,
+              "structural": 41,
+              "skeleton": 76,
+              "pillarPitch": 95,
+              "specificity": 72,
+              "repeatPattern": 92,
+              "phrase": 50
+            },
+            "targets": [
+              "424:62",
+              "425:64",
+              "426.5:71",
+              "427.5:72",
+              "428:71",
+              "428.75:72",
+              "429.5:76",
+              "430.5:64",
+              "431.5:73"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "QUANDO, QUANDO, QUANDO",
+            "workId": "work-873b19b27b7c0da8-88a85b71",
+            "sourceId": "4. Quando, Quando, Quando, Violin and Piano Duet.musicxml.xml",
+            "streamId": "P2:1:1",
+            "range": [
+              107,
+              108
+            ],
+            "ranking": 79.8708,
+            "localSimilarity": 77.692,
+            "scores": {
+              "pitch": 95.33333333333333,
+              "interval": 92.88333333333333,
+              "contour": 100,
+              "rhythm": 50.76372610003076,
+              "meter": 72,
+              "structural": 41,
+              "skeleton": 76,
+              "pillarPitch": 95,
+              "specificity": 72,
+              "repeatPattern": 92,
+              "phrase": 50
+            },
+            "targets": [
+              "424:62",
+              "425:64",
+              "426.5:71",
+              "427.5:72",
+              "428:71",
+              "428.75:72",
+              "429.5:76",
+              "430.5:64",
+              "431.5:73"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "봄날은 간다",
+            "workId": "work-a83aab22aacd3044-d08f9a8a",
+            "sourceId": "kysing/00413.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              25,
+              26
+            ],
+            "ranking": 79.7413,
+            "localSimilarity": 76.8725,
+            "scores": {
+              "pitch": 96.88888888888889,
+              "interval": 96.65555555555557,
+              "contour": 100,
+              "rhythm": 38.71585341545281,
+              "meter": 58,
+              "structural": 39,
+              "skeleton": 59,
+              "pillarPitch": 86,
+              "specificity": 72,
+              "repeatPattern": 97,
+              "phrase": 50
+            },
+            "targets": [
+              "98:62",
+              "99:67",
+              "99.75:69",
+              "100:70",
+              "101.5:69",
+              "101.75:70",
+              "102:74",
+              "103:62",
+              "103.33333333333333:70"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-011",
+      "status": "completed",
+      "queryHash": "556687e5def0f2b9a6d2719d55baf8985673a26bedbd9c16d4b7ab1b2bca8833",
+      "result": {
+        "caseId": "Q-M100-011",
+        "queryNotation": "G4(3) Rest(0.5) D4(0.5) B4(2) C5(1.5) B4(0.25) A♯4(0.25) B4(0.5) G4(2.5) Rest(0.5) D4(0.5) D5(2)",
+        "expected": {
+          "workId": "work-18aa174f22e0836b",
+          "sourceId": "kysing/01215.xml",
+          "streamId": "P1:1:1",
+          "title": "어느 소녀의 사랑 이야기",
+          "composer": "민해경",
+          "partName": "Piano, S1",
+          "family": "KYSing",
+          "baseStartIndex": 30,
+          "baseStartMeasure": 15,
+          "baseEndMeasure": 18,
+          "baseTargets": [
+            {
+              "onset": 56,
+              "pitchMidi": 67,
+              "measure": 15,
+              "beat": 1
+            },
+            {
+              "onset": 59.5,
+              "pitchMidi": 62,
+              "measure": 15,
+              "beat": 4.5
+            },
+            {
+              "onset": 60,
+              "pitchMidi": 71,
+              "measure": 16,
+              "beat": 1
+            },
+            {
+              "onset": 62,
+              "pitchMidi": 72,
+              "measure": 16,
+              "beat": 3
+            },
+            {
+              "onset": 63.5,
+              "pitchMidi": 71,
+              "measure": 16,
+              "beat": 4.5
+            },
+            {
+              "onset": 63.75,
+              "pitchMidi": 69,
+              "measure": 16,
+              "beat": 4.75
+            },
+            {
+              "onset": 64,
+              "pitchMidi": 71,
+              "measure": 17,
+              "beat": 1
+            },
+            {
+              "onset": 64.5,
+              "pitchMidi": 67,
+              "measure": 17,
+              "beat": 1.5
+            },
+            {
+              "onset": 67.5,
+              "pitchMidi": 62,
+              "measure": 17,
+              "beat": 4.5
+            },
+            {
+              "onset": 68,
+              "pitchMidi": 74,
+              "measure": 18,
+              "beat": 1
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "pitch",
+          "label": "중간 음높이 ±1"
+        },
+        "selection": {
+          "motifScore": 88.067,
+          "repeatedInStream": 4,
+          "role": 0.9162,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 15380.3,
+        "resultCount": 27,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 25,
+          "alignmentStart": 30,
+          "alignmentEnd": 39,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 98.0577,
+          "localSimilarity": 100,
+          "scores": {
+            "pitch": 98.6,
+            "interval": 97.5733,
+            "contour": 100,
+            "rhythm": 100
+          },
+          "metric": 100,
+          "structural": 54.3026,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-18aa174f22e0836b",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "어느 소녀의 사랑 이야기",
+            "workId": "work-18aa174f22e0836b",
+            "sourceId": "kysing/01215.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              15,
+              18
+            ],
+            "ranking": 100,
+            "localSimilarity": 100,
+            "scores": {
+              "pitch": 98.6,
+              "interval": 97.57333333333332,
+              "contour": 100,
+              "rhythm": 100,
+              "meter": 100,
+              "structural": 54,
+              "skeleton": 100,
+              "pillarPitch": 100,
+              "specificity": 72,
+              "repeatPattern": 100,
+              "phrase": 50
+            },
+            "targets": [
+              "56:67",
+              "59.5:62",
+              "60:71",
+              "62:72",
+              "63.5:71",
+              "63.75:69",
+              "64:71",
+              "64.5:67",
+              "67.5:62",
+              "68:74"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "어느 소녀의 사랑 이야기",
+            "workId": "work-32f368bdfb08553f-d08f9a8a",
+            "sourceId": "kysing/48395.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              23,
+              27
+            ],
+            "ranking": 92.2108,
+            "localSimilarity": 87.1439,
+            "scores": {
+              "pitch": 95.8,
+              "interval": 94.58666666666666,
+              "contour": 88.88888888888889,
+              "rhythm": 65.7357192061632,
+              "meter": 66,
+              "structural": 54,
+              "skeleton": 88,
+              "pillarPitch": 100,
+              "specificity": 72,
+              "repeatPattern": 93,
+              "phrase": 50
+            },
+            "targets": [
+              "88.25:65",
+              "92.75:60",
+              "93:69",
+              "95:70",
+              "96:69",
+              "96.5:67",
+              "96.75:67",
+              "97.25:65",
+              "100.75:60",
+              "101:72"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "또 다른 사랑에 빠져있을 그대여",
+            "workId": "work-c60207574ffc5c63-d08f9a8a",
+            "sourceId": "kysing/97507.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              22,
+              25
+            ],
+            "ranking": 90.8642,
+            "localSimilarity": 85.9906,
+            "scores": {
+              "pitch": 98.6,
+              "interval": 97.57333333333332,
+              "contour": 100,
+              "rhythm": 65.11318263474945,
+              "meter": 15,
+              "structural": 54,
+              "skeleton": 65,
+              "pillarPitch": 86,
+              "specificity": 72,
+              "repeatPattern": 100,
+              "phrase": 50
+            },
+            "targets": [
+              "81.25:65",
+              "84.75:60",
+              "85.5:69",
+              "88.25:70",
+              "88.75:69",
+              "89:67",
+              "89.25:69",
+              "89.75:65",
+              "92.75:60",
+              "93.25:72"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "다시는...",
+            "workId": "work-b17c458505095c20-d08f9a8a",
+            "sourceId": "kysing/63600.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              19,
+              22
+            ],
+            "ranking": 82.691,
+            "localSimilarity": 82.3824,
+            "scores": {
+              "pitch": 98.6,
+              "interval": 97.57333333333332,
+              "contour": 100,
+              "rhythm": 57.667067236058124,
+              "meter": 32,
+              "structural": 81,
+              "skeleton": 79,
+              "pillarPitch": 100,
+              "specificity": 72,
+              "repeatPattern": 100,
+              "phrase": 50
+            },
+            "targets": [
+              "72.25:64",
+              "75.75:59",
+              "76:68",
+              "78.5:69",
+              "79:68",
+              "79.5:66",
+              "79.75:68",
+              "80.5:64",
+              "83.75:59",
+              "84.25:71"
+            ]
+          },
+          {
+            "rank": 5,
+            "title": "습관처럼",
+            "workId": "work-c52953815e727b8b",
+            "sourceId": "kysing/09662.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              29,
+              31
+            ],
+            "ranking": 80.2899,
+            "localSimilarity": 76.2115,
+            "scores": {
+              "pitch": 88.8,
+              "interval": 85.25333333333333,
+              "contour": 100,
+              "rhythm": 58.76780498244628,
+              "meter": 32,
+              "structural": 50,
+              "skeleton": 61,
+              "pillarPitch": 93,
+              "specificity": 72,
+              "repeatPattern": 91,
+              "phrase": 50
+            },
+            "targets": [
+              "109.5:79",
+              "112.25:74",
+              "112.5:83",
+              "113:84",
+              "113.5:83",
+              "114:81",
+              "114.25:83",
+              "114.5:81",
+              "116:74",
+              "116.5:81"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-012",
+      "status": "completed",
+      "queryHash": "31876a57eba5f1f0d350aa11832e839568d7cc13dcfd6fbf9e1ce1f432e5761c",
+      "result": {
+        "caseId": "Q-M100-012",
+        "queryNotation": "G4(3) Rest(0.5) D4(0.5) B4(2) C5(1.5) B5(0.25) A4(0.25) B4(0.5) G4(2.5) Rest(0.5) D4(0.5) D5(2)",
+        "expected": {
+          "workId": "work-18aa174f22e0836b",
+          "sourceId": "kysing/01215.xml",
+          "streamId": "P1:1:1",
+          "title": "어느 소녀의 사랑 이야기",
+          "composer": "민해경",
+          "partName": "Piano, S1",
+          "family": "KYSing",
+          "baseStartIndex": 30,
+          "baseStartMeasure": 15,
+          "baseEndMeasure": 18,
+          "baseTargets": [
+            {
+              "onset": 56,
+              "pitchMidi": 67,
+              "measure": 15,
+              "beat": 1
+            },
+            {
+              "onset": 59.5,
+              "pitchMidi": 62,
+              "measure": 15,
+              "beat": 4.5
+            },
+            {
+              "onset": 60,
+              "pitchMidi": 71,
+              "measure": 16,
+              "beat": 1
+            },
+            {
+              "onset": 62,
+              "pitchMidi": 72,
+              "measure": 16,
+              "beat": 3
+            },
+            {
+              "onset": 63.5,
+              "pitchMidi": 71,
+              "measure": 16,
+              "beat": 4.5
+            },
+            {
+              "onset": 63.75,
+              "pitchMidi": 69,
+              "measure": 16,
+              "beat": 4.75
+            },
+            {
+              "onset": 64,
+              "pitchMidi": 71,
+              "measure": 17,
+              "beat": 1
+            },
+            {
+              "onset": 64.5,
+              "pitchMidi": 67,
+              "measure": 17,
+              "beat": 1.5
+            },
+            {
+              "onset": 67.5,
+              "pitchMidi": 62,
+              "measure": 17,
+              "beat": 4.5
+            },
+            {
+              "onset": 68,
+              "pitchMidi": 74,
+              "measure": 18,
+              "beat": 1
+            }
+          ]
+        },
+        "mutation": {
+          "kind": "octave",
+          "label": "내부 음 옥타브 이동"
+        },
+        "selection": {
+          "motifScore": 88.067,
+          "repeatedInStream": 4,
+          "role": 0.9162,
+          "boundaryGap": 0,
+          "startsStrongBeat": true
+        },
+        "elapsedMs": 126850.4,
+        "resultCount": 4,
+        "expectedWorkRank": 1,
+        "expectedSourceRank": 1,
+        "equivalentTitleRank": 1,
+        "assessment": "top1",
+        "problem": "확인된 자동 문제 없음",
+        "improvement": "알고리즘 변경 없이 사람 판정으로 경쟁 결과의 음악적 자격 확인",
+        "directExpected": {
+          "available": true,
+          "aligned": true,
+          "windowOffset": 25,
+          "alignmentStart": 30,
+          "alignmentEnd": 39,
+          "coverage": 1,
+          "gaps": 0,
+          "alignmentSimilarity": 86.1836,
+          "localSimilarity": 90.9131,
+          "scores": {
+            "pitch": 90,
+            "interval": 82.6667,
+            "contour": 88.8889,
+            "rhythm": 100
+          },
+          "metric": 100,
+          "structural": 54.3026,
+          "admissionAllowed": true
+        },
+        "highlight": {
+          "target": "expected-result",
+          "workId": "work-18aa174f22e0836b",
+          "requested": 10,
+          "resolved": 10,
+          "unresolved": 0,
+          "coordinateCoverage": 1,
+          "xmlLoaded": true,
+          "verovioLoaded": true,
+          "pageCount": 1,
+          "renderedTargets": 10,
+          "renderTargetCoverage": 1
+        },
+        "topResults": [
+          {
+            "rank": 1,
+            "title": "어느 소녀의 사랑 이야기",
+            "workId": "work-18aa174f22e0836b",
+            "sourceId": "kysing/01215.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              15,
+              18
+            ],
+            "ranking": 100,
+            "localSimilarity": 96.9131,
+            "scores": {
+              "pitch": 90,
+              "interval": 82.66666666666666,
+              "contour": 88.88888888888889,
+              "rhythm": 100,
+              "meter": 100,
+              "structural": 54,
+              "skeleton": 100,
+              "pillarPitch": 100,
+              "specificity": 80,
+              "repeatPattern": 96,
+              "phrase": 50
+            },
+            "targets": [
+              "56:67",
+              "59.5:62",
+              "60:71",
+              "62:72",
+              "63.5:71",
+              "63.75:69",
+              "64:71",
+              "64.5:67",
+              "67.5:62",
+              "68:74"
+            ]
+          },
+          {
+            "rank": 2,
+            "title": "또 다른 사랑에 빠져있을 그대여",
+            "workId": "work-c60207574ffc5c63-d08f9a8a",
+            "sourceId": "kysing/97507.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              22,
+              25
+            ],
+            "ranking": 79.42,
+            "localSimilarity": 74.5464,
+            "scores": {
+              "pitch": 90,
+              "interval": 82.66666666666666,
+              "contour": 88.88888888888889,
+              "rhythm": 65.11318263474945,
+              "meter": 15,
+              "structural": 54,
+              "skeleton": 65,
+              "pillarPitch": 86,
+              "specificity": 80,
+              "repeatPattern": 96,
+              "phrase": 50
+            },
+            "targets": [
+              "81.25:65",
+              "84.75:60",
+              "85.5:69",
+              "88.25:70",
+              "88.75:69",
+              "89:67",
+              "89.25:69",
+              "89.75:65",
+              "92.75:60",
+              "93.25:72"
+            ]
+          },
+          {
+            "rank": 3,
+            "title": "다시는...",
+            "workId": "work-b17c458505095c20-d08f9a8a",
+            "sourceId": "kysing/63600.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              19,
+              22
+            ],
+            "ranking": 75.8146,
+            "localSimilarity": 71.256,
+            "scores": {
+              "pitch": 85.8,
+              "interval": 78.18666666666667,
+              "contour": 77.77777777777777,
+              "rhythm": 57.667067236058124,
+              "meter": 32,
+              "structural": 81,
+              "skeleton": 79,
+              "pillarPitch": 100,
+              "specificity": 80,
+              "repeatPattern": 89,
+              "phrase": 50
+            },
+            "targets": [
+              "72.25:64",
+              "75.75:59",
+              "76:68",
+              "77.75:68",
+              "78.5:69",
+              "79:68",
+              "79.75:68",
+              "80.5:64",
+              "83.75:59",
+              "84.25:71"
+            ]
+          },
+          {
+            "rank": 4,
+            "title": "첫눈 예보 (Feat.제이켠)",
+            "workId": "work-ef866beeeb77b6b6-d08f9a8a",
+            "sourceId": "kysing/48644.xml",
+            "streamId": "P1:1:1",
+            "range": [
+              57,
+              60
+            ],
+            "ranking": 67.279,
+            "localSimilarity": 61.8882,
+            "scores": {
+              "pitch": 77.25,
+              "interval": 76.5,
+              "contour": 85.71428571428571,
+              "rhythm": 49.94037118242928,
+              "meter": 32,
+              "structural": 84,
+              "skeleton": 54,
+              "pillarPitch": 83,
+              "specificity": 80,
+              "repeatPattern": 82,
+              "phrase": 50
+            },
+            "targets": [
+              "225:81",
+              "228:74",
+              "229:77",
+              "230:79",
+              "231:81",
+              "232:77",
+              "236:72",
+              "237:84"
+            ]
+          }
+        ],
+        "competitorsAboveExpected": []
+      }
+    },
+    {
+      "caseId": "Q-M100-013",
+      "status": "pending",
+      "queryHash": "b19e0174a98ab92f0127ae30343debb4ee2ece2fecb9572e9ade61110c878a42"
+    },
+    {
+      "caseId": "Q-M100-014",
+      "status": "pending",
+      "queryHash": "f5fe12e87188cc53dd3aa8e0bbdc6d17e56be43b3f3b2bd4770c7dda6d86b784"
+    },
+    {
+      "caseId": "Q-M100-015",
+      "status": "pending",
+      "queryHash": "01190a7ecfeae7d622c0580f4b10cf3a32b897fefad7be76670cf2b0c6be132b"
+    },
+    {
+      "caseId": "Q-M100-016",
+      "status": "pending",
+      "queryHash": "92e77276e07dd4e2c6c92bec8a427fe3c5ccc0ff212f8b335c9638c3af5cc736"
+    },
+    {
+      "caseId": "Q-M100-017",
+      "status": "pending",
+      "queryHash": "5b3e1f1d9378c6a80f7b2c258e55fdfccae35723d5bf8123b7985b6963354e6f"
+    },
+    {
+      "caseId": "Q-M100-018",
+      "status": "pending",
+      "queryHash": "911708f49432f7ff503a4c05af184c1c3a504ed977fc4ad9c95a1fe1b8e2cab2"
+    },
+    {
+      "caseId": "Q-M100-019",
+      "status": "pending",
+      "queryHash": "459f8a0d497270bc2aaec9b8c9b2b793fa875739d3b2afa5db76d48dba439be3"
+    },
+    {
+      "caseId": "Q-M100-020",
+      "status": "pending",
+      "queryHash": "1b77a9291435444d4af2694d963cc18931fe50b097d7266b597e14e3f5835352"
+    },
+    {
+      "caseId": "Q-M100-021",
+      "status": "pending",
+      "queryHash": "71e7969535c91aea957f1e0282248667148cba80d5ff1ba71cf5357ca8e80d9c"
+    },
+    {
+      "caseId": "Q-M100-022",
+      "status": "pending",
+      "queryHash": "9804452442a333a5577d6d565910926031ca2babd9bd6030c73ada7a067f791f"
+    },
+    {
+      "caseId": "Q-M100-023",
+      "status": "pending",
+      "queryHash": "04b7a419afaec63af739d2256afb1a9d4f209e1ab8c8b8f1f3a72f0ae17428e5"
+    },
+    {
+      "caseId": "Q-M100-024",
+      "status": "pending",
+      "queryHash": "2c49223fab498ed833ed63287a76dfe52f6064f111cb8bee7e6d492c15d2afe3"
+    },
+    {
+      "caseId": "Q-M100-025",
+      "status": "pending",
+      "queryHash": "c572c168df4abc3c3e2ad8690ba7b2259950b5904f539f51139f18a55d1dd3b5"
+    },
+    {
+      "caseId": "Q-M100-026",
+      "status": "pending",
+      "queryHash": "ab0929a2078cf412459d86045dcfaf82158a0868d24284476ae71efa16841c73"
+    },
+    {
+      "caseId": "Q-M100-027",
+      "status": "pending",
+      "queryHash": "87c452c4e26c70782390070e8f6ea0746bc5649aaa7741fa0909bf9016a681a0"
+    },
+    {
+      "caseId": "Q-M100-028",
+      "status": "pending",
+      "queryHash": "2aa14cd13b2b17d1de2057b9651f0902eda762c6bd4a3a77abd86e00ebdc44b9"
+    },
+    {
+      "caseId": "Q-M100-029",
+      "status": "pending",
+      "queryHash": "ff97ef73a9d42dc8f8b7a441ca6185db44fdd1c6347d0db82a17d4dd89e205ba"
+    },
+    {
+      "caseId": "Q-M100-030",
+      "status": "pending",
+      "queryHash": "1c9db96d460df421d29516d27f965dc4dbc2712ed0fea86b4566757cc81572cc"
+    },
+    {
+      "caseId": "Q-M100-031",
+      "status": "pending",
+      "queryHash": "386a8ea842daf869f4ca387c174186b4c58029a8dede359d64c8218e986ccd8b"
+    },
+    {
+      "caseId": "Q-M100-032",
+      "status": "pending",
+      "queryHash": "496ef5ddeeeb3b9d24431f9339997df0288c5cce6f0422f2944b60e281194450"
+    },
+    {
+      "caseId": "Q-M100-033",
+      "status": "pending",
+      "queryHash": "80f5f4adf160e2994475a52c046bf44b446fa76aee3e9051a9c41b182d94ec27"
+    },
+    {
+      "caseId": "Q-M100-034",
+      "status": "pending",
+      "queryHash": "b02b1d0c098fa4bc0dca5bf73eea4888efa04c861dc586ed536c25c7051a8bc1"
+    },
+    {
+      "caseId": "Q-M100-035",
+      "status": "pending",
+      "queryHash": "7e28b70c4dc80231c00233857925bd44f512316d9125881d5d57e4eb71647247"
+    },
+    {
+      "caseId": "Q-M100-036",
+      "status": "pending",
+      "queryHash": "8937c422f93c4f00ea7feedc1cdedd4fbb006021efae580614e62c80ad2a1cca"
+    },
+    {
+      "caseId": "Q-M100-037",
+      "status": "pending",
+      "queryHash": "0e4d303f0c8394058ccccba4c9b09d634b3e92059e54dc982f2a4875a9b6f807"
+    },
+    {
+      "caseId": "Q-M100-038",
+      "status": "pending",
+      "queryHash": "98ac0038c22b9590861db25d5fbf9200be18dff80c62b7d8b32d83e9f6363807"
+    },
+    {
+      "caseId": "Q-M100-039",
+      "status": "pending",
+      "queryHash": "23aa04768ed66f64d6c60a0462e8f549ada72200ab30cbdc1f1be475e5ccbe43"
+    },
+    {
+      "caseId": "Q-M100-040",
+      "status": "pending",
+      "queryHash": "9064eff0c96363f849b8a4ae2a0a05462f4a61daea170e930b7bcea83a931632"
+    },
+    {
+      "caseId": "Q-M100-041",
+      "status": "pending",
+      "queryHash": "4bbc438cc17529f70b756cbfa6520881aec87d46f28c5f2d6040ebd34e237c80"
+    },
+    {
+      "caseId": "Q-M100-042",
+      "status": "pending",
+      "queryHash": "1008319590c15b705293b228b22cdb0f2c0399f798be29a5167ced1fbd7dcee2"
+    },
+    {
+      "caseId": "Q-M100-043",
+      "status": "pending",
+      "queryHash": "c69c468eaa821d558e8ed0f83ff0eaf4cfdbaa0a0b34ff861a6460d94a5a27db"
+    },
+    {
+      "caseId": "Q-M100-044",
+      "status": "pending",
+      "queryHash": "c96e83ef6ed23284acc26333bb51ccc3967d09a7b3881628814e3ca78c4b119a"
+    },
+    {
+      "caseId": "Q-M100-045",
+      "status": "pending",
+      "queryHash": "63b21d49621f53d6f82f0a976ad0bc938a900438531021b51215a87e6a44c2a0"
+    },
+    {
+      "caseId": "Q-M100-046",
+      "status": "pending",
+      "queryHash": "99b4c7e530405022d1cccceea324b00a8ce6e3f57f46c34bbb944971fb4f9332"
+    },
+    {
+      "caseId": "Q-M100-047",
+      "status": "pending",
+      "queryHash": "8ca80b04f9acb22db3d23c4b495d20dbd24b4f194cbe6351f27a7eba798af061"
+    },
+    {
+      "caseId": "Q-M100-048",
+      "status": "pending",
+      "queryHash": "62591c7add558ca7005c5da67138b29c50e61807c6bce35b127e5bcc7c1ba21b"
+    },
+    {
+      "caseId": "Q-M100-049",
+      "status": "pending",
+      "queryHash": "d120195974bfbbb81d5be27c578e4acf7609ef6e15d7800714ff8f10e134b8d3"
+    },
+    {
+      "caseId": "Q-M100-050",
+      "status": "pending",
+      "queryHash": "fdd7dd8e8668560f4ef8fd6f46509aa8afc82c53d87e9aaab3600b9196f22431"
+    },
+    {
+      "caseId": "Q-M100-051",
+      "status": "pending",
+      "queryHash": "d8bb0df88578b2d431548e513fbaf2d4357084d76672b0375a6167db7b5a71a2"
+    },
+    {
+      "caseId": "Q-M100-052",
+      "status": "pending",
+      "queryHash": "00b5a5e0cfd18eb3d18d347ff7458b9ac927e3f618858c0cf4a14ff6f59e2154"
+    },
+    {
+      "caseId": "Q-M100-053",
+      "status": "pending",
+      "queryHash": "7fe9ea400aff27253df55337f53a6be050b585343bb92026ce822efd94848eb6"
+    },
+    {
+      "caseId": "Q-M100-054",
+      "status": "pending",
+      "queryHash": "f52c16ef8d9afbba932105d0a54367c7805f7078f9b4f8c82671697855673739"
+    },
+    {
+      "caseId": "Q-M100-055",
+      "status": "pending",
+      "queryHash": "8f43ef24592766c9b6d8c9c8de69f26406e4e88929373d4edc50a36830ddf6bf"
+    },
+    {
+      "caseId": "Q-M100-056",
+      "status": "pending",
+      "queryHash": "c4e940e2a95de8d0e33db289b785d34f6f1cfb49f621af0e493fbd7740de84f8"
+    },
+    {
+      "caseId": "Q-M100-057",
+      "status": "pending",
+      "queryHash": "31f8b20700fad1f18fdc5ee73424f644f729f98a5f16fc9278ccc485b08ae054"
+    },
+    {
+      "caseId": "Q-M100-058",
+      "status": "pending",
+      "queryHash": "2481bd0c277cfa029069fb41777c3bac3214fb3b8b4d80fc518e546e90d1cc94"
+    },
+    {
+      "caseId": "Q-M100-059",
+      "status": "pending",
+      "queryHash": "141fa7b5e913e9cf85954437d3c24b61f6ac506aa56eba5f931eb5234b74cf58"
+    },
+    {
+      "caseId": "Q-M100-060",
+      "status": "pending",
+      "queryHash": "ae70626c33bbc1ae392e1bebf164eae984ca4b26425823105f442c10c93c7532"
+    },
+    {
+      "caseId": "Q-M100-061",
+      "status": "pending",
+      "queryHash": "a691dafe1c34f02ab8c0462a96985bff802d1ef05b717d24e9cd151a55ea5ef2"
+    },
+    {
+      "caseId": "Q-M100-062",
+      "status": "pending",
+      "queryHash": "0a4f085a378e543725076a56d98c3bcb8c6d18303ec35e61af1c528d24054c62"
+    },
+    {
+      "caseId": "Q-M100-063",
+      "status": "pending",
+      "queryHash": "426cda89dce3c2e62ace435fe3779c6f38ff3969b4577c8a21137be79562381c"
+    },
+    {
+      "caseId": "Q-M100-064",
+      "status": "pending",
+      "queryHash": "ed151352a4ccc3300cb77315f383683ed0dd274bd585b1934a0e40d25a7d72da"
+    },
+    {
+      "caseId": "Q-M100-065",
+      "status": "pending",
+      "queryHash": "9e6c9da06ad64e2699bacb60d1517eec28438945a64787895953f3ea559275a9"
+    },
+    {
+      "caseId": "Q-M100-066",
+      "status": "pending",
+      "queryHash": "d999005daf8ca7d5c0476e89ddf952d35297980ccf4b1c5d2c1c4ea2557bd3f2"
+    },
+    {
+      "caseId": "Q-M100-067",
+      "status": "pending",
+      "queryHash": "05ec90a405f1b2956e706c2300d035e19da0082b14a75f368677e095667ebae9"
+    },
+    {
+      "caseId": "Q-M100-068",
+      "status": "pending",
+      "queryHash": "e7fa5f8e7afd235db97928eab3d87344647d42e309e03985d9736303a0b92079"
+    },
+    {
+      "caseId": "Q-M100-069",
+      "status": "pending",
+      "queryHash": "1c1a8bc9d1a20924211317b859655d987d9f2ae36556140983bffd2affe7f956"
+    },
+    {
+      "caseId": "Q-M100-070",
+      "status": "pending",
+      "queryHash": "c8a28a29b36fe56a583a30a6f50429a8793292d5425e4d38ec1c695ad85c34a7"
+    },
+    {
+      "caseId": "Q-M100-071",
+      "status": "pending",
+      "queryHash": "09161ce61030e9f92277ba3cd43a74e45f1fff551339916ccbe778f04590bdcb"
+    },
+    {
+      "caseId": "Q-M100-072",
+      "status": "pending",
+      "queryHash": "d9d5ccdde5313b45ac835c5f9638fb4bb63ecefa4c02901c9ffc3562992fb66c"
+    },
+    {
+      "caseId": "Q-M100-073",
+      "status": "pending",
+      "queryHash": "d493e5f6b1c12d9b414fa8ac97b8f62bd2cc161c0e7713563286cd126c4a4d4a"
+    },
+    {
+      "caseId": "Q-M100-074",
+      "status": "pending",
+      "queryHash": "7f74780a0718938212d8f0277d61af2d526723f2808d063382381a14a7752313"
+    },
+    {
+      "caseId": "Q-M100-075",
+      "status": "pending",
+      "queryHash": "8feb9bb4a7f8ba2429e7993f4757e10ded38acfdd2a9a7946c34f784dfce6fb6"
+    },
+    {
+      "caseId": "Q-M100-076",
+      "status": "pending",
+      "queryHash": "33d97a89f5cd92e2d97532137b67a6ca07f5b282e81a879e3634fe5206f3d9d0"
+    },
+    {
+      "caseId": "Q-M100-077",
+      "status": "pending",
+      "queryHash": "cf8039245e42ac1443688e67d99cf6c35b420861578f105dfcd7baacff3fac6a"
+    },
+    {
+      "caseId": "Q-M100-078",
+      "status": "pending",
+      "queryHash": "4ac4b8c1ec3315019b479cdb96925304c2da82e976a6b4b986fe1502963f7585"
+    },
+    {
+      "caseId": "Q-M100-079",
+      "status": "pending",
+      "queryHash": "d9ad61f733aea5300f64a33d10b7ffbe0cbedab21701a40c8588d1a257ce5450"
+    },
+    {
+      "caseId": "Q-M100-080",
+      "status": "pending",
+      "queryHash": "67c96c64fc591c49ec1c1082dbf41054867d3c5876f10f65ebfc9073a6bae1c5"
+    },
+    {
+      "caseId": "Q-M100-081",
+      "status": "pending",
+      "queryHash": "ce2131dc950a5756ddc2050e5216ad547ca9ad6ed4c9b057dc6838015a573184"
+    },
+    {
+      "caseId": "Q-M100-082",
+      "status": "pending",
+      "queryHash": "8562fc743d546a9dac1ed097f41fd30463f3bd2a9d2f0c4d86f0bb0468f2178d"
+    },
+    {
+      "caseId": "Q-M100-083",
+      "status": "pending",
+      "queryHash": "15c8ece747c5c2a0951143697bb9f586cb72301743dfacec0e0b510bcab9501a"
+    },
+    {
+      "caseId": "Q-M100-084",
+      "status": "pending",
+      "queryHash": "1c645d604426035d639605eef538aa004bd5de533b5e5358c903dee11980014d"
+    },
+    {
+      "caseId": "Q-M100-085",
+      "status": "pending",
+      "queryHash": "6f21b8d4a2637cb8bbb15cda7cb22d156c9672db30277036d61733e734686b32"
+    },
+    {
+      "caseId": "Q-M100-086",
+      "status": "pending",
+      "queryHash": "e4ebd2271e8aee2d470c0f1c3617299280db05adc1d8cf3ca3ecc98d0ce6f9c9"
+    },
+    {
+      "caseId": "Q-M100-087",
+      "status": "pending",
+      "queryHash": "a64d58764ab0a8908cb011ceea3995d689977f507873f7993ce9d7bba5a0cee6"
+    },
+    {
+      "caseId": "Q-M100-088",
+      "status": "pending",
+      "queryHash": "5b0b692c9b72a8290000fe482bee8a822d05b82bf8bd941477e3813c63106459"
+    },
+    {
+      "caseId": "Q-M100-089",
+      "status": "pending",
+      "queryHash": "7fb8b7666114e9bc10ebdec4f75ffa2944563fc091e1f7b24186463532f92bf7"
+    },
+    {
+      "caseId": "Q-M100-090",
+      "status": "pending",
+      "queryHash": "96bb8ec18747cb114023dad3b21fad26c7d1e4b608ca04c4c4052532e2e1fb2f"
+    },
+    {
+      "caseId": "Q-M100-091",
+      "status": "pending",
+      "queryHash": "db8466a8327ca7251870318acdc6012fb1176fe69143179afcb3a7e75f7b937f"
+    },
+    {
+      "caseId": "Q-M100-092",
+      "status": "pending",
+      "queryHash": "8699a50147d4c2bff0df939e6aabbb3d762978d9ebcb5e1328bdd4415de7de94"
+    },
+    {
+      "caseId": "Q-M100-093",
+      "status": "pending",
+      "queryHash": "929fc389f35fbbcb24ff3d450e05b8ab97e4eca6ffd9df31f427b57cb0b355ad"
+    },
+    {
+      "caseId": "Q-M100-094",
+      "status": "pending",
+      "queryHash": "d9f3d3ecc1977b1d16f0a002480a3af203e445d8ef350262776cfa9369421c91"
+    },
+    {
+      "caseId": "Q-M100-095",
+      "status": "pending",
+      "queryHash": "000e0de9d8aa78b44ec0cd2a69698da5fcab9a197399fda343d80c013b31d586"
+    },
+    {
+      "caseId": "Q-M100-096",
+      "status": "pending",
+      "queryHash": "80b1576a6f14080cfb0cf513993fdebe6bf73e5a87ea15b68ea63d2ad9b1a6a6"
+    },
+    {
+      "caseId": "Q-M100-097",
+      "status": "pending",
+      "queryHash": "ea24f7417ad62bdc95b036f6808c35549bdae7ecf7bb8d2bd3a705afb68923cf"
+    },
+    {
+      "caseId": "Q-M100-098",
+      "status": "pending",
+      "queryHash": "ebbdbef2127d4989b69bd749048e46c40388c58ab767b98c90802be0cb6e3fe5"
+    },
+    {
+      "caseId": "Q-M100-099",
+      "status": "pending",
+      "queryHash": "0eb0e8e99415577dddfceb8e245ff7fb2e519c391121c080ca09cd97a114fbe5"
+    },
+    {
+      "caseId": "Q-M100-100",
+      "status": "pending",
+      "queryHash": "73e923b97162835421c3ddd5efc2786a0693f2da4c49eeeccd34835b4068c7d5"
+    }
+  ]
+}

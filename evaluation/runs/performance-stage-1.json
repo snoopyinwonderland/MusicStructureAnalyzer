@@ -1,0 +1,13 @@
+{
+  \"schema\": \"musicanote-performance-run/v1\",
+  \"caseId\": \"Q-P1-004\",
+  \"date\": \"2026-09-04\",
+  \"runs\": [
+    {\"variant\":\"request-cache-and-dedup\",\"elapsedMs\":86541,\"resultCount\":6},
+    {\"variant\":\"request-cache-dedup-and-meter-timeline\",\"elapsedMs\":7321,\"resultCount\":6}
+  ],
+  \"comparison\": \"Same returned work IDs, order, measure ranges and numeric scores in these two runs.\",
+  \"caveat\": \"Sequential fresh Node processes; OS filesystem cache was not reset. Not a controlled cold-cache benchmark.\",
+  \"regression\": {\"testFilesPassed\":10,\"testsPassed\":88},
+  \"remaining\": [\"persistent metadata index\", \"phase profiling\", \"seed-window recall comparison\"]
+}

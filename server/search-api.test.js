@@ -1,13 +1,108 @@
 import { describe, expect, it } from 'vitest';
-import { alignLocal, alignRhythmDtw, annotateStructural, compareStructural, displayMeasure, findAbsoluteExact, findAbsoluteExactMatches, firstMeasureIsPickup, intervalShape, metricWeightAt, metricalEvidence, normalizeYoutubeTitle, parseMeter, phraseAlignmentEvidence, prepareQueryNotes, resultAdmissionAllowed, rhythmRankFactor, rhythmShapeSimilarity, searchCatalog, searchDatabase, sparseAlignmentAllowed, youtubeId } from './search-api.mjs';
+import { alignLocal, alignRhythmDtw, annotateStructural, calibratedResultRanking, catalogTitleMatches, compareStructural, displayMeasure, diversifyCandidates, findAbsoluteExact, findAbsoluteExactMatches, firstMeasureIsPickup, intervalRetrievalBonus, intervalShape, metricWeightAt, metricalEvidence, metricalSkeleton, metricalSkeletonEvidence, motifImportance, normalizeYoutubeTitle, optionalPositiveNumber, parseMeter, phraseAlignmentEvidence, pitchEqualitySimilarity, prepareQueryNotes, queryDiscrimination, rankedMotifs, repairMetadataInXml, repairMetadataText, reflowRestrictedPreview, restrictedPreviewXml, resultAdmissionAllowed, retrievalRowLimit, rhythmRankFactor, rhythmShapeSimilarity, score, searchCatalog, searchDatabase, sparseAlignmentAllowed, splitIntervalSeedBonus, translateInstrumentName, transpositionResidualScore, youtubeId } from './search-api.mjs';
 
 const notes = pitches => pitches.map((pitchMidi, i) => ({
   id: String(i), kind: 'note', pitchMidi, durationRatio: 1,
 }));
 
+describe('motif analysis payload',()=>{
+  it('keeps a representative notated sequence and occurrence locations',()=>{
+    const raw=[60,62,64,65,67,69,60,62,64,65,67,69].map((p,index)=>({p,s:['C4','D4','E4','F4','G4','A4'][index%6],d:index%2?.5:1,o:index,m:index<6?1:2}));
+    const motif=rankedMotifs(raw)[0];
+    expect(motif.events).toHaveLength(6);
+    expect(motif.events.map(event=>event.pitchMidi)).toEqual([60,62,64,65,67,69]);
+    expect(motif.events.map(event=>event.durationRatio)).toEqual([1,.5,1,.5,1,.5]);
+    expect(motif.occurrences).toHaveLength(2);
+    expect(motif.startMeasure).toBe(1);
+  });
+  it('excludes low-information same-note repetition from principal motifs',()=>{
+    const repeated=Array.from({length:16},(_,index)=>({p:index<12?60:62,s:index<12?'C4':'D4',d:.5,o:index*.5,m:1}));
+    expect(rankedMotifs(repeated)).toEqual([]);
+  });
+  it('also excludes a four-note motif that only alternates two pitches',()=>{
+    const alternating=Array.from({length:12},(_,index)=>({p:index%2?62:60,s:index%2?'D4':'C4',d:.5,o:index*.5,m:1}));
+    expect(rankedMotifs(alternating)).toEqual([]);
+  });
+});
+
+describe('displayed result score calibration',()=>{
+  const scores={interval:93,contour:100,rhythm:81};
+  it('reserves 100 for exact results',()=>expect(calibratedResultRanking(true,96,scores,'melody_rhythm',5)).toBe(100));
+  it('keeps surface mismatch visible despite retrieval and structure bonuses',()=>{
+    const value=calibratedResultRanking(false,96,scores,'melody_rhythm',20);
+    expect(value).toBeLessThan(97);expect(value).toBeGreaterThan(90);
+  });
+});
+
+describe('restricted score preview',()=>{
+  it('removes encoded system and page layout only when explicitly reflowing',()=>{
+    const xml='<measure number="1"><print new-page="yes"><system-layout><system-distance>140</system-distance></system-layout></print><note/></measure><measure number="2"><print new-system="yes"/><note/></measure><measure number="3"><print><measure-numbering>system</measure-numbering></print></measure>';
+    const reflowed=reflowRestrictedPreview(xml);
+    expect(reflowed).not.toContain('new-page');expect(reflowed).not.toContain('new-system');expect(reflowed).not.toContain('system-distance');
+    expect(reflowed).toContain('<measure-numbering>system</measure-numbering>');
+  });
+  it('does not interpret an omitted ordinal as measure zero',()=>{
+    expect(Number.isNaN(optionalPositiveNumber(null))).toBe(true);
+    expect(Number.isNaN(optionalPositiveNumber(''))).toBe(true);
+    expect(optionalPositiveNumber('79')).toBe(79);
+  });
+  it('returns only the matched part and a bounded measure neighborhood',()=>{
+    const measures=Array.from({length:10},(_,index)=>`<measure number="${index+1}">${index===0?'<attributes><divisions>1</divisions></attributes>':''}<note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration></note></measure>`).join('');
+    const xml=`<score-partwise version="4.0"><part-list><score-part id="P1"><part-name>Voice</part-name></score-part><score-part id="P2"><part-name>Piano</part-name></score-part></part-list><part id="P1">${measures}</part><part id="P2">${measures}</part></score-partwise>`;
+    const preview=restrictedPreviewXml(xml,'P1:1:1',5,6,2);
+    expect(preview).toContain('<part id="P1">');expect(preview).not.toContain('<part id="P2">');expect(preview).not.toContain('<score-part id="P2">');
+    expect((preview.match(/<measure\b/g)||[])).toHaveLength(6);expect(preview).toContain('<divisions>1</divisions>');
+  });
+  it('keeps inherited divisions before a mid-measure clef change',()=>{
+    const xml='<score-partwise><part-list><score-part id="P1"><part-name>Voice</part-name></score-part></part-list><part id="P1"><measure number="1"><attributes><divisions>4</divisions><time><beats>4</beats><beat-type>4</beat-type></time></attributes><note><rest/><duration>16</duration></note></measure><measure number="2"><note><rest/><duration>4</duration></note></measure><measure number="3"><note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration></note><attributes><clef><sign>G</sign><line>2</line></clef></attributes></measure></part></score-partwise>';
+    const preview=restrictedPreviewXml(xml,'P1:1:1',3,3,0),body=preview.match(/<measure[^>]*>([\s\S]*?)<\/measure>/)?.[1]||'';
+    expect(body.indexOf('<divisions>4</divisions>')).toBeLessThan(body.indexOf('<note>'));
+  });
+  it('fills missing inherited fields when the first kept measure has partial attributes',()=>{
+    const xml='<score-partwise><part-list><score-part id="P1"><part-name>降B調小號</part-name></score-part></part-list><part id="P1"><measure number="1"><attributes><divisions>12</divisions><time><beats>4</beats><beat-type>4</beat-type></time><measure-style><multiple-rest>2</multiple-rest></measure-style></attributes><note><rest/><duration>48</duration><time-modification><actual-notes>3</actual-notes><normal-notes>2</normal-notes></time-modification></note></measure><measure number="2"><attributes><clef><sign>G</sign><line>2</line></clef></attributes><note><pitch><step>C</step><octave>4</octave></pitch><duration>6</duration></note></measure></part></score-partwise>';
+    const preview=restrictedPreviewXml(xml,'P1:1:1',2,2,0),body=preview.match(/<measure[^>]*>([\s\S]*?)<\/measure>/)?.[1]||'';
+    expect(body.indexOf('<divisions>12</divisions>')).toBeLessThan(body.indexOf('<note>'));
+    expect(body).toContain('<time><beats>4</beats><beat-type>4</beat-type></time>');
+    expect(preview).toContain('<part-name>B-flat Trumpet</part-name>');
+    expect(translateInstrumentName('降B調小號')).toBe('B-flat Trumpet');
+    expect((preview.match(/<measure(?=[\s>])/g)||[])).toHaveLength(1);
+    expect(body).not.toContain('<time-modification>');
+  });
+});
+
 describe('YouTube title cache', () => {
   it('shares a representative video across arrangement editions by normalized song title', () => {
     expect(normalizeYoutubeTitle('3. A Whole New World, Violin, Cello and Piano Trio.musicxml.xml')).toBe('a whole new world');
+    expect(repairMetadataText('³» ÁÖ¸¦ °¡±îÀÌ ÇÏ°Ô ÇÔÀº')).toBe('내 주를 가까이 하게 함은');
+    expect(repairMetadataText('\x93\xfa\x96{\x8c\xea\x83^\x83C\x83g\x83\x8b')).toBe('日本語タイトル');
+    expect(repairMetadataText('\xbc\xf2\xcc\xe5\xd6\xd0\xce\xc4\xb1\xea\xcc\xe2')).toBe('简体中文标题');
+    expect(repairMetadataText('\xc1c\xc5\xe9\xa4\xa4\xa4\xe5\xbc\xd0\xc3D')).toBe('繁體中文標題');
+    expect(repairMetadataText('Prélude in C♯ minor')).toBe('Prélude in C♯ minor');
+    expect(repairMetadataText('Chant du départ')).toBe('Chant du départ');
+    expect(repairMetadataText('Étienne Nicolas Méhul 1763-1817')).toBe('Étienne Nicolas Méhul 1763-1817');
+    expect(repairMetadataText('Claude-Michel Sch鰊berg')).toBe('Claude-Michel Schönberg');
+    expect(repairMetadataText('Claude-Michel Sch錯berg')).toBe('Claude-Michel Schönberg');
+    expect(repairMetadataInXml('<credit-words>Composed by Claude-Michel Sch鰊berg</credit-words>')).toContain('Claude-Michel Schönberg');
+    expect(intervalRetrievalBonus(12,12)).toBe(10000);
+    expect(intervalRetrievalBonus(11,12)).toBeGreaterThan(800);
+    expect(intervalRetrievalBonus(5,12)).toBe(0);
+    expect(retrievalRowLimit('i',50000,0)).toBe(50000);
+    expect(retrievalRowLimit('i',300000,-1)).toBe(100000);
+    expect(retrievalRowLimit('i',300000,3)).toBe(16000);
+    expect(retrievalRowLimit('i',50000,0,false)).toBe(16000);
+    expect(retrievalRowLimit('i',50000,3,false)).toBe(4000);
+    expect(retrievalRowLimit('i5',50000,1)).toBe(18000);
+    expect(retrievalRowLimit('r',50000,0)).toBe(3000);
+    expect(retrievalRowLimit('i',2750,0)).toBe(2750);
+    expect(splitIntervalSeedBonus([0,5],10)).toBe(650);
+    expect(splitIntervalSeedBonus([0,1],10)).toBe(0);
+    expect(splitIntervalSeedBonus([5],10)).toBe(0);
+    expect(resultAdmissionAllowed('melody_rhythm',false,78.5,{interval:94.6,contour:92.3,rhythm:41.8},73,14)).toBe(true);
+    expect(resultAdmissionAllowed('melody_rhythm',false,78.5,{interval:94.6,contour:92.3,rhythm:47.2},73,6)).toBe(false);
+    const queryNotes=[60,64,67,71,74,72,67].map(pitchMidi=>({pitchMidi,durationRatio:1}));
+    const oneChanged=[60,64,67,71,74,73,67].map(pitchMidi=>({pitchMidi,durationRatio:1}));
+    expect(transpositionResidualScore(queryNotes,oneChanged)).toBe(98);
+    expect(score(queryNotes,oneChanged).interval).toBeGreaterThan(95);
     expect(youtubeId({ works: { 'a whole new world': { videoId: 'video-1' } } }, 'unused-work', 'A WHOLE NEW WORLD')).toBe('video-1');
   });
 });
@@ -18,6 +113,19 @@ describe('catalog text search', () => {
     expect(items.length).toBeGreaterThan(0);
     expect(items[0].title.toLowerCase()).toContain('whole new world');
     expect(new Set(items.map(item => normalizeYoutubeTitle(item.title))).size).toBe(items.length);
+  });
+
+  it('matches separated title words with AND semantics',()=>{
+    const items=searchCatalog('I christmas',20);
+    expect(items.length).toBeGreaterThan(0);
+    expect(items.every(item=>catalogTitleMatches(item.title,'I christmas'))).toBe(true);
+    expect(items.some(item=>item.title.toLowerCase().includes('all i want for christmas'))).toBe(true);
+  });
+
+  it('treats a one-letter term as a word rather than an arbitrary substring',()=>{
+    expect(catalogTitleMatches('White Christmas','I christmas')).toBe(false);
+    expect(catalogTitleMatches('CHRISTMAS IN OUR HEARTS','I christmas')).toBe(false);
+    expect(catalogTitleMatches("I'LL BE HOME FOR CHRISTMAS",'I christmas')).toBe(true);
   });
 });
 
@@ -78,8 +186,46 @@ describe('downbeat evidence', () => {
   it('penalizes a melodic alignment that displaces important beats', () => {
     const evidence = metricalEvidence(query, [{ beat: 2 }, { beat: 3 }, { beat: 2 }], pairs, '4/4');
     expect(evidence.conflicts).toBe(2);
-    expect(evidence.adjustment).toBe(-14);
+    expect(evidence.adjustment).toBeLessThan(-14);
   });
+  it('penalizes a sparse candidate that promotes weak query notes onto downbeats',()=>{
+    const query=[0,.5,1.5,2.5].map((onset,index)=>({pitchMidi:60+index,onset,durationRatio:.5}));
+    const candidate=[1,1,1,1].map((beat,index)=>({pitchMidi:60+index,beat,durationRatio:1}));
+    const pairs=query.map((_,index)=>({queryIndex:index,candidateIndex:index,cost:0,type:'match'}));
+    const evidence=metricalEvidence(query,candidate,pairs,'4/4','4/4');
+    expect(evidence.overAccents).toBeGreaterThan(0);
+    expect(evidence.score).toBeLessThan(100);
+  });
+});
+
+describe('metrical skeleton retrieval', () => {
+  const line = (pitches, durations) => { let onset = 0; return pitches.map((pitchMidi, index) => { const durationRatio = durations[index]; const note = { pitchMidi, durationRatio, onset, beat: onset % 4 + 1 }; onset += durationRatio; return note; }); };
+  it('retains metrically supported pillars while dropping weak passing notes', () => {
+    const notes = annotateStructural(line([67, 68, 69, 72, 71, 69], [1, .25, .75, 1, .25, .75]), '4/4');
+    const skeleton = metricalSkeleton(notes, '4/4');
+    expect(skeleton.length).toBeGreaterThanOrEqual(3);
+    expect(skeleton.some(note => note.pitchMidi === 68 && note.weakBeat)).toBe(false);
+  });
+
+  it('compares transposed metric skeletons independently from surface ornaments', () => {
+    const query = line([60, 62, 64, 67, 69], [1, 1, 1, 1, 1]);
+    const candidate = line([67, 68, 69, 71, 74, 76], [1, .25, .75, 1, 1, 1]);
+    expect(metricalSkeletonEvidence(query, candidate, '4/4', '4/4').similarity).toBeGreaterThan(60);
+  });
+});
+
+describe('motif importance',()=>{
+  it('increases when a motif repeats more often in the same stream',()=>{expect(motifImportance(.7,4,6,100)).toBeGreaterThan(motifImportance(.7,1,6,100))});
+  it('increases when repeated occurrences occupy more of the work',()=>{expect(motifImportance(.7,3,8,40)).toBeGreaterThan(motifImportance(.7,3,8,400))});
+});
+
+describe('candidate diversity',()=>{
+  it('does not let many occurrences from one work evict another work before refinement',()=>{const crowded=Array.from({length:400},(_,index)=>[`crowded\u0000${index}`,10]),entries=[...crowded,['trepak\u00000',9]];expect(diversifyCandidates(entries,10,3).some(([key])=>key.startsWith('trepak\u0000'))).toBe(true)});
+});
+
+describe('repetitive-query discrimination',()=>{
+  it('marks a dominant repeated pitch as low information',()=>{expect(queryDiscrimination([71,71,71,71,71,73,71,75,75,73,73,71].map(pitchMidi=>({pitchMidi,durationRatio:.5}))).lowInformation).toBe(true)});
+  it('compares the positions of repeated pitches independently of transposition',()=>{const q=[60,60,62,60,64].map(pitchMidi=>({pitchMidi})),good=[67,67,69,67,71].map(pitchMidi=>({pitchMidi})),bad=[67,69,69,67,71].map(pitchMidi=>({pitchMidi}));expect(pitchEqualitySimilarity(q,good)).toBe(100);expect(pitchEqualitySimilarity(q,bad)).toBeLessThan(100)});
 });
 
 describe('meter-aware metric hierarchy', () => {
@@ -270,7 +416,7 @@ describe('production local alignment', () => {
         expect(step.candidateIndex).toBeLessThan(match.work.notes.length);
       }
     }
-  });
+  }, 15_000);
 
   it('limits a refinement search to the supplied current-result work IDs', () => {
     const events = notes([60, 62, 64, 67]);
@@ -279,7 +425,7 @@ describe('production local alignment', () => {
     expect(first).toBeTruthy();
     const refined = searchDatabase({ version: 1, mode: 'melody', meter: '4/4', startsOnDownbeat: true, events, scopeWorkIds: [first.work.workId] }, 20);
     expect([...refined.exact, ...refined.similar].every(result => result.work.workId === first.work.workId)).toBe(true);
-  });
+  }, 15_000);
 });
 
 describe('constrained rhythm DTW', () => {

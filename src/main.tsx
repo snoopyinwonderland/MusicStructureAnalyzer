@@ -10,4 +10,5 @@ import './score-scale.css';
 import './locator-click.css';
 import './xml-excerpt.css';
 import './result-xml.css';
+import './page-loading.css';
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);

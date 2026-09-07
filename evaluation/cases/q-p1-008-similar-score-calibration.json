@@ -1,0 +1,17 @@
+{
+  "schema":"musicanote-query-regression/v1",
+  "caseId":"Q-P1-008",
+  "issue":"Similar results score too close to exact; inspect top result Downbeat/Schenker components and calibrate the displayed final score.",
+  "query":{"version":1,"mode":"melody_rhythm","meter":"4/4","startsOnDownbeat":true,"events":[
+    {"id":"q-64d040c9-8d1e-4888-8125-d0443a9ee324","kind":"note","pitchMidi":60,"spelling":"C4","durationRatio":1},
+    {"id":"q-e73d9a4f-b03f-45ff-b9ac-b2f47a11d2ef","kind":"note","pitchMidi":67,"spelling":"G4","durationRatio":1},
+    {"id":"q-957a9dfa-8eb8-4aeb-bbdf-2315957e5060","kind":"note","pitchMidi":67,"spelling":"G4","durationRatio":1},
+    {"id":"q-512bda3f-b977-4b2b-9172-79f8b86fbfea","kind":"note","pitchMidi":65,"spelling":"F4","durationRatio":0.5},
+    {"id":"q-a1e49f87-7cfa-4d76-8ee3-b8a8e2248323","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":0.5},
+    {"id":"q-37010727-832a-479e-ae28-fdede0de189e","kind":"note","pitchMidi":65,"spelling":"F4","durationRatio":0.5},
+    {"id":"q-336806ac-e2ff-4f42-bee9-422dfa8e146b","kind":"note","pitchMidi":64,"spelling":"E4","durationRatio":0.5},
+    {"id":"q-f37adbe3-8ad8-4716-b141-b7877726727c","kind":"note","pitchMidi":62,"spelling":"D4","durationRatio":1},
+    {"id":"q-3b13db84-dd70-46b4-9b65-a4a546152049","kind":"note","pitchMidi":62,"spelling":"D4","durationRatio":1}
+  ],"absoluteExactOnly":false,"exactIntervalOnly":false,"exactPitchOnly":false,"exactRhythmOnly":false,"includeRests":true,"downbeatWeightBoost":false},
+  "resolution":{"exactScore":100,"similarScoreCeiling":97,"formula":"55% local similarity + 45% surface melody/rhythm + bounded adjustment (-3..+1)","topExact":{"title":"TOP GUN ANTHEM","downbeatWeight":58,"schenkerInformed":79,"rhythm":100,"reason":"Surface rhythm is exact, but metric hierarchy has only two valid important-beat matches and the structural comparison has 3 query pillars versus 7 candidate-context pillars."},"topSimilarAfter":[97,97,97,95.2168,94.9079]}
+}
