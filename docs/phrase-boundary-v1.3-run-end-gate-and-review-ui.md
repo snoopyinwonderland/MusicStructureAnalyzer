@@ -26,7 +26,9 @@ The review case `work-25517ce2d093550b` had short displayed Phrases beginning at
 
 ## Harmony display
 
-Boundary Harmony continues to retain absolute surface-chord labels for evidence and debugging. The review UI now displays the selected-key-relative Roman progression from `harmonyProgression.romanDisplay`, falling back to the absolute display only for older payloads. Roman labels use the CSS family `Campania`, with `Times New Roman` and `serif` as explicit fallbacks when Campania is not installed on the client.
+Boundary Harmony continues to retain absolute surface-chord labels for evidence and debugging. The review UI now displays the selected-key-relative Roman progression from `harmonyProgression.romanDisplay`, falling back to the absolute display only for older payloads. Roman labels use the bundled Campania WOFF webfont, with `Times New Roman` and `serif` as defensive fallbacks.
+
+The unmodified font is sourced from `https://github.com/MarcSabatella/Campania`. Its copyright and complete SIL Open Font License 1.1 text are retained at `src/assets/fonts/Campania.LICENSE.txt` beside `Campania.woff`.
 
 Roman numerals remain provisional analysis hypotheses because the current selected key is inferred only from key-signature-relative major/minor candidates.
 
@@ -44,6 +46,5 @@ Each `P<n> 시작` marker now uses the same palette index as Phrase `n`'s range 
 
 ## Deferred
 
-- Campania is referenced by family name; the repository contains no licensed Campania font asset. Clients without that font use the documented fallback.
 - Cadence/form evidence is not yet fed back into the v1.3 boundary gate.
 - A minimum Phrase duration is deliberately not hard-coded: short phrases can be musically valid, so this change removes a false cause rather than banning all short spans.
