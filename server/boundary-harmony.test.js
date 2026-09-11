@@ -13,6 +13,7 @@ describe('boundary-focused harmony and cadence',()=>{
     expect(result.scope).toBe('phrase-boundary-windows-only');
     expect(result.records[0].harmonyProgression.display).toContain('G');
     expect(result.records[0].harmonyProgression.display).toContain('C');
+    expect(result.records[0].harmonyProgression.romanDisplay).toBe('V → I | vi');
     expect(['PAC','IAC']).toContain(result.records[0].cadenceHypotheses[0].type);
     expect(result.records[0].cadenceHypotheses[0].evidence.length).toBeGreaterThan(3);
   });

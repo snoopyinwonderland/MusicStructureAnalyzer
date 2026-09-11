@@ -1,5 +1,5 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1.2';
+const VERSION = 'local-boundary-evidence-v1.3';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -159,9 +159,13 @@ function addRepeatedFigureContinuity(attacks, boundaries) {
     }
     if (endIndex > 0 && endIndex < boundaries.length - 1) {
       const boundary = boundaries[endIndex];
-      boundary.cues.push(cue('repeated-figure-run-end', .68, evidence));
-      boundary.strength = round(clamp(boundary.strength + .68));
-      boundary.primaryLevel = 'phrase';
+      const independentClosure = boundary.strength >= .65 && boundary.continuity < .75;
+      const endEvidence = { ...evidence, requiresIndependentClosureCue: true, promotedToPhraseBoundary: independentClosure };
+      boundary.cues.push(cue('repeated-figure-run-end', independentClosure ? .68 : .35, endEvidence));
+      // A repeated run ending is structural evidence, not sufficient closure by
+      // itself. In particular, do not create a tiny phrase where the notes are
+      // temporally continuous and no independent boundary cue is present.
+      if (independentClosure) boundary.primaryLevel = 'phrase';
     }
     return { ...evidence, startIndex, endIndex };
   });

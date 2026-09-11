@@ -112,8 +112,9 @@ describe('uncalibrated local boundary evidence', () => {
       expect(boundaries[index]).toMatchObject({ supported: false, state: 'continuous', primaryLevel: 'subphrase-cell' });
       expect(boundaries[index].rawStrength).toBeGreaterThanOrEqual(.65);
     }
-    expect(boundaries[17].cues.some(item => item.name === 'repeated-figure-run-end')).toBe(true);
-    expect(boundaries[17].supported).toBe(true);
+    const runEnd = boundaries[17].cues.find(item => item.name === 'repeated-figure-run-end');
+    expect(runEnd?.evidence).toMatchObject({ requiresIndependentClosureCue: true, promotedToPhraseBoundary: false });
+    expect(boundaries[17].supported).toBe(false);
   });
 
   it('merges two matching pickup gestures when the chain closes with a much larger gap', () => {
