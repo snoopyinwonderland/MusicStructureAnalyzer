@@ -1,5 +1,26 @@
 # MUSICANOTE 개발 기록
 
+## 기록 완료 기준
+
+- 알고리즘·schema·UI 동작을 바꾸는 작업은 코드만 수정한 상태를 완료로 보지 않는다.
+- 같은 변경에서 규칙의 목적과 한계, 데이터 계약, 회귀 테스트, 실제 악보 전후 결과, 알려진 미해결 문제를 관련 명세와 날짜별 개발 로그에 함께 기록한다.
+- 분석기 버전, 코드, 테스트, API payload, 뷰어 문서의 버전 표기가 일치해야 한다.
+
+## 2026-09-11 프레이즈 반복 음형 계층화 v1.2
+
+- Phrase 검토 상호작용을 추가했다. 오른쪽 드롭다운에서 Phrase를 선택하거나 악보 위 `Phrase N` 구간 띠/라벨을 클릭하면 해당 Phrase의 모든 system segment가 1초 동안 두 번 강조된다. 같은 Phrase 재선택도 새 token으로 DOM key를 갱신해 animation을 다시 시작한다. 아직 렌더링하지 않은 뒤쪽 Phrase는 해당 Verovio page를 우선 렌더링한 뒤 그 구간으로 스크롤한다.
+- 악보의 경계 막대 문구를 `P1│P2`에서 `P2 시작` 형식으로 바꿨다. 현재 기본 phrase span은 서로 겹치지 않는 `[start,end)`이므로 막대는 두 구간이 공유하는 음이 아니라 뒤 Phrase가 시작되는 위치를 뜻한다. `P1│P2`와 반반 색 anchor는 향후 분석 payload가 명시적인 overlap membership을 제공할 때만 사용할 수 있다.
+- 사용자 검토 사례 `work-25517ce2d093550b`에서 기존 분석기가 15–18마디 반복 음형의 각 1박 공백을 독립 프레이즈 경계로 채택한 원인을 확인했다. 기존 채택 경계는 note index 33/37/41 및 106/110/114였고 모두 `observed-gap`이 과대 지배했다.
+- `local-boundary-evidence-v1.2`에 반복 진행 계층을 추가했다. 3–8 attack 길이의 연속 cell이 정규화한 duration, IOI, contour에서 반복되면 전체 run의 시작·끝을 primary phrase 후보로 만들고 내부 gap은 `subphrase-cell`로 보존한다.
+- 내부 경계는 삭제하지 않는다. 기존 점수를 `rawStrength`에 보존하고 `repeated-figure-continuation`, `primaryLevel`, `suppressedBy`를 기록한다. run에는 `cellLengthInAttacks`, `cellCount`, `internalBoundaryIndices`, `similarity`, `requiresCadenceReview`를 반환한다.
+- 같은 작품의 기존 6·7번 구간은 음정 윤곽의 exact 반복이 아니라 두 pickup 제스처가 `[1,1,2]` duration prefix를 공유하고 뒤에 6 quarter의 큰 공백이 오는 구조였다. 이를 `rhythmic-gesture-continuation`으로 별도 모델링해 index 70의 내부 쉼을 subphrase로 낮추고 index 65–74를 한 primary 구간으로 유지했다.
+- 실제 API 재검증에서 15마디 2박 C#5(index 29)부터 19마디 1박 E5 직전까지 하나의 구간이 되었고, 16/17/18마디 시작 index 33/37/41은 내부 cell로 보존됐다. 36–39마디의 반복도 index 102–118 한 구간으로 합쳐졌다. 사용자 화면상의 C 음은 조표 적용 written pitch로 API에서 C#5이며, 옥타브 표기 차이는 향후 Canonical IR/engraving ID 연결에서 재검증한다.
+- 화면 검증에서 boundary index를 양쪽 phrase의 공통 음으로 표시하던 별도 UI 오류를 발견했다. 경계 `i`는 note `i` 직전이라는 분석 계약에 맞춰 기본 span을 `[start,end)`로 변경했다. 따라서 Phrase 2는 m15 b1 B3(index 28)에서 끝나고 Phrase 3은 m15 b2 C#5(index 29)에서 시작한다. 실제 overlap은 향후 별도 hypothesis가 있을 때만 표시한다.
+- 비연속 attack만으로 구간 마디를 표시해 Phrase 1이 1–4마디로 축약되는 문제도 확인했다. 다음 경계가 m11 b1이면 시간 span의 끝을 m10으로 표시하고, endpoint pitch는 마지막 포함 음표를 별도로 유지하도록 수정했다. Chrome 검증에서 Phrase 2 `11–15마디 E4→B3`, Phrase 3 `15–18마디 C#5→B5`가 확인됐다.
+- 단위 테스트에 4-cell 반복 진행, 2-gesture chain과 그 반례 2개, 비중첩 `[start,end)` span, 침묵 마디, `P2 시작` 표시 및 재선택 flash key 사례를 추가했다. 관련 3개 파일의 테스트 40개와 TypeScript/Vite production build가 통과했다. 전체 suite의 직전 실행은 이번 변경과 무관한 기존 evaluation case의 `createdAt` 누락 1건 때문에 204개 중 203개 통과했다.
+- Phrase 5를 만든 2-gesture 규칙에는 작품 ID·마디·음높이·제목 상수가 없다. 같은 rhythm prefix만 같거나 큰 종결 공백만 있는 경우에는 합치지 않도록 반례 2개를 추가했다. 현재 코퍼스에서 결정론적으로 고른 500곡(105,306 attacks) 표본을 점검한 결과 repeated-run은 100곡/239건, narrower rhythmic-gesture rule은 12곡/17건(작품 기준 2.4%)에만 발동했다. 이는 규칙이 한 작품 전용이 아님을 확인하는 적용 범위 검사일 뿐, 17건이 모두 음악적으로 옳다는 정확도 증명은 아니다.
+- 상세 설계, threshold, 실제 전후 표, 오탐 방지 조건과 deferred cadence 결합은 `docs/phrase-boundary-v1.2-repetition-hierarchy.md`에 기록했다.
+
 ## 2026-09-06 Query 300개 평가 보고서 대조 및 Harness 이관
 
 - `docs/query-100-evaluation-report.md`를 현재 생산 검색 코드와 대조했다. 문서에는 300개 Query 표가 있으나 실측 서술은76개이고, 실행 당시 Query JSON·work/source/stream ID·target onset·결과 snapshot·코드/DB 식별자가 없어76.3%를 재현 가능한 현재 성능 수치로 사용하지 않는다.

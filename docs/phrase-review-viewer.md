@@ -10,6 +10,7 @@ The full MusicXML score viewer is the shared review surface for MusicSearch and 
 - The score displays complete, alternating-color `P1`, `P2`, ... ranges above the staves, including the analyzed stream's first and last notes.
 - Each range uses a visible band with start/end caps, a final `끝` marker, and a label such as `Phrase 1 · 17–18마디 · F#5→F#5`.
 - A phrase crossing systems is continued with one range segment on every affected system so both endpoints remain visible.
+- Selecting a Phrase in the right-hand dropdown or clicking its score band/`Phrase N` label flashes every system segment of that Phrase for one second. Re-selecting the same Phrase restarts the flash. If its page has not been engraved yet, that Verovio page is rendered first and scrolled into view.
 - A supported vertical marker is labelled by the phrase that starts there, for example `P2 시작`. The former `P1│P2` form incorrectly suggested that its anchor note belonged to both phrases.
 - A boundary index means “immediately before this note.” Default phrase spans therefore follow `[start,end)` semantics: the preceding phrase ends at the previous note and the boundary note starts the following phrase. No note is shared unless a future explicit overlap hypothesis says so.
 - A split-color shared-note anchor and `P1│P2`-style wording are reserved for a future explicit, versioned overlap hypothesis; neither is inferred from a normal boundary.

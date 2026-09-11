@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { denseTempoDisplayIndexes, excerptMeasureIndexes, excerptOrdinalOffset, fullScoreBreakMode, fullScoreLayout, normalizeMusicXmlInput, phraseBoundaryLabel, tiedNoteChain, type TieChainEvent } from './FullXmlNotation';
+import { denseTempoDisplayIndexes, excerptMeasureIndexes, excerptOrdinalOffset, fullScoreBreakMode, fullScoreLayout, normalizeMusicXmlInput, phraseBoundaryLabel, phraseSegmentKey, tiedNoteChain, type TieChainEvent } from './FullXmlNotation';
 
 const event = (value: string, overrides: Partial<Omit<TieChainEvent<string>, 'value'>> = {}): TieChainEvent<string> => ({
   value, partId: 'P3', staff: '1', voice: '1', measureOrdinal: 25, beat: 4, pitchMidi: 65, isRest: false, tieTypes: [], ...overrides,
@@ -18,6 +18,10 @@ describe('phrase boundary labels',()=>{
   it('labels a non-overlapping boundary by the phrase that starts there',()=>{
     expect(phraseBoundaryLabel({afterPhrase:2})).toBe('P2 시작');
     expect(phraseBoundaryLabel({})).toBe('경계');
+  });
+  it('changes only the selected phrase key when a new flash token is issued',()=>{
+    expect(phraseSegmentKey('5-2',5,5,3)).toBe('5-2-3');
+    expect(phraseSegmentKey('4-2',4,5,3)).toBe('4-2-0');
   });
 });
 
