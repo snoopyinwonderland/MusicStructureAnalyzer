@@ -97,6 +97,58 @@ describe('uncalibrated local boundary evidence', () => {
     }
   });
 
+  it('keeps consecutive repeated cells in one primary phrase while preserving internal cell boundaries', () => {
+    const input = notes(
+      [59, 73,69,74,71, 75,71,78,76, 77,73,80,78, 81,78,80,83, 76,73],
+      [0, 1,1.5,2,3, 5,5.5,6,7, 9,9.5,10,11, 13,13.5,14,15, 16,17],
+      [1, .5,.5,1,1, .5,.5,1,1, .5,.5,1,1, .5,.5,1,1, 1,1],
+    );
+    const analysis = analyzePhraseBoundaries(input), boundaries = analysis.boundaries;
+    expect(analysis.repeatedFigureRuns).toHaveLength(1);
+    expect(analysis.repeatedFigureRuns[0]).toMatchObject({ startIndex: 1, endIndex: 17, cellLengthInAttacks: 4, internalBoundaryIndices: [5, 9, 13] });
+    expect(boundaries[1].cues.some(item => item.name === 'repeated-figure-run-start')).toBe(true);
+    expect(boundaries[1].supported).toBe(true);
+    for (const index of [5, 9, 13]) {
+      expect(boundaries[index]).toMatchObject({ supported: false, state: 'continuous', primaryLevel: 'subphrase-cell' });
+      expect(boundaries[index].rawStrength).toBeGreaterThanOrEqual(.65);
+    }
+    expect(boundaries[17].cues.some(item => item.name === 'repeated-figure-run-end')).toBe(true);
+    expect(boundaries[17].supported).toBe(true);
+  });
+
+  it('merges two matching pickup gestures when the chain closes with a much larger gap', () => {
+    const input = notes(
+      [55, 66,68,69,64,61, 62,61,59,57, 77,74],
+      [0, 3,3.25,3.5,4,5, 7,7.25,7.5,8, 14,15],
+      [2, .25,.25,.5,1,1, .25,.25,.5,2, 1,1],
+    );
+    const analysis = analyzePhraseBoundaries(input), middle = analysis.boundaries[6];
+    expect(analysis.rhythmicGestureGroups).toHaveLength(1);
+    expect(analysis.rhythmicGestureGroups[0]).toMatchObject({ startIndex: 1, internalBoundaryIndex: 6, endIndex: 10, sharedRhythmPrefix: [1, 1, 2] });
+    expect(middle).toMatchObject({ supported: false, state: 'continuous', primaryLevel: 'subphrase-cell' });
+    expect(middle.cues.some(item => item.name === 'rhythmic-gesture-continuation')).toBe(true);
+  });
+
+  it('does not merge pickup gestures without a substantially larger closing gap', () => {
+    const input = notes(
+      [55, 66,68,69,64,61, 62,61,59,57, 77,74],
+      [0, 3,3.25,3.5,4,5, 7,7.25,7.5,8, 10,11],
+      [2, .25,.25,.5,1,1, .25,.25,.5,1, 1,1],
+    );
+    const analysis = analyzePhraseBoundaries(input);
+    expect(analysis.rhythmicGestureGroups).toHaveLength(0);
+    expect(analysis.boundaries[6].supported).toBe(true);
+  });
+
+  it('does not merge different rhythmic prefixes merely because the following gap is large', () => {
+    const input = notes(
+      [55, 66,68,69,64,61, 62,61,59,57, 77,74],
+      [0, 3,3.25,3.5,4,5, 7,7.5,7.75,8, 14,15],
+      [2, .25,.25,.5,1,1, .5,.25,.25,2, 1,1],
+    );
+    expect(analyzePhraseBoundaries(input).rhythmicGestureGroups).toHaveLength(0);
+  });
+
   it('does not invent timing evidence from invalid or missing timestamps/durations', () => {
     const input = notes([60, 62, 64, 65, 67]);
     input[0].durationRatio = null;

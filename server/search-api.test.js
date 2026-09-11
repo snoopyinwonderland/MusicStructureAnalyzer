@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { alignLocal, alignRhythmDtw, annotateStructural, calibratedResultRanking, catalogTitleMatches, compareStructural, displayMeasure, diversifyCandidates, findAbsoluteExact, findAbsoluteExactMatches, firstMeasureIsPickup, intervalRetrievalBonus, intervalShape, metricWeightAt, metricalEvidence, metricalSkeleton, metricalSkeletonEvidence, motifImportance, normalizeYoutubeTitle, optionalPositiveNumber, parseMeter, phraseAlignmentEvidence, pitchEqualitySimilarity, prepareQueryNotes, queryDiscrimination, rankedMotifs, repairMetadataInXml, repairMetadataText, reflowRestrictedPreview, restrictedPreviewXml, resultAdmissionAllowed, retrievalRowLimit, rhythmRankFactor, rhythmShapeSimilarity, score, searchCatalog, searchDatabase, sparseAlignmentAllowed, splitIntervalSeedBonus, translateInstrumentName, transpositionResidualScore, youtubeId } from './search-api.mjs';
+import { alignLocal, alignRhythmDtw, annotateStructural, calibratedResultRanking, catalogTitleMatches, compareStructural, displayMeasure, diversifyCandidates, findAbsoluteExact, findAbsoluteExactMatches, firstMeasureIsPickup, fullResearchScoreEnabled, intervalRetrievalBonus, intervalShape, metricWeightAt, metricalEvidence, metricalSkeleton, metricalSkeletonEvidence, motifImportance, normalizeYoutubeTitle, optionalPositiveNumber, parseMeter, phraseAlignmentEvidence, pitchEqualitySimilarity, prepareQueryNotes, queryDiscrimination, rankedMotifs, repairMetadataInXml, repairMetadataText, reflowRestrictedPreview, restrictedPreviewXml, resultAdmissionAllowed, retrievalRowLimit, rhythmRankFactor, rhythmShapeSimilarity, score, searchCatalog, searchDatabase, sparseAlignmentAllowed, splitIntervalSeedBonus, translateInstrumentName, transpositionResidualScore, youtubeId } from './search-api.mjs';
 
 const notes = pitches => pitches.map((pitchMidi, i) => ({
   id: String(i), kind: 'note', pitchMidi, durationRatio: 1,
@@ -35,6 +35,12 @@ describe('displayed result score calibration',()=>{
 });
 
 describe('restricted score preview',()=>{
+  it('shows the complete research score locally while retaining the production restriction',()=>{
+    expect(fullResearchScoreEnabled({NODE_ENV:'development'})).toBe(true);
+    expect(fullResearchScoreEnabled({NODE_ENV:'production'})).toBe(false);
+    expect(fullResearchScoreEnabled({NODE_ENV:'production',KYSING_FULL_SCORE_TEST_MODE:'1'})).toBe(true);
+    expect(fullResearchScoreEnabled({NODE_ENV:'development',KYSING_FULL_SCORE_TEST_MODE:'0'})).toBe(false);
+  });
   it('removes encoded system and page layout only when explicitly reflowing',()=>{
     const xml='<measure number="1"><print new-page="yes"><system-layout><system-distance>140</system-distance></system-layout></print><note/></measure><measure number="2"><print new-system="yes"/><note/></measure><measure number="3"><print><measure-numbering>system</measure-numbering></print></measure>';
     const reflowed=reflowRestrictedPreview(xml);

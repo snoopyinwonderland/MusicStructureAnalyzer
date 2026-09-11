@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { excerptMeasureIndexes, excerptOrdinalOffset, fullScoreLayout, tiedNoteChain, type TieChainEvent } from './FullXmlNotation';
+import { denseTempoDisplayIndexes, excerptMeasureIndexes, excerptOrdinalOffset, fullScoreBreakMode, fullScoreLayout, normalizeMusicXmlInput, phraseBoundaryLabel, tiedNoteChain, type TieChainEvent } from './FullXmlNotation';
 
 const event = (value: string, overrides: Partial<Omit<TieChainEvent<string>, 'value'>> = {}): TieChainEvent<string> => ({
   value, partId: 'P3', staff: '1', voice: '1', measureOrdinal: 25, beat: 4, pitchMidi: 65, isRest: false, tieTypes: [], ...overrides,
@@ -9,6 +9,25 @@ describe('full score layout',()=>{
   it('uses a taller, smaller-scale page for five or more parts',()=>{
     expect(fullScoreLayout(4)).toEqual({pageWidth:1900,pageHeight:2700,scale:24});
     expect(fullScoreLayout(5)).toEqual({pageWidth:2100,pageHeight:3100,scale:21});
+  });  it('reflows for the viewer page instead of forcing source paper breaks',()=>{
+    expect(fullScoreBreakMode).toBe('auto');
+  });
+});
+
+describe('phrase boundary labels',()=>{
+  it('labels a non-overlapping boundary by the phrase that starts there',()=>{
+    expect(phraseBoundaryLabel({afterPhrase:2})).toBe('P2 시작');
+    expect(phraseBoundaryLabel({})).toBe('경계');
+  });
+});
+
+describe('MusicXML input normalization',()=>{
+  it('removes a UTF-8 BOM before Verovio format detection',()=>{
+    expect(normalizeMusicXmlInput('\uFEFF<?xml version="1.0"?><score-partwise/>')).toBe('<?xml version="1.0"?><score-partwise/>');
+  });
+  it('does not alter MusicXML that has no BOM',()=>{
+    const xml='<?xml version="1.0"?><score-partwise/>';
+    expect(normalizeMusicXmlInput(xml)).toBe(xml);
   });
 });
 
@@ -51,4 +70,15 @@ describe('MusicXML tie highlighting', () => {
     expect(tiedNoteChain(start, [start, rest, laterStop])).toEqual(['start']);
     expect(tiedNoteChain(start, [start, malformed, laterStop])).toEqual(['start']);
   });
-});
+
+  it('collapses dense micro-tempo automation but preserves a large tempo change', () => {
+    const keep = denseTempoDisplayIndexes([
+      { measureIndex: 0, bpm: 63, pure: true },
+      { measureIndex: 0, bpm: 68, pure: true },
+      { measureIndex: 1, bpm: 65, pure: true },
+      { measureIndex: 2, bpm: 70, pure: true },
+      { measureIndex: 3, bpm: 112, pure: true },
+      { measureIndex: 4, bpm: 109, pure: true },
+    ]);
+    expect([...keep]).toEqual([0, 4]);
+  });});

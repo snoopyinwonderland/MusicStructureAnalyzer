@@ -1,5 +1,5 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1';
+const VERSION = 'local-boundary-evidence-v1.2';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -93,6 +93,115 @@ function addMotifSupport(attacks, boundaries) {
   }
 }
 
+function cellShape(attacks, start, length) {
+  const notes = attacks.slice(start, start + length);
+  if (notes.length !== length || notes.some(note => note.pitch === null || note.duration === null || note.onset === null)) return null;
+  const unit = median(notes.map(note => note.duration));
+  if (!unit) return null;
+  return {
+    rhythm: notes.map(note => round(note.duration / unit)),
+    iois: notes.slice(1).map((note, index) => round((note.onset - notes[index].onset) / unit)),
+    contour: notes.slice(1).map((note, index) => Math.sign(note.pitch - notes[index].pitch)),
+  };
+}
+
+function cellShapeSimilarity(left, right) {
+  if (!left || !right || left.rhythm.length !== right.rhythm.length) return 0;
+  const closeRatio = (a, b, tolerance = .12) => a.length === b.length
+    ? a.filter((value, index) => Math.abs(value - b[index]) <= tolerance * Math.max(1, Math.abs(value), Math.abs(b[index]))).length / Math.max(1, a.length)
+    : 0;
+  const contour = left.contour.filter((value, index) => value === right.contour[index]).length / Math.max(1, left.contour.length);
+  return round(.45 * closeRatio(left.rhythm, right.rhythm) + .35 * closeRatio(left.iois, right.iois) + .2 * contour);
+}
+
+// Repeated sequential figures often contain breaths between cells without ending the
+// larger phrase. Preserve those cell divisions as evidence, but demote them from the
+// primary phrase level and expose the whole run's start/end as candidates.
+function addRepeatedFigureContinuity(attacks, boundaries) {
+  const gapPositions = [];
+  for (let position = 1; position < attacks.length; position++) {
+    const boundary = boundaries[attacks[position].index];
+    if (boundary.cues.some(item => item.name === 'observed-gap' && item.strength >= .65)) gapPositions.push(position);
+  }
+  const runs = [];
+  for (let i = 0; i < gapPositions.length - 1; i++) {
+    const first = gapPositions[i], second = gapPositions[i + 1], length = second - first, start = first - length, end = second + length;
+    if (length < 3 || length > 8 || start < 0 || end > attacks.length) continue;
+    const firstSimilarity = cellShapeSimilarity(cellShape(attacks, start, length), cellShape(attacks, first, length));
+    const secondSimilarity = cellShapeSimilarity(cellShape(attacks, first, length), cellShape(attacks, second, length));
+    if (firstSimilarity < .82 || secondSimilarity < .72) continue;
+    const candidate = { start, end, length, internal: [first, second], similarities: [firstSimilarity, secondSimilarity] };
+    const previous = runs.at(-1);
+    if (previous && previous.length === length && candidate.start <= previous.end) {
+      previous.end = Math.max(previous.end, candidate.end);
+      previous.internal = [...new Set([...previous.internal, ...candidate.internal])].sort((a, b) => a - b);
+      previous.similarities.push(...candidate.similarities);
+    } else runs.push(candidate);
+  }
+  return runs.map((run, runIndex) => {
+    const runId = `repeat-run-${runIndex + 1}-${attacks[run.start].index}`;
+    const startIndex = attacks[run.start].index, endIndex = run.end < attacks.length ? attacks[run.end].index : boundaries.length - 1;
+    const evidence = { runId, cellLengthInAttacks: run.length, cellCount: run.internal.length + 1, internalBoundaryIndices: run.internal.map(position => attacks[position].index), similarity: round(median(run.similarities) || 0), requiresCadenceReview: true };
+    for (const position of run.internal) {
+      const boundary = boundaries[attacks[position].index];
+      boundary.rawStrength = boundary.strength;
+      boundary.continuity = Math.max(boundary.continuity, .9);
+      boundary.cues.push(cue('repeated-figure-continuation', .9, evidence));
+      boundary.primaryLevel = 'subphrase-cell';
+      boundary.suppressedBy = runId;
+      boundary.strength = round(Math.min(boundary.strength, .49));
+    }
+    if (startIndex > 0) {
+      const boundary = boundaries[startIndex];
+      boundary.cues.push(cue('repeated-figure-run-start', .72, evidence));
+      boundary.strength = round(clamp(boundary.strength + .72));
+      boundary.primaryLevel = 'phrase';
+    }
+    if (endIndex > 0 && endIndex < boundaries.length - 1) {
+      const boundary = boundaries[endIndex];
+      boundary.cues.push(cue('repeated-figure-run-end', .68, evidence));
+      boundary.strength = round(clamp(boundary.strength + .68));
+      boundary.primaryLevel = 'phrase';
+    }
+    return { ...evidence, startIndex, endIndex };
+  });
+}
+
+function normalizedPrefix(attacks, start, end, count = 3) {
+  const notes = attacks.slice(start, Math.min(end, start + count));
+  if (notes.length < count || notes.some(note => note.duration === null)) return null;
+  const unit = notes[0].duration;
+  return unit > 0 ? notes.map(note => round(note.duration / unit)) : null;
+}
+
+function addRhythmicGestureContinuity(attacks, boundaries) {
+  const gaps = [];
+  for (let position = 1; position < attacks.length; position++) {
+    const boundary = boundaries[attacks[position].index], previous = attacks[position - 1];
+    const observed = boundary.cues.find(item => item.name === 'observed-gap' && item.strength >= .65);
+    if (observed && previous.end !== null && attacks[position].onset !== null) gaps.push({ position, absolute: attacks[position].onset - previous.end });
+  }
+  const groups = [];
+  for (let i = 0; i < gaps.length - 2; i++) {
+    const [left, middle, right] = gaps.slice(i, i + 3), leftLength = middle.position - left.position, rightLength = right.position - middle.position;
+    if (leftLength < 3 || leftLength > 8 || rightLength < 3 || rightLength > 8 || right.absolute < Math.max(2, middle.absolute * 2.5)) continue;
+    const first = normalizedPrefix(attacks, left.position, middle.position), second = normalizedPrefix(attacks, middle.position, right.position);
+    if (!first || !second || first.some((value, index) => Math.abs(value - second[index]) > .12 * Math.max(1, value, second[index]))) continue;
+    // Require a genuinely short-short-long pickup cell, not arbitrary equal notes.
+    if (!(first[0] <= first[2] * .6 && first[1] <= first[2] * .6)) continue;
+    const boundary = boundaries[attacks[middle.position].index], groupId = `gesture-chain-${groups.length + 1}-${attacks[left.position].index}`;
+    const evidence = { groupId, startIndex: attacks[left.position].index, internalBoundaryIndex: attacks[middle.position].index, endIndex: attacks[right.position].index, sharedRhythmPrefix: first, followingGapQuarters: round(right.absolute), requiresCadenceReview: true };
+    boundary.rawStrength = boundary.rawStrength ?? boundary.strength;
+    boundary.continuity = Math.max(boundary.continuity, .82);
+    boundary.cues.push(cue('rhythmic-gesture-continuation', .82, evidence));
+    boundary.primaryLevel = 'subphrase-cell';
+    boundary.suppressedBy = groupId;
+    boundary.strength = round(Math.min(boundary.strength, .49));
+    groups.push(evidence);
+  }
+  return groups;
+}
+
 /** Boundaries[i] is immediately before original note i; endpoints remain unknown. */
 export function analyzePhraseBoundaries(notes) {
   const events = timeline(Array.isArray(notes) ? notes : []);
@@ -124,6 +233,8 @@ export function analyzePhraseBoundaries(notes) {
     }
   }
   addMotifSupport(attacks, boundaries);
+  const repeatedFigureRuns = addRepeatedFigureContinuity(attacks, boundaries);
+  const rhythmicGestureGroups = addRhythmicGestureContinuity(attacks, boundaries);
   for (let index = 1; index < events.length; index++) {
     const boundary = boundaries[index];
     if (!events[index].attack) {
@@ -134,7 +245,7 @@ export function analyzePhraseBoundaries(notes) {
     boundary.reliable = boundary.supported || boundary.continuity >= .75;
     boundary.state = boundary.supported ? 'boundary' : boundary.continuity >= .75 ? 'continuous' : 'unknown';
   }
-  return { version: VERSION, calibrated: false, label: 'local boundary evidence; harmonic cadence unavailable', boundaries };
+  return { version: VERSION, calibrated: false, label: 'local boundary evidence with repeated-figure hierarchy; harmonic cadence is a separate layer', repeatedFigureRuns, rhythmicGestureGroups, boundaries };
 }
 
 /** Only adjacent INTERNAL mapped transitions are comparable; use full candidate indices. */

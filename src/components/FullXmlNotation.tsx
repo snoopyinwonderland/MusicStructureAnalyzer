@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { VerovioToolkit } from 'verovio/esm';
 import type { CorpusNote } from '../types';
+import { normalizeMusicXmlVoices } from '../music/musicXmlVoiceNormalizer';
 
 declare module 'verovio/esm' { interface VerovioToolkit { getPageCount(): number; getPageWithElement(id: string): number } }
 
@@ -126,17 +127,47 @@ const tempoSignature = (direction: Element) => {
   const perMinute = metronome?.getElementsByTagName('per-minute')[0]?.textContent?.trim() || '';
   return [beatUnit, dots, perMinute, soundTempo || ''].join('|');
 };
+export type TempoDisplayPoint = { measureIndex: number; bpm: number; pure: boolean };
+export const denseTempoDisplayIndexes = (points: readonly TempoDisplayPoint[]) => {
+  const keep = new Set(points.map((_, index) => index));
+  const pure = points.map((point, index) => ({ ...point, index })).filter(point => point.pure && Number.isFinite(point.bpm));
+  const dense = new Set<number>();
+  for (let left = 0; left < pure.length; left++) {
+    const window = pure.slice(left).filter(point => point.measureIndex <= pure[left].measureIndex + 3);
+    if (window.length >= 4) for (const point of window) dense.add(point.index);
+  }
+  let priorKept: (TempoDisplayPoint & { index: number }) | null = null;
+  for (const point of pure) {
+    if (!dense.has(point.index)) { priorKept = null; continue; }
+    if (!priorKept) { priorKept = point; continue; }
+    const gap = point.measureIndex - priorKept.measureIndex;
+    const ratio = Math.max(point.bpm, priorKept.bpm) / Math.max(1, Math.min(point.bpm, priorKept.bpm));
+    if (gap >= 4 || ratio >= 1.25) priorKept = point;
+    else keep.delete(point.index);
+  }
+  return keep;
+};
+const isPureMetronomeDirection = (direction: Element) => {
+  const types = [...direction.children].filter(child => child.tagName === 'direction-type');
+  return types.length > 0 && types.every(type => type.children.length > 0 && [...type.children].every(child => child.tagName === 'metronome'));
+};
+const tempoBpm = (direction: Element) => Number(direction.getElementsByTagName('per-minute')[0]?.textContent?.trim() || direction.getElementsByTagName('sound')[0]?.getAttribute('tempo') || NaN);
 const dedupeTempoDirections = (part: Element) => {
+  const measures = [...part.children].filter(child => child.tagName === 'measure');
+  const entries: { direction: Element; signature: string; measureIndex: number; bpm: number; pure: boolean }[] = [];
   let previousTempo = '';
-  for (const measure of [...part.children].filter(child => child.tagName === 'measure')) {
+  for (const [measureIndex, measure] of measures.entries()) {
     const seenHere = new Set<string>();
     for (const direction of [...measure.children].filter(child => child.tagName === 'direction')) {
       const signature = tempoSignature(direction);
       if (!signature) continue;
-      if (signature === previousTempo || seenHere.has(signature)) direction.remove();
-      else { seenHere.add(signature); previousTempo = signature; }
+      if (signature === previousTempo || seenHere.has(signature)) { direction.remove(); continue; }
+      seenHere.add(signature); previousTempo = signature;
+      entries.push({ direction, signature, measureIndex, bpm: tempoBpm(direction), pure: isPureMetronomeDirection(direction) });
     }
   }
+  const keep = denseTempoDisplayIndexes(entries);
+  entries.forEach((entry, index) => { if (!keep.has(index)) entry.direction.remove(); });
 };
 const dedupeChordLyrics = (part: Element) => {
   for (const measure of [...part.children].filter(child => child.tagName === 'measure')) {
@@ -156,6 +187,13 @@ export const excerptOrdinalOffset = (targets: CorpusNote[]) => { const ordinals=
 export const fullScoreLayout = (partCount: number) => partCount >= 5
   ? { pageWidth: 2100, pageHeight: 3100, scale: 21 }
   : { pageWidth: 1900, pageHeight: 2700, scale: 24 };
+export const fullScoreBreakMode = 'auto' as const;
+export const normalizeMusicXmlInput = (xml: string) => xml.replace(/^\uFEFF/, '');
+export type PhraseBoundaryMarker = { note: CorpusNote; boundaryIndex: number; strength: number; beforePhrase?:number; afterPhrase?:number };
+export type PhraseSpanMarker = { phraseNumber: number; startIndex: number; endIndex: number; startNote: CorpusNote; endNote: CorpusNote; sharedStart: boolean; sharedEnd: boolean; startMeasure?:number; endMeasure?:number; startPitch?:string; endPitch?:string };
+export const phraseBoundaryLabel = (marker: Pick<PhraseBoundaryMarker, 'afterPhrase'>) => marker.afterPhrase ? `P${marker.afterPhrase} 시작` : '경계';
+const EMPTY_PHRASE_MARKERS: PhraseBoundaryMarker[] = [];
+const EMPTY_PHRASE_SPANS: PhraseSpanMarker[] = [];
 const trimToExcerpt = (doc: XMLDocument, partId: string, start: number, end: number, ordinalStart?: number, ordinalEnd?: number) => {
   for (const p of [...doc.getElementsByTagName('part')]) if (p.getAttribute('id') !== partId) p.remove();
   for (const p of [...doc.getElementsByTagName('score-part')]) if (p.getAttribute('id') !== partId) p.remove();
@@ -175,12 +213,15 @@ const trimToExcerpt = (doc: XMLDocument, partId: string, start: number, end: num
   }
 };
 
-export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPTY_NOTES, activePlaybackIndex = null, onPlaybackRangeChange, streamId, excerpt = false, autoScroll = true, pretrimmed = false, measureOrdinalOffset = 0 }: { xml: string; start: number; end: number; targets: CorpusNote[]; playbackNotes?: CorpusNote[]; activePlaybackIndex?: number|null; onPlaybackRangeChange?:(range:{first:number|null;last:number|null;complete:boolean})=>void; streamId: string; excerpt?: boolean; autoScroll?: boolean; pretrimmed?: boolean; measureOrdinalOffset?: number }) {
+export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPTY_NOTES, activePlaybackIndex = null, onPlaybackRangeChange, streamId, excerpt = false, autoScroll = true, pretrimmed = false, measureOrdinalOffset = 0, phraseMarkers = EMPTY_PHRASE_MARKERS, phraseSpans = EMPTY_PHRASE_SPANS, phraseVisible = true, selectedPhraseBoundary = null, onPhraseBoundarySelect }: { xml: string; start: number; end: number; targets: CorpusNote[]; playbackNotes?: CorpusNote[]; activePlaybackIndex?: number|null; onPlaybackRangeChange?:(range:{first:number|null;last:number|null;complete:boolean})=>void; streamId: string; excerpt?: boolean; autoScroll?: boolean; pretrimmed?: boolean; measureOrdinalOffset?: number; phraseMarkers?: PhraseBoundaryMarker[]; phraseSpans?: PhraseSpanMarker[]; phraseVisible?: boolean; selectedPhraseBoundary?: number|null; onPhraseBoundarySelect?:(boundaryIndex:number)=>void }) {
   const [pages, setPages] = useState<(string | null)[]>([]);
   const [renderProgress, setRenderProgress] = useState({ done: 0, total: 0 });
   const [renderError, setRenderError] = useState('');
   const [excerptWidth, setExcerptWidth] = useState(620);
   const [playhead, setPlayhead] = useState<{left:number;top:number;height:number}|null>(null);
+  const [phraseMarkerPositions, setPhraseMarkerPositions] = useState<Array<{boundaryIndex:number;strength:number;beforePhrase?:number;afterPhrase?:number;left:number;top:number;height:number}>>([]);
+  const [phraseRangeSegments,setPhraseRangeSegments]=useState<Array<{key:string;phraseNumber:number;colorIndex:number;left:number;top:number;width:number;label:boolean;endLabel:boolean;labelText:string}>>([]);
+  const [phraseSharedAnchors,setPhraseSharedAnchors]=useState<Array<{key:string;left:number;top:number;leftColor:number;rightColor:number}>>([]);
   const host = useRef<HTMLDivElement>(null);
   const autoScrolledKey = useRef('');
   const renderMore = useRef<(() => void) | null>(null);
@@ -192,18 +233,19 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
     instance.current!.then(async tk => {
       if(!live)return;
       if(!excerpt){await new Promise<void>(resolve=>window.setTimeout(resolve,40));if(!live)return}
-      const doc = new DOMParser().parseFromString(xml, 'application/xml');
+      const doc = new DOMParser().parseFromString(normalizeMusicXmlInput(xml), 'application/xml');
       const [partId, staff = '1', voice = '1'] = streamId.split(':');
       for (const tag of ['credit', 'work', 'movement-title']) for (const n of [...doc.getElementsByTagName(tag)]) n.remove();
       normalizePickupMeasures(doc);
       let positionedOrdinalOffset=measureOrdinalOffset;
       if (excerpt && !pretrimmed) { const ordinals=targets.map(note=>note.measureOrdinal).filter((value):value is number=>Number.isFinite(value)),firstOrdinal=ordinals.length?Math.min(...ordinals):undefined;trimToExcerpt(doc,partId,start,end,firstOrdinal,ordinals.length?Math.max(...ordinals):undefined);positionedOrdinalOffset=excerptOrdinalOffset(targets); }
       const part = [...doc.getElementsByTagName('part')].find(x => x.getAttribute('id') === partId);
+      for (const scorePart of [...doc.getElementsByTagName('part')]) dedupeTempoDirections(scorePart);
       if(part)dedupeChordLyrics(part);
       const excerptMeasures=excerpt?[...(part?.children||[])].filter(child=>child.tagName==='measure').length:0,partCount=doc.getElementsByTagName('part').length,fullLayout=fullScoreLayout(partCount),pageWidth=excerpt?Math.max(1800,excerptMeasures*450):fullLayout.pageWidth,pageHeight=excerpt?720:fullLayout.pageHeight;
       if(excerpt)setExcerptWidth(Math.max(620,Math.round(620*pageWidth/1800)));
       if(!excerpt)host.current?.style.setProperty('--score-page-ratio',`${pageWidth} / ${pageHeight}`);
-      tk.setOptions({ pageWidth, pageHeight, pageMarginTop: excerpt ? 24 : 75, pageMarginBottom: excerpt ? 38 : 210, adjustPageHeight: excerpt, scale: excerpt ? 25 : fullLayout.scale, breaks: excerpt ? 'none' : 'encoded', svgViewBox: true, header: 'none', footer: 'none', mnumInterval: 1, spacingStaff: 12, spacingSystem: 6 });
+      tk.setOptions({ pageWidth, pageHeight, pageMarginTop: excerpt ? 24 : 75, pageMarginBottom: excerpt ? 38 : 210, adjustPageHeight: excerpt, scale: excerpt ? 25 : fullLayout.scale, breaks: excerpt ? 'none' : fullScoreBreakMode, inputFrom: 'musicxml', svgViewBox: true, header: 'none', footer: 'none', mnumInterval: 1, spacingStaff: 12, spacingSystem: 6 });
       const ordered = [...(part?.getElementsByTagName('note') || [])];
       const positions = positionedNotes(part, positionedOrdinalOffset);
       const tieEvents = ordered.flatMap(note => {
@@ -235,8 +277,21 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
         const note = ordered.find(n => { const position = positions.get(n),measureMatches=target.measureOrdinal?position?.measureOrdinal===target.measureOrdinal:n.closest('measure')?.getAttribute('number')===String(target.measure); return !playbackUsed.has(n) && measureMatches && !n.getElementsByTagName('rest').length && position?.staff === staff && position?.voice === voice && Math.abs(position.beat - Number(target.beat)) < 1e-6 && midi(n) === target.pitchMidi });
         if (!note) return;playbackUsed.add(note);const id=note.getAttribute('id')||`playback-note-${playbackIndex}`;note.setAttribute('id',id);playbackIds.set(id,playbackIndex);
       });
+      const phraseIds = new Map<string, {noteIndex:number;boundary?:PhraseBoundaryMarker}>(), phraseUsed = new Set<Element>(), phraseTargets=new Map<number,CorpusNote>();
+      for(const span of phraseSpans){phraseTargets.set(span.startIndex,span.startNote);phraseTargets.set(span.endIndex,span.endNote)}
+      const markerByNote=new Map(phraseMarkers.map(marker=>[marker.note,marker]));
+      for (const [noteIndex,target] of [...phraseTargets].sort((a,b)=>a[0]-b[0])) {
+        const note = ordered.find(n => { const position = positions.get(n),measureMatches=target.measureOrdinal?position?.measureOrdinal===target.measureOrdinal:n.closest('measure')?.getAttribute('number')===String(target.measure); return !phraseUsed.has(n) && measureMatches && !n.getElementsByTagName('rest').length && position?.staff === staff && position?.voice === voice && Math.abs(position.beat - Number(target.beat)) < 1e-6 && midi(n) === target.pitchMidi });
+        if (!note) continue;
+        phraseUsed.add(note);
+        const id=note.getAttribute('id')||`phrase-span-note-${noteIndex}`;
+        note.setAttribute('id',id);phraseIds.set(id,{noteIndex,boundary:markerByNote.get(target)});
+      }
       if(!live)return;
-      tk.loadData(new XMLSerializer().serializeToString(doc));
+      // Normalize only the temporary render document; source XML and analysis stay unchanged.
+      normalizeMusicXmlVoices(doc);
+      const loaded = tk.loadData(new XMLSerializer().serializeToString(doc));
+      if (!loaded || tk.getPageCount() < 1) throw new Error('MusicXML을 Verovio에서 불러오지 못했습니다.');
       const renderedPlaybackIndices=new Set<number>();
       const notifyPlaybackRange=(complete:boolean)=>{const values=[...renderedPlaybackIndices].sort((a,b)=>a-b);onPlaybackRangeChange?.({first:values[0]??null,last:values.at(-1)??null,complete})};
       const renderPage = (page: number) => {
@@ -246,6 +301,7 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
           if (n) { n.setAttribute('data-target-note', 'true'); if (i === 0) n.setAttribute('data-target-start', 'true'); }
         }
         for(const [id,index] of playbackIds){const n=svg.getElementById(id);if(n){n.setAttribute('data-playback-index',String(index));renderedPlaybackIndices.add(index)}}
+        for(const [id,marker] of phraseIds){const n=svg.getElementById(id);if(n){n.setAttribute('data-phrase-note-index',String(marker.noteIndex));if(marker.boundary){n.setAttribute('data-phrase-boundary-index',String(marker.boundary.boundaryIndex));n.setAttribute('data-phrase-strength',String(marker.boundary.strength));if(marker.boundary.beforePhrase)n.setAttribute('data-phrase-before',String(marker.boundary.beforePhrase));if(marker.boundary.afterPhrase)n.setAttribute('data-phrase-after',String(marker.boundary.afterPhrase))}}}
         return new XMLSerializer().serializeToString(svg.documentElement);
       };
       const pageCount = tk.getPageCount();
@@ -267,7 +323,7 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
       setRenderError(error instanceof Error ? error.message : String(error));
     });
     return () => { live = false;renderMore.current=null };
-  }, [xml, start, end, targets, playbackNotes, streamId, excerpt, pretrimmed, measureOrdinalOffset, onPlaybackRangeChange]);
+  }, [xml, start, end, targets, playbackNotes, streamId, excerpt, pretrimmed, measureOrdinalOffset, onPlaybackRangeChange, phraseMarkers, phraseSpans]);
   useEffect(()=>{
     if(excerpt||!host.current||renderProgress.done>=renderProgress.total)return;
     const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))renderMore.current?.()},{rootMargin:'1000px 0px'});
@@ -281,5 +337,15 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
   }, [pages, autoScroll, streamId, start, end]);
   useEffect(()=>{if(excerpt)host.current?.style.setProperty('--excerpt-width',`${excerptWidth}px`)},[excerpt,excerptWidth]);
   useEffect(()=>{if(activePlaybackIndex===null){setPlayhead(null);return}requestAnimationFrame(()=>{const container=host.current,target=container?.querySelector(`[data-playback-index="${activePlaybackIndex}"]`);if(!container||!target){setPlayhead(null);return}const rootRect=container.getBoundingClientRect(),rect=target.getBoundingClientRect();setPlayhead({left:rect.left-rootRect.left-4,top:rect.top-rootRect.top-24,height:Math.max(80,rect.height+48)});if(rect.top<100||rect.bottom>window.innerHeight-60)target.scrollIntoView({behavior:'smooth',block:'center'})})},[activePlaybackIndex,pages]);
-  return <div ref={host} className={`xml-score ${excerpt ? 'xml-excerpt' : ''}`} data-target-count={targets.length}>{playhead&&<i className="full-score-playhead" style={{left:playhead.left,top:playhead.top,height:playhead.height}}/>}{renderError&&<div className="xml-render-error">악보 렌더링에 실패했습니다. {renderError}</div>}{!excerpt&&renderProgress.total!==0&&<div className="xml-render-progress"><span>{renderProgress.total<0?'전체 악보 구조를 분석하는 중':renderProgress.done<renderProgress.total?'악보 렌더링 진행 중':'악보 렌더링 완료'}</span><b>{renderProgress.total<0?'Verovio 조판 준비':`${renderProgress.done} / ${renderProgress.total} pages`}</b>{renderProgress.total>0&&<i><em style={{width:`${100*renderProgress.done/renderProgress.total}%`}}/></i>}{renderProgress.total>0&&renderProgress.done<renderProgress.total&&<button type="button" onClick={()=>renderMore.current?.()}>다음 3쪽 불러오기</button>}</div>}{pages.map((svg, i) => svg?<section key={i} dangerouslySetInnerHTML={{ __html: svg }} />:<section key={i} className="xml-page-loading"><span>스크롤하면 불러옵니다 · page {i+1}/{pages.length}</span></section>)}</div>;
+  useEffect(()=>{
+    if(excerpt||!host.current){setPhraseMarkerPositions([]);setPhraseRangeSegments([]);setPhraseSharedAnchors([]);return}
+    let frame=0;
+    const measure=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{const container=host.current;if(!container)return;const rootRect=container.getBoundingClientRect(),noteElements=new Map<number,Element>();for(const target of container.querySelectorAll('[data-phrase-note-index]'))noteElements.set(Number(target.getAttribute('data-phrase-note-index')),target);const positions=[...container.querySelectorAll('[data-phrase-boundary-index]')].map(target=>{const rect=target.getBoundingClientRect();return{boundaryIndex:Number(target.getAttribute('data-phrase-boundary-index')),strength:Number(target.getAttribute('data-phrase-strength')),beforePhrase:Number(target.getAttribute('data-phrase-before'))||undefined,afterPhrase:Number(target.getAttribute('data-phrase-after'))||undefined,left:rect.left-rootRect.left+rect.width/2,top:rect.top-rootRect.top-34,height:Math.max(92,rect.height+68)}}).filter(position=>Number.isFinite(position.boundaryIndex));setPhraseMarkerPositions(positions);
+      const systems=[...container.querySelectorAll('g.system')],systemIndex=new Map(systems.map((system,index)=>[system,index])),ranges:Array<{key:string;phraseNumber:number;colorIndex:number;left:number;top:number;width:number;label:boolean;endLabel:boolean;labelText:string}>=[];
+      for(const span of phraseSpans){const startNode=noteElements.get(span.startIndex),endNode=noteElements.get(span.endIndex);if(!startNode||!endNode)continue;const startSystem=startNode.closest('g.system'),endSystem=endNode.closest('g.system');if(!startSystem||!endSystem)continue;const first=systemIndex.get(startSystem),last=systemIndex.get(endSystem);if(first===undefined||last===undefined)continue;const measures=span.startMeasure===span.endMeasure?`${span.startMeasure}마디`:`${span.startMeasure}–${span.endMeasure}마디`,labelText=`Phrase ${span.phraseNumber} · ${measures} · ${span.startPitch}→${span.endPitch}`;for(let index=first;index<=last;index++){const system=systems[index],systemRect=system.getBoundingClientRect(),startRect=startNode.getBoundingClientRect(),endRect=endNode.getBoundingClientRect(),left=index===first?startRect.left+startRect.width/2:systemRect.left+4,right=index===last?endRect.left+endRect.width/2:systemRect.right-4;ranges.push({key:`${span.phraseNumber}-${index}`,phraseNumber:span.phraseNumber,colorIndex:(span.phraseNumber-1)%4,left:left-rootRect.left,top:systemRect.top-rootRect.top+3,width:Math.max(8,right-left),label:index===first,endLabel:index===last,labelText})}}setPhraseRangeSegments(ranges);
+      const shared:Array<{key:string;left:number;top:number;leftColor:number;rightColor:number}>=[];for(let index=0;index<phraseSpans.length-1;index++){const left=phraseSpans[index],right=phraseSpans[index+1];if(left.endIndex!==right.startIndex)continue;const target=noteElements.get(left.endIndex);if(!target)continue;const rect=target.getBoundingClientRect();shared.push({key:String(left.endIndex),left:rect.left-rootRect.left+rect.width/2,top:rect.top-rootRect.top+rect.height/2,leftColor:(left.phraseNumber-1)%4,rightColor:(right.phraseNumber-1)%4})}setPhraseSharedAnchors(shared)})};
+    measure();const observer=new ResizeObserver(measure);observer.observe(host.current);window.addEventListener('resize',measure);return()=>{cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('resize',measure)};
+  },[pages,excerpt,phraseMarkers,phraseSpans]);
+  const colors=['#2d9485','#d9842b','#7658b7','#2f6eb5'];
+  return <div ref={host} className={`xml-score ${excerpt ? 'xml-excerpt' : ''}`} data-target-count={targets.length}>{playhead&&<i className="full-score-playhead" style={{left:playhead.left,top:playhead.top,height:playhead.height}}/>}{phraseVisible&&phraseRangeSegments.map(segment=><i key={segment.key} className="phrase-range-segment" style={{left:segment.left,top:segment.top,width:segment.width,color:colors[segment.colorIndex],borderColor:colors[segment.colorIndex]}}>{segment.label&&<span style={{background:colors[segment.colorIndex]}}>{segment.labelText}</span>}{segment.endLabel&&<b>끝</b>}</i>)}{phraseVisible&&phraseSharedAnchors.map(anchor=><i key={anchor.key} className="phrase-shared-anchor" style={{left:anchor.left,top:anchor.top,background:`linear-gradient(90deg,${colors[anchor.leftColor]} 0 50%,${colors[anchor.rightColor]} 50% 100%)`}} title="명시적 overlap 가설에서 앞·뒤 Phrase가 공유하는 음"/>)}{phraseVisible&&phraseMarkerPositions.map((marker,index)=>{const boundaryLabel=phraseBoundaryLabel(marker);return <button key={`${marker.boundaryIndex}-${index}`} type="button" className={`phrase-boundary-marker ${selectedPhraseBoundary===marker.boundaryIndex?'selected':''}`} style={{left:marker.left,top:marker.top,height:marker.height}} onClick={()=>onPhraseBoundarySelect?.(marker.boundaryIndex)} title={`${boundaryLabel} 경계 후보 · 증거 강도 ${Math.round(marker.strength*100)}%`} aria-label={`Phrase ${marker.afterPhrase||''} 시작 경계`}><span>{boundaryLabel}</span></button>})}{renderError&&<div className="xml-render-error">악보 렌더링에 실패했습니다. {renderError}</div>}{!excerpt&&renderProgress.total!==0&&<div className="xml-render-progress"><span>{renderProgress.total<0?'전체 악보 구조를 분석하는 중':renderProgress.done<renderProgress.total?'악보 렌더링 진행 중':'악보 렌더링 완료'}</span><b>{renderProgress.total<0?'Verovio 조판 준비':`${renderProgress.done} / ${renderProgress.total} pages`}</b>{renderProgress.total>0&&<i><em style={{width:`${100*renderProgress.done/renderProgress.total}%`}}/></i>}{renderProgress.total>0&&renderProgress.done<renderProgress.total&&<button type="button" onClick={()=>renderMore.current?.()}>다음 3쪽 불러오기</button>}</div>}{pages.map((svg, i) => svg?<section key={i} dangerouslySetInnerHTML={{ __html: svg }} />:<section key={i} className="xml-page-loading"><span>스크롤하면 불러옵니다 · page {i+1}/{pages.length}</span></section>)}</div>;
 }

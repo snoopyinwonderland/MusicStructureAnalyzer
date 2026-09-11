@@ -1,9 +1,10 @@
-﻿import { DatabaseSync } from 'node:sqlite';
+import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { seedWindows } from './seed-windows.mjs';
 import { analyzePhraseBoundaries, comparePhraseBoundaries } from './phrase-boundaries.mjs';
+import { analyzeBoundaryHarmony } from './boundary-harmony.mjs';
 
 const dbPath=process.env.MUSICANOTE_SEARCH_DB||fileURLToPath(new URL('../data/search-index-v2/search.sqlite',import.meta.url));
 const meterContextPath=process.env.MUSICANOTE_METER_CONTEXT_DB||fileURLToPath(new URL('../data/search-index-v2/meter-context.sqlite',import.meta.url));
@@ -322,6 +323,7 @@ export const restrictedPreviewXml=(xml,streamId,ordinalStart,ordinalEnd,margin=2
  const preview=translateInstrumentNamesInXml(`<?xml version="1.0" encoding="UTF-8"?>${root}<part-list>${scorePart}</part-list><part id="${partId}">${selected.join('')}</part></score-partwise>`);
  return reflow?reflowRestrictedPreview(preview):preview
 };
+export const fullResearchScoreEnabled=(environment=process.env)=>environment.KYSING_FULL_SCORE_TEST_MODE==='1'||(environment.KYSING_FULL_SCORE_TEST_MODE!=='0'&&environment.NODE_ENV!=='production');
 const keyCache=new Map();
 const sourceKey=source=>{if(keyCache.has(source))return keyCache.get(source);try{const xml=sourceXml(source),match=xml.match(/<fifths>\s*(-?\d+)\s*<\/fifths>/);const value=match?Number(match[1]):0;keyCache.set(source,value);return value}catch{return 0}};
 const sourceClef=(source,streamId,targetMeasure,notes)=>{try{const [partId,staff='1']=streamId.split(':'),xml=sourceXml(source),part=xml.match(new RegExp(`<part\\s+id="${partId}"[^>]*>([\\s\\S]*?)<\\/part>`))?.[1]||'';let found=null;for(const match of part.matchAll(/<measure(?=[\s>])[^>]*number="([^"]+)"[^>]*>([\s\S]*?)<\/measure>/g)){const number=Number(match[1]);if(Number.isFinite(number)&&number>targetMeasure)break;for(const clef of match[2].matchAll(/<clef\b([^>]*)>([\s\S]*?)<\/clef>/g)){const assigned=clef[1].match(/number="(\d+)"/)?.[1]||'1';if(assigned!==staff)continue;const shape=clef[2].match(/<sign>\s*([GFC])\s*<\/sign>/)?.[1],line=Number(clef[2].match(/<line>\s*(\d+)\s*<\/line>/)?.[1]);if(shape)found={shape,line:line||(shape==='F'?4:2)}}}if(found)return found}catch{}const pitches=notes.map(n=>n.pitchMidi).sort((a,b)=>a-b),median=pitches[Math.floor(pitches.length/2)]||60;return median<60?{shape:'F',line:4}:{shape:'G',line:2}};
@@ -487,16 +489,18 @@ export function getWork(id,options={}){
  let ordinalStart=optionalPositiveNumber(options.ordinalStart),ordinalEnd=optionalPositiveNumber(options.ordinalEnd);
  if(!Number.isFinite(ordinalStart)){const first=requestedOnsets.length?raw.find(note=>Math.abs(note.o-requestedOnsets[0])<1e-6):raw.find(note=>String(label(note.m))===String(options.start));ordinalStart=first?.m||1}
  if(!Number.isFinite(ordinalEnd)){const last=requestedOnsets.length?[...raw].reverse().find(note=>Math.abs(note.o-requestedOnsets.at(-1))<1e-6):[...raw].reverse().find(note=>String(label(note.m))===String(options.end));ordinalEnd=last?.m||ordinalStart}
- const excerptRequested=String(options.excerpt||'')==='1';
+ const excerptRequested=String(options.excerpt||'')==='1',fullResearchDetail=accessPolicy==='research-preview'&&!excerptRequested&&fullResearchScoreEnabled(),restrictedPreviewActive=accessPolicy==='research-preview'&&!excerptRequested&&!fullResearchDetail;
  if(accessPolicy==='research-preview'){
-  xml=hasSearchRange?restrictedPreviewXml(xml,row.stream_id,ordinalStart,ordinalEnd,excerptRequested?0:10,!excerptRequested):'';
+  if(excerptRequested)xml=hasSearchRange?restrictedPreviewXml(xml,row.stream_id,ordinalStart,ordinalEnd,0):'';
+  else if(restrictedPreviewActive)xml=hasSearchRange?restrictedPreviewXml(xml,row.stream_id,ordinalStart,ordinalEnd,10,true):'';
  }else if(excerptRequested&&hasSearchRange){
   xml=restrictedPreviewXml(xml,row.stream_id,ordinalStart,ordinalEnd,0);
  }
  xml=translateInstrumentNamesInXml(xml);
  let sourceMetadata={};try{sourceMetadata=JSON.parse(row.source_metadata||'{}')}catch{}
- const previewOrdinalStart=accessPolicy==='research-preview'&&hasSearchRange?Math.max(1,Math.max(1,ordinalStart)-(excerptRequested?0:10)):excerptRequested&&hasSearchRange?Math.max(1,ordinalStart):undefined;
- return{workId:row.id,streamId:row.stream_id,partName,title:repairMetadataText(row.title),artist:displayComposer(repairMetadataText(row.composer)),sourceId:row.source,accessPolicy,fullScoreAvailable:accessPolicy!=='research-preview',previewOrdinalStart,excerptPrepared:excerptRequested&&hasSearchRange,sourceMetadata,keyFifths,clefShape:clef.shape,clefLine:clef.line,meter:`${meter.count}/${meter.unit}`,youtubeId:youtubeId(yt,row.id,row.title),notes,xml,stats:{pitches:top(pitchNames),rhythms:top(durations),motifs:rankedMotifs(raw),structure:{measures:measures.size,notes:raw.length,peakMeasures:top(measures).slice(0,5)}}};
+ const previewOrdinalStart=excerptRequested&&hasSearchRange?Math.max(1,ordinalStart):restrictedPreviewActive&&hasSearchRange?Math.max(1,Math.max(1,ordinalStart)-10):undefined;
+ const phraseAnalysis=analyzePhraseBoundaries(notes),harmonyStreams=database().prepare('SELECT stream_id,notes FROM works WHERE source=?').all(row.source).map(item=>({streamId:item.stream_id,notes:JSON.parse(item.notes)})),boundaryHarmony=analyzeBoundaryHarmony({melodyNotes:raw,boundaries:phraseAnalysis.boundaries,streams:harmonyStreams,keyFifths,meter:`${meter.count}/${meter.unit}`});
+ return{workId:row.id,streamId:row.stream_id,partName,title:repairMetadataText(row.title),artist:displayComposer(repairMetadataText(row.composer)),sourceId:row.source,accessPolicy,fullScoreAvailable:accessPolicy!=='research-preview'||fullResearchDetail,restrictedPreviewActive,previewOrdinalStart,excerptPrepared:excerptRequested&&hasSearchRange,sourceMetadata,keyFifths,clefShape:clef.shape,clefLine:clef.line,meter:`${meter.count}/${meter.unit}`,youtubeId:youtubeId(yt,row.id,row.title),notes,xml,phraseAnalysis,boundaryHarmony,stats:{pitches:top(pitchNames),rhythms:top(durations),motifs:rankedMotifs(raw),structure:{measures:measures.size,notes:raw.length,peakMeasures:top(measures).slice(0,5)}}};
 }
 
 const catalogTokens=text=>String(text||'').normalize('NFKC').toLocaleLowerCase('en-US').match(/[\p{L}\p{N}]+/gu)||[];
