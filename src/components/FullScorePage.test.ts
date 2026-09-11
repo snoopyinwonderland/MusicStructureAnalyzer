@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CorpusNote } from '../types';
-import { buildPhraseSpans, jumpByMeasures, phraseRangeLabel, playbackMatchRange } from './FullScorePage';
+import { buildPhraseSpans, harmonyRomanParts, jumpByMeasures, phraseRangeLabel, playbackMatchRange } from './FullScorePage';
 
 const note=(onset:number,pitchMidi:number,measureOrdinal:number)=>({onset,pitchMidi,measureOrdinal,measure:measureOrdinal,kind:'note',durationRatio:1} as CorpusNote);
 
@@ -40,5 +40,12 @@ describe('phrase range visualization',()=>{
     const spans=buildPhraseSpans(sparse,[boundary(2)]);
     expect(spans[0]).toMatchObject({startMeasure:1,endMeasure:10,endPitch:'D4'});
     expect(spans[1]).toMatchObject({startMeasure:11,endMeasure:11,startPitch:'E4'});
+  });
+});
+
+describe('boundary harmony display semantics',()=>{
+  it('separates preparation, phrase-ending arrival, and the next phrase onset',()=>{
+    const record={harmonyProgression:{display:'A → B7 | A',romanDisplay:'I → II7 | I',preparationRoman:'I',arrivalRoman:'II7',afterBoundaryRoman:'I'}} as any;
+    expect(harmonyRomanParts(record)).toEqual({preparation:'I',arrival:'II7',afterBoundary:'I'});
   });
 });

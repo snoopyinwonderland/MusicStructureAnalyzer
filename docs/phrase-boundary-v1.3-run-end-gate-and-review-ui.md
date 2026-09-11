@@ -26,7 +26,11 @@ The review case `work-25517ce2d093550b` had short displayed Phrases beginning at
 
 ## Harmony display
 
-Boundary Harmony continues to retain absolute surface-chord labels for evidence and debugging. The review UI now displays the selected-key-relative Roman progression from `harmonyProgression.romanDisplay`, falling back to the absolute display only for older payloads. Roman labels use the bundled Campania WOFF webfont, with `Times New Roman` and `serif` as defensive fallbacks.
+Boundary Harmony continues to retain absolute surface-chord labels for evidence and debugging. The compact expression `preparation → arrival | after-boundary` described a local boundary window, not the harmony from the start to the end of a Phrase. Because that notation was easy to misread, the review panel now separates it into `경계 직전 진행`, `종결 화음`, and `다음 Phrase 시작`. The native Phrase selector shows the measure/pitch range and Cadence only; mixed-font Roman values are shown in the structured detail panel.
+
+The Analysis record exposes `preparationRoman`, `arrivalRoman`, and `afterBoundaryRoman` in addition to the backward-compatible `romanDisplay`. Existing Roman hypotheses, including `II7`, are not rewritten by the display change; uncertainty remains available through the provisional analysis status, observed pitch classes, fit, and cadence hypotheses.
+
+Only elements with the `harmony-roman` class use the bundled Campania WOFF webfont. Korean labels, prose, arrows, key names, pitch names, controls, and all other UI text retain the application's normal fonts. The internal family name `Campania Harmony` prevents an unrelated locally installed font from silently satisfying the CSS family lookup.
 
 The unmodified font is sourced from `https://github.com/MarcSabatella/Campania`. Its copyright and complete SIL Open Font License 1.1 text are retained at `src/assets/fonts/Campania.LICENSE.txt` beside `Campania.woff`.
 
@@ -48,3 +52,18 @@ Each `P<n> 시작` marker now uses the same palette index as Phrase `n`'s range 
 
 - Cadence/form evidence is not yet fed back into the v1.3 boundary gate.
 - A minimum Phrase duration is deliberately not hard-coded: short phrases can be musically valid, so this change removes a false cause rather than banning all short spans.
+
+## Human-reviewed Phrase 2 harmony case
+
+For `work-25517ce2d093550b`, the musician review identifies Phrase 2's terminal harmony as V and its closure as a Half Cadence. Boundary Harmony v0.1 read a 0.5-quarter sparse surface slice containing pitch classes A and B as `B7`, then emitted `II7` and no selected cadence. The `II7` output is retained as the analyzer's current provisional hypothesis. The differing musician interpretation is a reproducible review case, not a work-specific override or an immediate replacement label.
+
+The general correction path is:
+
+1. preserve the observed A+B slice and its source events;
+2. lower or withhold chord identity when defining chord tones are absent;
+3. distinguish non-chord/suspending/neighbor tones from governing harmony across a wider but bounded cadence window;
+4. model harmonic prolongation and bass/metrical evidence before selecting the terminal function;
+5. test the sequence-level cadence grammar for dominant arrival and non-tonic continuation;
+6. compare the AI hypothesis with a separately stored human correction and only promote it to training data after review.
+
+No Phrase number, work ID, absolute pitch, or expected V label may appear in the production inference rule.
