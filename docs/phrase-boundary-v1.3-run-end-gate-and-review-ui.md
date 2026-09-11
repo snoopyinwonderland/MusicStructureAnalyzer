@@ -40,6 +40,10 @@ Roman numerals remain provisional analysis hypotheses because the current select
 
 Each `P<n> 시작` marker now uses the same palette index as Phrase `n`'s range band. Selection adds a halo/brightness state without replacing the Phrase identity color.
 
+## Score-to-review selection linkage
+
+Clicking a `Phrase <n>` range on the engraved score selects the same Phrase in the right-hand review panel and keeps the one-second range flash. The lookup uses the complete ordered set of supported analysis boundaries rather than the subset currently rendered by lazy score pages, so loading additional pages cannot shift the selected Phrase. Clicking a `P<n> 시작` boundary marker also routes through the same selection handler instead of updating only the marker highlight.
+
 ## Validation
 
 - Four focused test files: 46/46 passed.

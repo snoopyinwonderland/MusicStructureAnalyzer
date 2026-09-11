@@ -102,6 +102,10 @@ export function harmonyRomanParts(record?:BoundaryHarmonyRecord){
   return{preparation:parts.length>1?parts[0]:null,arrival:parts.at(-1)||null,afterBoundary:after||null};
 }
 
+export function phraseEndingBoundaryIndex(phraseNumber:number,boundaries:PhraseBoundary[]){
+  return boundaries.filter(boundary=>boundary.supported)[phraseNumber-1]?.index??null;
+}
+
 const cueNames:Record<string,string>={
   'observed-gap':'실제 시간 공백','pitch-discontinuity':'음정 도약 변화','ioi-discontinuity':'리듬 간격 변화','repeated-motif-start':'반복 모티프 시작','observed-continuity':'시간적 연속','tie-continuation':'타이 지속',
 };
@@ -126,12 +130,13 @@ export function FullScorePage() {
   const restricted=Boolean(work?.restrictedPreviewActive),ordinalOffset=Math.max(0,(work?.previewOrdinalStart||1)-1);
   const visibleNotes=useMemo(()=>{if(!work)return[];if(!restricted)return work.notes;const count=(work.xml.match(/<measure\b/g)||[]).length,first=work.previewOrdinalStart||1,last=first+Math.max(0,count-1);return work.notes.filter(note=>(note.measureOrdinal||0)>=first&&(note.measureOrdinal||0)<=last)},[work,restricted]);
   const playbackNotes=useMemo(()=>collapseTies(visibleNotes),[visibleNotes]);
-  const phraseMarkers=useMemo(()=>{if(!work)return[];const visible=new Set(visibleNotes),supported=(work.phraseAnalysis?.boundaries||[]).filter(boundary=>boundary.supported);return supported.filter(boundary=>visible.has(work.notes[boundary.index])).map(boundary=>{const order=supported.indexOf(boundary);return{note:work.notes[boundary.index],boundaryIndex:boundary.index,strength:boundary.strength,beforePhrase:order+1,afterPhrase:order+2}})},[work,visibleNotes]);
+  const supportedPhraseBoundaries=useMemo(()=>(work?.phraseAnalysis?.boundaries||[]).filter(boundary=>boundary.supported),[work]);
+  const phraseMarkers=useMemo(()=>{if(!work)return[];const visible=new Set(visibleNotes);return supportedPhraseBoundaries.filter(boundary=>visible.has(work.notes[boundary.index])).map(boundary=>{const order=supportedPhraseBoundaries.indexOf(boundary);return{note:work.notes[boundary.index],boundaryIndex:boundary.index,strength:boundary.strength,beforePhrase:order+1,afterPhrase:order+2}})},[work,visibleNotes,supportedPhraseBoundaries]);
   const phraseSpans=useMemo(()=>buildPhraseSpans(visibleNotes,phraseMarkers.map(marker=>({index:visibleNotes.indexOf(marker.note),supported:true} as PhraseBoundary))),[visibleNotes,phraseMarkers]);
-  useEffect(()=>{if(!phraseEnabled){setSelectedPhraseBoundary(null);return}if(!phraseMarkers.some(marker=>marker.boundaryIndex===selectedPhraseBoundary))setSelectedPhraseBoundary(phraseMarkers[0]?.boundaryIndex??null)},[phraseEnabled,phraseMarkers,selectedPhraseBoundary]);
+  useEffect(()=>{if(!phraseEnabled){setSelectedPhraseBoundary(null);return}if(!supportedPhraseBoundaries.some(boundary=>boundary.index===selectedPhraseBoundary))setSelectedPhraseBoundary(supportedPhraseBoundaries[0]?.index??null)},[phraseEnabled,supportedPhraseBoundaries,selectedPhraseBoundary]);
   const flashPhrase=useCallback((phraseNumber:number)=>{setFlashingPhraseNumber(phraseNumber);setPhraseFlashToken(token=>token+1)},[]);
-  const selectPhraseBoundary=useCallback((boundaryIndex:number)=>{setSelectedPhraseBoundary(boundaryIndex);const order=phraseMarkers.findIndex(marker=>marker.boundaryIndex===boundaryIndex);if(order>=0)flashPhrase(order+1)},[phraseMarkers,flashPhrase]);
-  const selectPhrase=useCallback((phraseNumber:number)=>{flashPhrase(phraseNumber);const endingBoundary=phraseMarkers[phraseNumber-1];if(endingBoundary)setSelectedPhraseBoundary(endingBoundary.boundaryIndex)},[phraseMarkers,flashPhrase]);
+  const selectPhraseBoundary=useCallback((boundaryIndex:number)=>{setSelectedPhraseBoundary(boundaryIndex);const order=supportedPhraseBoundaries.findIndex(boundary=>boundary.index===boundaryIndex);if(order>=0)flashPhrase(order+1)},[supportedPhraseBoundaries,flashPhrase]);
+  const selectPhrase=useCallback((phraseNumber:number)=>{flashPhrase(phraseNumber);const endingBoundaryIndex=phraseEndingBoundaryIndex(phraseNumber,supportedPhraseBoundaries);if(endingBoundaryIndex!==null)setSelectedPhraseBoundary(endingBoundaryIndex)},[supportedPhraseBoundaries,flashPhrase]);
   const playbackMatch=useMemo(()=>searchEntry?playbackMatchRange(playbackNotes,matches):null,[searchEntry,playbackNotes,matches]);
   useEffect(()=>{playbackPositionManuallySet.current=false;renderCompleteRef.current=false;setPlaybackPosition(playbackMatch?.first??0);setRenderedPlaybackRange({first:null,last:null,complete:false})},[id,work?.streamId,playbackMatch?.first]);
   useEffect(()=>{playingRef.current=playing},[playing]);
@@ -165,7 +170,7 @@ export function FullScorePage() {
     {work && <div className="score-layout">
       <div className="score-main">
         {!browse&&<section className="match-locator" onClick={scroll} role="button" tabIndex={0}><div><b>{work.partName} · 검색에서 감지된 음표</b><span>{restricted?'검색된 파트만 제공되는 제한 미리보기':'원본 MusicXML 마디 · 클릭하여 상세 위치로 이동'}</span></div><SearchExcerpt workId={work.workId} start={start} end={end} targets={matches} /></section>}
-        <FullXmlNotation xml={work.xml} start={start} end={end} targets={matches} playbackNotes={playbackNotes} activePlaybackIndex={activePlaybackIndex} onPlaybackRangeChange={updateRenderedPlaybackRange} streamId={work.streamId} autoScroll={!browse} measureOrdinalOffset={ordinalOffset} phraseMarkers={phraseMarkers} phraseSpans={phraseSpans} phraseVisible={phraseEnabled} selectedPhraseBoundary={selectedPhraseBoundary} onPhraseBoundarySelect={setSelectedPhraseBoundary} flashingPhraseNumber={flashingPhraseNumber} phraseFlashToken={phraseFlashToken} onPhraseSelect={selectPhrase} />
+        <FullXmlNotation xml={work.xml} start={start} end={end} targets={matches} playbackNotes={playbackNotes} activePlaybackIndex={activePlaybackIndex} onPlaybackRangeChange={updateRenderedPlaybackRange} streamId={work.streamId} autoScroll={!browse} measureOrdinalOffset={ordinalOffset} phraseMarkers={phraseMarkers} phraseSpans={phraseSpans} phraseVisible={phraseEnabled} selectedPhraseBoundary={selectedPhraseBoundary} onPhraseBoundarySelect={selectPhraseBoundary} flashingPhraseNumber={flashingPhraseNumber} phraseFlashToken={phraseFlashToken} onPhraseSelect={selectPhrase} />
       </div>
       <aside>
         {work.youtubeId ? <iframe src={`https://www.youtube-nocookie.com/embed/${work.youtubeId}`} title="대표 영상" allowFullScreen /> : <div className="video-placeholder">대표 YouTube 영상 수집 대기</div>}

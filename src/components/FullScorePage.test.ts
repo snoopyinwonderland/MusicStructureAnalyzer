@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CorpusNote } from '../types';
-import { buildPhraseSpans, harmonyRomanParts, jumpByMeasures, phraseRangeLabel, playbackMatchRange } from './FullScorePage';
+import { buildPhraseSpans, harmonyRomanParts, jumpByMeasures, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange } from './FullScorePage';
 
 const note=(onset:number,pitchMidi:number,measureOrdinal:number)=>({onset,pitchMidi,measureOrdinal,measure:measureOrdinal,kind:'note',durationRatio:1} as CorpusNote);
 
@@ -40,6 +40,12 @@ describe('phrase range visualization',()=>{
     const spans=buildPhraseSpans(sparse,[boundary(2)]);
     expect(spans[0]).toMatchObject({startMeasure:1,endMeasure:10,endPitch:'D4'});
     expect(spans[1]).toMatchObject({startMeasure:11,endMeasure:11,startPitch:'E4'});
+  });
+
+  it('maps a clicked Phrase number to its ending boundary independently of rendered pages',()=>{
+    const boundaries=[boundary(2),boundary(4,false),boundary(5)];
+    expect(phraseEndingBoundaryIndex(1,boundaries)).toBe(2);
+    expect(phraseEndingBoundaryIndex(2,boundaries)).toBe(5);
   });
 });
 
