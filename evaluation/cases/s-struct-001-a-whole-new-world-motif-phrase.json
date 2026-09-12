@@ -1,0 +1,216 @@
+{
+  "schema": "musicanote-evaluation-case/v1",
+  "caseId": "S-STRUCT-001",
+  "createdAt": "2026-09-13",
+  "status": "diagnosed",
+  "replayable": true,
+  "tags": [
+    "motif-family",
+    "phrase-aggregation",
+    "parallel-recurrence",
+    "tie-boundary",
+    "boundary-harmony"
+  ],
+  "query": {
+    "version": 1,
+    "mode": "melody_rhythm",
+    "meter": "4/4",
+    "startsOnDownbeat": true,
+    "events": [
+      {
+        "id": "motif-1-1",
+        "kind": "note",
+        "pitchMidi": 66,
+        "spelling": "F#4",
+        "durationRatio": 1
+      },
+      {
+        "id": "motif-1-2",
+        "kind": "note",
+        "pitchMidi": 64,
+        "spelling": "E4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "motif-1-3",
+        "kind": "note",
+        "pitchMidi": 67,
+        "spelling": "G4",
+        "durationRatio": 1
+      },
+      {
+        "id": "motif-1-4",
+        "kind": "note",
+        "pitchMidi": 66,
+        "spelling": "F#4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "motif-1-5",
+        "kind": "note",
+        "pitchMidi": 62,
+        "spelling": "D4",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "motif-1-6",
+        "kind": "note",
+        "pitchMidi": 57,
+        "spelling": "A3",
+        "durationRatio": 2.5
+      }
+    ],
+    "absoluteExactOnly": false
+  },
+  "expected": {
+    "workId": "work-40153ba016a3ef1f",
+    "motifFamilies": [
+      {
+        "family": "Motif 1",
+        "relationship": "base-and-prime-variant",
+        "recursLater": true
+      },
+      {
+        "family": "Motif 2",
+        "relationship": "base-and-prime-variant",
+        "aggregateAsOnePhrase": true
+      }
+    ],
+    "phraseRules": [
+      "Parallel recurrence must preserve the internal Motif boundary without promoting it to a Phrase boundary.",
+      "A Phrase start must move from a barline-spanning tied carryover to the following re-articulated attack."
+    ],
+    "phrase1BoundaryHarmony": {
+      "measure": 12,
+      "beat": 1,
+      "pitches": [
+        "D3",
+        "F#3",
+        "A3"
+      ],
+      "roman": "I",
+      "selection": "tie-continuation-onset"
+    }
+  },
+  "observations": [
+    {
+      "kind": "motif-variant",
+      "message": "첫 두 음형은 거의 같고 종결부만 달라 Motif 1과 Motif 1′로 보는 것이 적절하다."
+    },
+    {
+      "kind": "phrase-consistency",
+      "message": "같은 두 Motif의 평행 재등장은 동일한 상위 Phrase 묶음을 유지해야 한다."
+    },
+    {
+      "kind": "motif-aggregation",
+      "message": "F#4–A4 계열과 그 변형은 Motif 2와 Motif 2′이며 둘을 한 Phrase로 묶는다."
+    },
+    {
+      "kind": "tie-boundary",
+      "message": "타이로 넘어온 F#4가 아니라 뒤의 새 F#4 attack에서 다음 구조 구간을 시작한다."
+    },
+    {
+      "kind": "boundary-harmony",
+      "message": "Phrase 1의 A3는 12마디로 타이되어 그 첫 박 D3–F#3–A3의 I 화음 위에서 지속된다."
+    }
+  ],
+  "diagnoses": [
+    {
+      "stage": "motif-to-phrase",
+      "message": "이전 분석은 가까운 반복만 내부 Motif로 낮추고 멀리 평행 재현된 동일 배치에는 같은 규칙을 적용하지 않아 Phrase 분할이 일관되지 않았다."
+    },
+    {
+      "stage": "boundary-harmony-input",
+      "message": "단선율 검색 인덱스가 MusicXML <chord> 구성음을 생략하여 12마디 I 대신 불완전한 후속 수직음향을 종결 화음으로 골랐다."
+    }
+  ],
+  "proposals": [
+    {
+      "id": "parallel-recurrence-continuity",
+      "status": "implemented",
+      "message": "동일 displacement로 재현된 Motif 쌍의 내부 간격이 보존되면 두 번째 Motif 시작을 Phrase가 아닌 subphrase-cell로 유지한다."
+    },
+    {
+      "id": "post-tie-reattack-start",
+      "status": "implemented",
+      "message": "마디선을 넘는 타이 지속음과 같은 pitch의 새 attack이 release 지점에 오면 경계를 새 attack으로 이동한다."
+    },
+    {
+      "id": "complete-musicxml-harmony-input",
+      "status": "implemented",
+      "message": "경계 화성은 원본 MusicXML의 모든 chord member와 tie segment를 사용하고 tie continuation onset의 완전한 수직 화음을 우선한다."
+    },
+    {
+      "id": "motif-family-prime-label",
+      "status": "implemented",
+      "message": "조옮김 불변 음정·윤곽·정규화 음가 유사도로 Motif family를 만들고 변형에는 prime 표기를 사용한다."
+    }
+  ],
+  "runs": [],
+  "knowledgeBase": {
+    "schema": "musicanote-case-knowledge/v1",
+    "status": "captured",
+    "capturedAt": "2026-09-12T22:26:00.730Z",
+    "identity": {
+      "workId": "work-40153ba016a3ef1f",
+      "sourceId": "A Whole New World.xml",
+      "streamId": "P1:1:1",
+      "partName": "P1"
+    },
+    "sourceSnapshot": {
+      "xmlSha256": "2d6a3da52304937059bdafc46975855241c256e07a008b8c4541c168b187420f",
+      "eventsSha256": "660e9dbe5d8b5b183af99cd2cb6e18a2806182fd4015c14fafb20155acd14abc",
+      "searchDatabaseWorkId": "work-40153ba016a3ef1f"
+    },
+    "focus": {
+      "startMeasureOrdinal": 5,
+      "endMeasureOrdinal": 31,
+      "targets": []
+    },
+    "context": {
+      "beforeMeasures": 2,
+      "afterMeasures": 2,
+      "startMeasureOrdinal": 3,
+      "endMeasureOrdinal": 33
+    },
+    "assets": {
+      "musicXml": "../case-assets/S-STRUCT-001/context.musicxml",
+      "events": "../case-assets/S-STRUCT-001/events.json"
+    },
+    "classification": {
+      "phenomenonTypes": [
+        "motif-family",
+        "phrase-aggregation",
+        "parallel-recurrence",
+        "tie-boundary",
+        "boundary-harmony"
+      ],
+      "musicalFunctions": ["motif-variation", "motif-recurrence", "phrase-grouping", "cadential-arrival"],
+      "contextualConditions": ["transposition-invariant melodic similarity", "preserved spacing between recurring motif cells", "barline-spanning tie", "complete vertical sonority at tie continuation onset"],
+      "exclusions": ["capitalization", "lyrics as inference input", "single-score identifiers", "monophonic-index-only harmony"],
+      "confidence": "user-reviewed-case"
+    },
+    "ruleLearning": {
+      "candidateRules": [
+        "Group similar interval-contour-rhythm cells into one Motif family; use prime variants for changed endings.",
+        "When two motif relations preserve the same recurrence displacement and internal spacing, retain the second cell boundary below Phrase level.",
+        "Move a proposed Phrase start from a tied barline carryover to the following same-pitch re-articulation.",
+        "For a terminal note tied into the next measure, evaluate the complete vertical sonority at the tie-continuation onset before later surface sonorities."
+      ],
+      "counterexamples": [
+        "Do not merge repeated cells when an independently strong cadence closes the first cell.",
+        "Do not shift a boundary when the following same pitch is still a tie continuation rather than a new attack.",
+        "Do not reuse a terminal-note harmony when the note neither reaches the boundary nor crosses a barline by tie."
+      ],
+      "reusableFor": [
+        "retrieval-regression",
+        "ranking-regression",
+        "notation-highlight-regression",
+        "human-rule-review",
+        "motif-family-regression",
+        "phrase-boundary-regression",
+        "boundary-harmony-regression"
+      ]
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzePhraseBoundaries, comparePhraseBoundaries } from './phrase-boundaries.mjs';
+import { addParallelRecurrenceContinuity, analyzePhraseBoundaries, comparePhraseBoundaries } from './phrase-boundaries.mjs';
 
 const notes = (pitches, onsets, durations = []) => pitches.map((pitchMidi, i) => ({
   pitchMidi, durationRatio: durations[i] ?? 1, ...(onsets ? { onset: onsets[i] } : {}),
@@ -98,6 +98,25 @@ describe('uncalibrated local boundary evidence', () => {
       expect(analysis.boundaries.every(boundary => !boundary.supported)).toBe(true);
       expect(analysis.boundaries.flatMap(boundary => boundary.cues).some(item => item.name === 'repeated-motif-start')).toBe(false);
     }
+  });
+
+  it('demotes the corresponding internal boundary when a two-cell unit recurs in parallel',()=>{
+    const boundaries=Array.from({length:40},(_,index)=>({index,strength:.8,continuity:0,cues:[],primaryLevel:'phrase-boundary'}));
+    const relations=[{previousIndex:0,currentIndex:27,length:5},{previousIndex:6,currentIndex:33,length:8}];
+    const groups=addParallelRecurrenceContinuity(relations,boundaries);
+    expect(groups).toHaveLength(1);
+    expect(boundaries[33]).toMatchObject({primaryLevel:'subphrase-cell',strength:.49});
+    expect(boundaries[33].cues.some(item=>item.name==='parallel-motif-recurrence-continuation')).toBe(true);
+  });
+
+  it('moves a boundary from a barline-spanning tied carryover to the following same-pitch reattack',()=>{
+    const input=notes([60,62,64,65,65,67],[0,1,2,6,8,9]);
+    input[3].measureOrdinal=2;input[3].tieEndMeasure=3;input[3].durationRatio=2;
+    input[4].measureOrdinal=3;input[4].durationRatio=1;
+    const result=analyzePhraseBoundaries(input);
+    expect(result.boundaries[3]).toMatchObject({primaryLevel:'phrase-ending-carryover',state:'continuous'});
+    expect(result.boundaries[4].cues.some(item=>item.name==='post-tie-reattack-start')).toBe(true);
+    expect(result.tieCarryoverShifts).toHaveLength(1);
   });
 
   it('keeps consecutive repeated cells in one primary phrase while preserving internal cell boundaries', () => {

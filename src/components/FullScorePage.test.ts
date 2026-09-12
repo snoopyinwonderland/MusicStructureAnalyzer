@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CorpusNote } from '../types';
-import { buildMotifSpans, buildPhraseSpans, harmonyRomanParts, jumpByMeasures, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange, usesCampaniaAnalysisFont } from './FullScorePage';
+import { buildMotifSpans, buildPhraseSpans, harmonyRomanParts, jumpByMeasures, motifSimilarityEvidence, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange, usesCampaniaAnalysisFont } from './FullScorePage';
 
 const note=(onset:number,pitchMidi:number,measureOrdinal:number)=>({onset,pitchMidi,measureOrdinal,measure:measureOrdinal,kind:'note',durationRatio:1} as CorpusNote);
 
@@ -55,7 +55,7 @@ describe('boundary harmony display semantics',()=>{
     expect(harmonyRomanParts(record)).toEqual({preparation:'I',arrival:'II7',afterBoundary:'I'});
   });
 
-  it('uses Campania for pitches and Roman values but never for unknown',()=>{
+  it('keeps the Campania eligibility helper away from unknown values',()=>{
     expect(usesCampaniaAnalysisFont('F#4')).toBe(true);
     expect(usesCampaniaAnalysisFont('Ab4')).toBe(true);
     expect(usesCampaniaAnalysisFont('V7')).toBe(true);
@@ -65,14 +65,22 @@ describe('boundary harmony display semantics',()=>{
 });
 
 describe('motif overlay spans',()=>{
-  it('numbers close repeated Motif occurrences sequentially and independently',()=>{
+  it('labels a close transformed occurrence as a prime variant in the same Motif family',()=>{
     const notes=[0,1,2,3,4,5,6,7,8,9].map(index=>note(index,60+index,Math.floor(index/2)+1));
     const spans=buildMotifSpans(notes,[{length:4,signatureKey:'motif-a',previousIndex:0,currentIndex:6,distanceInAttacks:6,closeContinuation:true}]);
-    expect(spans.map(span=>[span.motifNumber,span.startIndex,span.endIndex])).toEqual([[1,0,5],[2,6,9]]);
+    expect(spans.map(span=>[span.label,span.startIndex,span.endIndex])).toEqual([['Motif 1',0,5],['Motif 1′',6,9]]);
   });
 
-  it('does not display distant recurrence as automatic local grouping',()=>{
-    const notes=[0,1,2,3,4,5].map(index=>note(index,60+index,1));
-    expect(buildMotifSpans(notes,[{length:2,signatureKey:'motif-a',previousIndex:0,currentIndex:4,distanceInAttacks:4,closeContinuation:false}])).toEqual([]);
+  it('retains a distant recurrence as a reviewable reappearance without turning it into a Phrase rule',()=>{
+    const notes=[0,1,2,3,4,5].map(index=>note(index,60+index,Math.floor(index/2)+1));
+    const spans=buildMotifSpans(notes,[{length:2,signatureKey:'motif-a',previousIndex:0,currentIndex:4,distanceInAttacks:4,closeContinuation:false}]);
+    expect(spans).toHaveLength(2);
+    expect(spans[1].familyNumber).toBe(spans[0].familyNumber);
+  });
+
+  it('compares transposition-invariant melodic shape and normalized rhythm',()=>{
+    const left=[note(0,60,1),note(1,62,1),note(2,65,1),note(3,64,1)];
+    const transposed=[note(0,65,1),note(1,67,1),note(2,70,1),note(3,69,1)];
+    expect(motifSimilarityEvidence(left,transposed)).toMatchObject({similarity:100,interval:100,contour:100,rhythm:100,coverage:100});
   });
 });

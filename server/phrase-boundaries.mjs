@@ -1,5 +1,5 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1.5';
+const VERSION = 'local-boundary-evidence-v1.6';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -21,6 +21,8 @@ function timeline(notes) {
       index, duration, onset, explicit, end: cursor,
       pitch: finite(note?.pitchMidi) ? Number(note.pitchMidi) : null,
       attack: note?.isAttack !== false && !note?.tieStop,
+      measure: finite(note?.measureOrdinal??note?.measure) ? Number(note.measureOrdinal??note.measure) : null,
+      tieEndMeasure: finite(note?.tieEndMeasure) ? Number(note.tieEndMeasure) : null,
     };
   });
 }
@@ -101,6 +103,37 @@ function addMotifSupport(attacks, boundaries) {
     }
   }
   return relations;
+}
+
+export function addParallelRecurrenceContinuity(relations,boundaries){
+  const groups=[];
+  const byDisplacement=new Map();
+  for(const relation of relations){const displacement=relation.currentIndex-relation.previousIndex,items=byDisplacement.get(displacement)||[];items.push(relation);byDisplacement.set(displacement,items)}
+  for(const [displacement,items] of byDisplacement){
+    items.sort((a,b)=>a.previousIndex-b.previousIndex);
+    for(let index=1;index<items.length;index++){
+      const left=items[index-1],right=items[index],cellDistance=right.previousIndex-left.previousIndex;
+      if(cellDistance<=0||right.currentIndex-left.currentIndex!==cellDistance||cellDistance>Math.max(left.length,right.length)*2)continue;
+      const groupId=`parallel-recurrence-${left.previousIndex}-${right.previousIndex}-${displacement}`,evidence={groupId,firstPair:[left.previousIndex,right.previousIndex],recurrencePair:[left.currentIndex,right.currentIndex],displacementInEvents:displacement,cellDistanceInEvents:cellDistance,requiresCadenceReview:true};
+      for(const boundaryIndex of [right.previousIndex,right.currentIndex]){const boundary=boundaries[boundaryIndex];if(!boundary)continue;boundary.rawStrength=boundary.rawStrength??boundary.strength;boundary.continuity=Math.max(boundary.continuity,.9);boundary.cues.push(cue('parallel-motif-recurrence-continuation',.9,evidence));boundary.primaryLevel='subphrase-cell';boundary.suppressedBy=groupId;boundary.strength=round(Math.min(boundary.strength,.49))}
+      groups.push(evidence);
+    }
+  }
+  return groups;
+}
+
+function shiftTieCarryoverBoundaries(events,boundaries){
+  const shifts=[];
+  for(let index=1;index<events.length-1;index++){
+    const event=events[index],next=events[index+1],boundary=boundaries[index];
+    const crossesBarline=event.tieEndMeasure!==null&&event.measure!==null&&event.tieEndMeasure>event.measure;
+    if(!boundary||boundary.strength<.65||!crossesBarline||!next.attack||event.pitch!==next.pitch||event.end===null||next.onset===null||Math.abs(event.end-next.onset)>1e-6)continue;
+    const evidence={fromIndex:index,toIndex:index+1,pitch:event.pitch,tieEndMeasure:event.tieEndMeasure,rule:'phrase begins at the re-articulated attack after a barline-spanning tie'};
+    boundary.rawStrength=boundary.rawStrength??boundary.strength;boundary.continuity=Math.max(boundary.continuity,.92);boundary.cues.push(cue('tied-carryover-continuation',.92,evidence));boundary.primaryLevel='phrase-ending-carryover';boundary.suppressedBy=`tie-carryover-${index}`;boundary.strength=round(Math.min(boundary.strength,.49));
+    const shifted=boundaries[index+1];shifted.cues.push(cue('post-tie-reattack-start',.72,evidence));shifted.strength=round(clamp(shifted.strength+.72));
+    shifts.push(evidence);
+  }
+  return shifts;
 }
 
 function cellShape(attacks, start, length) {
@@ -247,8 +280,10 @@ export function analyzePhraseBoundaries(notes) {
     }
   }
   const motifRelations = addMotifSupport(attacks, boundaries);
+  const motifParallelGroups = addParallelRecurrenceContinuity(motifRelations,boundaries);
   const repeatedFigureRuns = addRepeatedFigureContinuity(attacks, boundaries);
   const rhythmicGestureGroups = addRhythmicGestureContinuity(attacks, boundaries);
+  const tieCarryoverShifts = shiftTieCarryoverBoundaries(events,boundaries);
   for (let index = 1; index < events.length; index++) {
     const boundary = boundaries[index];
     if (!events[index].attack) {
@@ -259,7 +294,7 @@ export function analyzePhraseBoundaries(notes) {
     boundary.reliable = boundary.supported || boundary.continuity >= .75;
     boundary.state = boundary.supported ? 'boundary' : boundary.continuity >= .75 ? 'continuous' : 'unknown';
   }
-  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, repeatedFigureRuns, rhythmicGestureGroups, boundaries };
+  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, motifParallelGroups, repeatedFigureRuns, rhythmicGestureGroups, tieCarryoverShifts, boundaries };
 }
 
 /** Only adjacent INTERNAL mapped transitions are comparable; use full candidate indices. */
