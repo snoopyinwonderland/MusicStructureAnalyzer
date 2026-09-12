@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CorpusNote } from '../types';
-import { buildPhraseSpans, harmonyRomanParts, jumpByMeasures, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange } from './FullScorePage';
+import { buildMotifSpans, buildPhraseSpans, harmonyRomanParts, jumpByMeasures, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange, usesCampaniaAnalysisFont } from './FullScorePage';
 
 const note=(onset:number,pitchMidi:number,measureOrdinal:number)=>({onset,pitchMidi,measureOrdinal,measure:measureOrdinal,kind:'note',durationRatio:1} as CorpusNote);
 
@@ -53,5 +53,26 @@ describe('boundary harmony display semantics',()=>{
   it('separates preparation, phrase-ending arrival, and the next phrase onset',()=>{
     const record={harmonyProgression:{display:'A → B7 | A',romanDisplay:'I → II7 | I',preparationRoman:'I',arrivalRoman:'II7',afterBoundaryRoman:'I'}} as any;
     expect(harmonyRomanParts(record)).toEqual({preparation:'I',arrival:'II7',afterBoundary:'I'});
+  });
+
+  it('uses Campania for pitches and Roman values but never for unknown',()=>{
+    expect(usesCampaniaAnalysisFont('F#4')).toBe(true);
+    expect(usesCampaniaAnalysisFont('Ab4')).toBe(true);
+    expect(usesCampaniaAnalysisFont('V7')).toBe(true);
+    expect(usesCampaniaAnalysisFont('unknown')).toBe(false);
+    expect(usesCampaniaAnalysisFont(' UNKNOWN ')).toBe(false);
+  });
+});
+
+describe('motif overlay spans',()=>{
+  it('numbers close repeated Motif occurrences sequentially and independently',()=>{
+    const notes=[0,1,2,3,4,5,6,7,8,9].map(index=>note(index,60+index,Math.floor(index/2)+1));
+    const spans=buildMotifSpans(notes,[{length:4,signatureKey:'motif-a',previousIndex:0,currentIndex:6,distanceInAttacks:6,closeContinuation:true}]);
+    expect(spans.map(span=>[span.motifNumber,span.startIndex,span.endIndex])).toEqual([[1,0,5],[2,6,9]]);
+  });
+
+  it('does not display distant recurrence as automatic local grouping',()=>{
+    const notes=[0,1,2,3,4,5].map(index=>note(index,60+index,1));
+    expect(buildMotifSpans(notes,[{length:2,signatureKey:'motif-a',previousIndex:0,currentIndex:4,distanceInAttacks:4,closeContinuation:false}])).toEqual([]);
   });
 });

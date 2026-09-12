@@ -85,10 +85,11 @@ describe('uncalibrated local boundary evidence', () => {
   it('records bounded motif starts without adding Phrase-boundary strength', () => {
     const input = notes([60, 64, 62, 67, 69, 71, 60, 64, 62, 67, 69, 71], [0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13]);
     const boundary = analyzePhraseBoundaries(input).boundaries[6];
-    expect(boundary.supported).toBe(true);
-    expect(boundary.cues.find(item => item.name === 'repeated-motif-start')?.evidence).toMatchObject({ previousIndex: 0, distanceInAttacks: 6, layer: 'motif', contributesToPhraseStrength: false });
-    const phraseEvidenceStrength = boundary.cues.filter(item => item.name !== 'repeated-motif-start').reduce((sum, item) => sum + item.strength, 0);
-    expect(boundary.strength).toBeCloseTo(Math.min(1, phraseEvidenceStrength), 5);
+    expect(boundary.supported).toBe(false);
+    expect(boundary).toMatchObject({ primaryLevel: 'subphrase-cell', state: 'continuous' });
+    expect(boundary.cues.find(item => item.name === 'repeated-motif-start')?.evidence).toMatchObject({ previousIndex: 0, currentIndex: 6, distanceInAttacks: 6, layer: 'motif', contributesToPhraseStrength: false, closeContinuation: true });
+    expect(boundary.cues.some(item=>item.name==='motif-repetition-continuation')).toBe(true);
+    expect(analyzePhraseBoundaries(input).motifRelations).toHaveLength(1);
   });
 
   it('does not report repeated scales, oscillations, or every ostinato rotation as motif starts', () => {

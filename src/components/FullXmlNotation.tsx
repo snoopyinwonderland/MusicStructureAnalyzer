@@ -191,11 +191,13 @@ export const fullScoreBreakMode = 'auto' as const;
 export const normalizeMusicXmlInput = (xml: string) => xml.replace(/^\uFEFF/, '');
 export type PhraseBoundaryMarker = { note: CorpusNote; boundaryIndex: number; strength: number; beforePhrase?:number; afterPhrase?:number };
 export type PhraseSpanMarker = { phraseNumber: number; startIndex: number; endIndex: number; startNote: CorpusNote; endNote: CorpusNote; sharedStart: boolean; sharedEnd: boolean; startMeasure?:number; endMeasure?:number; startPitch?:string; endPitch?:string };
+export type MotifSpanMarker = { motifNumber:number; startIndex:number; endIndex:number; startNote:CorpusNote; endNote:CorpusNote };
 export const phraseBoundaryLabel = (marker: Pick<PhraseBoundaryMarker, 'afterPhrase'>) => marker.afterPhrase ? `P${marker.afterPhrase} 시작` : '경계';
 export const phraseColorIndex = (phraseNumber:number) => Math.max(0, phraseNumber - 1) % 4;
 export const phraseSegmentKey = (segmentKey:string, phraseNumber:number, flashingPhraseNumber:number|null, flashToken:number) => `${segmentKey}-${phraseNumber===flashingPhraseNumber?flashToken:0}`;
 const EMPTY_PHRASE_MARKERS: PhraseBoundaryMarker[] = [];
 const EMPTY_PHRASE_SPANS: PhraseSpanMarker[] = [];
+const EMPTY_MOTIF_SPANS: MotifSpanMarker[] = [];
 const trimToExcerpt = (doc: XMLDocument, partId: string, start: number, end: number, ordinalStart?: number, ordinalEnd?: number) => {
   for (const p of [...doc.getElementsByTagName('part')]) if (p.getAttribute('id') !== partId) p.remove();
   for (const p of [...doc.getElementsByTagName('score-part')]) if (p.getAttribute('id') !== partId) p.remove();
@@ -215,7 +217,7 @@ const trimToExcerpt = (doc: XMLDocument, partId: string, start: number, end: num
   }
 };
 
-export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPTY_NOTES, activePlaybackIndex = null, onPlaybackRangeChange, streamId, excerpt = false, autoScroll = true, pretrimmed = false, measureOrdinalOffset = 0, phraseMarkers = EMPTY_PHRASE_MARKERS, phraseSpans = EMPTY_PHRASE_SPANS, phraseVisible = true, selectedPhraseBoundary = null, onPhraseBoundarySelect, flashingPhraseNumber = null, phraseFlashToken = 0, onPhraseSelect }: { xml: string; start: number; end: number; targets: CorpusNote[]; playbackNotes?: CorpusNote[]; activePlaybackIndex?: number|null; onPlaybackRangeChange?:(range:{first:number|null;last:number|null;complete:boolean})=>void; streamId: string; excerpt?: boolean; autoScroll?: boolean; pretrimmed?: boolean; measureOrdinalOffset?: number; phraseMarkers?: PhraseBoundaryMarker[]; phraseSpans?: PhraseSpanMarker[]; phraseVisible?: boolean; selectedPhraseBoundary?: number|null; onPhraseBoundarySelect?:(boundaryIndex:number)=>void; flashingPhraseNumber?:number|null; phraseFlashToken?:number; onPhraseSelect?:(phraseNumber:number)=>void }) {
+export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPTY_NOTES, activePlaybackIndex = null, onPlaybackRangeChange, streamId, excerpt = false, autoScroll = true, pretrimmed = false, measureOrdinalOffset = 0, phraseMarkers = EMPTY_PHRASE_MARKERS, phraseSpans = EMPTY_PHRASE_SPANS, motifSpans = EMPTY_MOTIF_SPANS, phraseVisible = true, motifVisible = true, selectedPhraseBoundary = null, onPhraseBoundarySelect, flashingPhraseNumber = null, phraseFlashToken = 0, onPhraseSelect }: { xml: string; start: number; end: number; targets: CorpusNote[]; playbackNotes?: CorpusNote[]; activePlaybackIndex?: number|null; onPlaybackRangeChange?:(range:{first:number|null;last:number|null;complete:boolean})=>void; streamId: string; excerpt?: boolean; autoScroll?: boolean; pretrimmed?: boolean; measureOrdinalOffset?: number; phraseMarkers?: PhraseBoundaryMarker[]; phraseSpans?: PhraseSpanMarker[]; motifSpans?:MotifSpanMarker[]; phraseVisible?: boolean; motifVisible?:boolean; selectedPhraseBoundary?: number|null; onPhraseBoundarySelect?:(boundaryIndex:number)=>void; flashingPhraseNumber?:number|null; phraseFlashToken?:number; onPhraseSelect?:(phraseNumber:number)=>void }) {
   const [pages, setPages] = useState<(string | null)[]>([]);
   const [renderProgress, setRenderProgress] = useState({ done: 0, total: 0 });
   const [renderError, setRenderError] = useState('');
@@ -282,6 +284,7 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
       });
       const phraseIds = new Map<string, {noteIndex:number;boundary?:PhraseBoundaryMarker}>(), phraseUsed = new Set<Element>(), phraseTargets=new Map<number,CorpusNote>();
       for(const span of phraseSpans){phraseTargets.set(span.startIndex,span.startNote);phraseTargets.set(span.endIndex,span.endNote)}
+      for(const span of motifSpans){phraseTargets.set(span.startIndex,span.startNote);phraseTargets.set(span.endIndex,span.endNote)}
       const markerByNote=new Map(phraseMarkers.map(marker=>[marker.note,marker]));
       for (const [noteIndex,target] of [...phraseTargets].sort((a,b)=>a[0]-b[0])) {
         const note = ordered.find(n => { const position = positions.get(n),measureMatches=target.measureOrdinal?position?.measureOrdinal===target.measureOrdinal:n.closest('measure')?.getAttribute('number')===String(target.measure); return !phraseUsed.has(n) && measureMatches && !n.getElementsByTagName('rest').length && position?.staff === staff && position?.voice === voice && Math.abs(position.beat - Number(target.beat)) < 1e-6 && midi(n) === target.pitchMidi });
@@ -329,7 +332,7 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
       setRenderError(error instanceof Error ? error.message : String(error));
     });
     return () => { live = false;renderMore.current=null;revealPhrase.current=null };
-  }, [xml, start, end, targets, playbackNotes, streamId, excerpt, pretrimmed, measureOrdinalOffset, onPlaybackRangeChange, phraseMarkers, phraseSpans]);
+  }, [xml, start, end, targets, playbackNotes, streamId, excerpt, pretrimmed, measureOrdinalOffset, onPlaybackRangeChange, phraseMarkers, phraseSpans, motifSpans]);
   useEffect(()=>{
     if(excerpt||!host.current||renderProgress.done>=renderProgress.total)return;
     const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))renderMore.current?.()},{rootMargin:'1000px 0px'});
@@ -353,6 +356,30 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
       const shared:Array<{key:string;left:number;top:number;leftColor:number;rightColor:number}>=[];for(let index=0;index<phraseSpans.length-1;index++){const left=phraseSpans[index],right=phraseSpans[index+1];if(left.endIndex!==right.startIndex)continue;const target=noteElements.get(left.endIndex);if(!target)continue;const rect=target.getBoundingClientRect();shared.push({key:String(left.endIndex),left:rect.left-rootRect.left+rect.width/2,top:rect.top-rootRect.top+rect.height/2,leftColor:(left.phraseNumber-1)%4,rightColor:(right.phraseNumber-1)%4})}setPhraseSharedAnchors(shared)})};
     measure();const observer=new ResizeObserver(measure);observer.observe(host.current);window.addEventListener('resize',measure);return()=>{cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('resize',measure)};
   },[pages,excerpt,phraseMarkers,phraseSpans]);
+  useEffect(()=>{
+    const container=host.current;
+    if(excerpt||!container)return;
+    let frame=0;
+    const measure=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{
+      for(const old of container.querySelectorAll('.motif-range-segment'))old.remove();
+      if(!motifVisible)return;
+      const rootRect=container.getBoundingClientRect(),noteElements=new Map<number,Element>();
+      for(const target of container.querySelectorAll('[data-phrase-note-index]'))noteElements.set(Number(target.getAttribute('data-phrase-note-index')),target);
+      const systems=[...container.querySelectorAll('g.system')],systemIndex=new Map(systems.map((system,index)=>[system,index]));
+      for(const span of motifSpans){
+        const startNode=noteElements.get(span.startIndex),endNode=noteElements.get(span.endIndex);if(!startNode||!endNode)continue;
+        const startSystem=startNode.closest('g.system'),endSystem=endNode.closest('g.system');if(!startSystem||!endSystem)continue;
+        const first=systemIndex.get(startSystem),last=systemIndex.get(endSystem);if(first===undefined||last===undefined)continue;
+        for(let index=first;index<=last;index++){
+          const system=systems[index],systemRect=system.getBoundingClientRect(),startRect=startNode.getBoundingClientRect(),endRect=endNode.getBoundingClientRect(),left=index===first?startRect.left+startRect.width/2:systemRect.left+4,right=index===last?endRect.left+endRect.width/2:systemRect.right-4;
+          const marker=document.createElement('i');marker.className='motif-range-segment';marker.style.left=`${left-rootRect.left}px`;marker.style.top=`${systemRect.top-rootRect.top+22}px`;marker.style.width=`${Math.max(8,right-left)}px`;marker.setAttribute('role','img');marker.setAttribute('aria-label',`Motif ${span.motifNumber} 후보 구간`);
+          if(index===first){const label=document.createElement('span');label.textContent=`Motif ${span.motifNumber}`;marker.append(label)}
+          container.append(marker);
+        }
+      }
+    })};
+    measure();const observer=new ResizeObserver(measure);observer.observe(container);window.addEventListener('resize',measure);return()=>{cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('resize',measure);for(const old of container.querySelectorAll('.motif-range-segment'))old.remove()};
+  },[pages,excerpt,motifSpans,motifVisible]);
   const colors=['#2d9485','#d9842b','#7658b7','#2f6eb5'];
   return <div ref={host} className={`xml-score ${excerpt ? 'xml-excerpt' : ''}`} data-target-count={targets.length}>{playhead&&<i className="full-score-playhead" style={{left:playhead.left,top:playhead.top,height:playhead.height}}/>}{phraseVisible&&phraseRangeSegments.map(segment=><button key={phraseSegmentKey(segment.key,segment.phraseNumber,flashingPhraseNumber,phraseFlashToken)} type="button" aria-label={`Phrase ${segment.phraseNumber} 구간 강조`} className={`phrase-range-segment ${segment.phraseNumber===flashingPhraseNumber?'flashing':''}`} onClick={()=>onPhraseSelect?.(segment.phraseNumber)} style={{left:segment.left,top:segment.top,width:segment.width,color:colors[segment.colorIndex],borderColor:colors[segment.colorIndex]}}>{segment.label&&<span style={{background:colors[segment.colorIndex]}}>{segment.labelText}</span>}{segment.endLabel&&<b>끝</b>}</button>)}{phraseVisible&&phraseSharedAnchors.map(anchor=><i key={anchor.key} className="phrase-shared-anchor" style={{left:anchor.left,top:anchor.top,background:`linear-gradient(90deg,${colors[anchor.leftColor]} 0 50%,${colors[anchor.rightColor]} 50% 100%)`}} title="명시적 overlap 가설에서 앞·뒤 Phrase가 공유하는 음"/>)}{phraseVisible&&phraseMarkerPositions.map((marker,index)=>{const boundaryLabel=phraseBoundaryLabel(marker),color=colors[phraseColorIndex(marker.afterPhrase||1)];return <button key={`${marker.boundaryIndex}-${index}`} type="button" className={`phrase-boundary-marker ${selectedPhraseBoundary===marker.boundaryIndex?'selected':''}`} style={{left:marker.left,top:marker.top,height:marker.height,color}} onClick={()=>onPhraseBoundarySelect?.(marker.boundaryIndex)} title={`${boundaryLabel} 경계 후보 · 증거 강도 ${Math.round(marker.strength*100)}%`} aria-label={`Phrase ${marker.afterPhrase||''} 시작 경계`}><span>{boundaryLabel}</span></button>})}{renderError&&<div className="xml-render-error">악보 렌더링에 실패했습니다. {renderError}</div>}{!excerpt&&renderProgress.total!==0&&<div className="xml-render-progress"><span>{renderProgress.total<0?'전체 악보 구조를 분석하는 중':renderProgress.done<renderProgress.total?'악보 렌더링 진행 중':'악보 렌더링 완료'}</span><b>{renderProgress.total<0?'Verovio 조판 준비':`${renderProgress.done} / ${renderProgress.total} pages`}</b>{renderProgress.total>0&&<i><em style={{width:`${100*renderProgress.done/renderProgress.total}%`}}/></i>}{renderProgress.total>0&&renderProgress.done<renderProgress.total&&<button type="button" onClick={()=>renderMore.current?.()}>다음 3쪽 불러오기</button>}</div>}{pages.map((svg, i) => svg?<section key={i} dangerouslySetInnerHTML={{ __html: svg }} />:<section key={i} className="xml-page-loading"><span>스크롤하면 불러옵니다 · page {i+1}/{pages.length}</span></section>)}</div>;
 }

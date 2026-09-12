@@ -1,5 +1,5 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1.4';
+const VERSION = 'local-boundary-evidence-v1.5';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -64,7 +64,7 @@ function motifSignature(attacks, start, length) {
 
 function addMotifSupport(attacks, boundaries) {
   // At most five lengths and four recent occurrences per signature; no all-pairs search.
-  const seen = new Map();
+  const seen = new Map(), relations = [];
   for (let start = 0; start < attacks.length; start++) {
     let best = null;
     for (let length = 4; length <= 8; length++) {
@@ -79,7 +79,7 @@ function addMotifSupport(attacks, boundaries) {
       );
       // Repetition alone (including a repeating ostinato's rotations) is not a boundary.
       if (prior && start > 0 && anchored && (!best || length > best.length)) {
-        best = { length, previousIndex: attacks[prior.start].index, distanceInAttacks: start - prior.start };
+        best = { length, signatureKey: signature.key, previousIndex: attacks[prior.start].index, distanceInAttacks: start - prior.start };
       }
       recent.push({ start, incoming: signature.incoming });
       if (recent.length > 4) recent.shift();
@@ -87,9 +87,20 @@ function addMotifSupport(attacks, boundaries) {
     }
     if (best) {
       const boundary = boundaries[attacks[start].index];
-      boundary.cues.push(cue('repeated-motif-start', .2, { ...best, maxDistanceInAttacks: 64, layer: 'motif', contributesToPhraseStrength: false }));
+      const currentIndex = attacks[start].index, closeContinuation = best.distanceInAttacks <= best.length * 2;
+      const evidence = { ...best, currentIndex, maxDistanceInAttacks: 64, layer: 'motif', contributesToPhraseStrength: false, closeContinuation };
+      boundary.cues.push(cue('repeated-motif-start', .2, evidence));
+      relations.push(evidence);
+      if (closeContinuation) {
+        boundary.rawStrength = boundary.strength;
+        boundary.continuity = Math.max(boundary.continuity, .82);
+        boundary.cues.push(cue('motif-repetition-continuation', .82, { ...evidence, phraseRole: 'internal-subphrase' }));
+        boundary.primaryLevel = 'subphrase-cell';
+        boundary.strength = round(Math.min(boundary.strength, .49));
+      }
     }
   }
+  return relations;
 }
 
 function cellShape(attacks, start, length) {
@@ -143,7 +154,7 @@ function addRepeatedFigureContinuity(attacks, boundaries) {
     const evidence = { runId, cellLengthInAttacks: run.length, cellCount: run.internal.length + 1, internalBoundaryIndices: run.internal.map(position => attacks[position].index), similarity: round(median(run.similarities) || 0), requiresCadenceReview: true };
     for (const position of run.internal) {
       const boundary = boundaries[attacks[position].index];
-      boundary.rawStrength = boundary.strength;
+      boundary.rawStrength = boundary.rawStrength ?? boundary.strength;
       boundary.continuity = Math.max(boundary.continuity, .9);
       boundary.cues.push(cue('repeated-figure-continuation', .9, evidence));
       boundary.primaryLevel = 'subphrase-cell';
@@ -235,7 +246,7 @@ export function analyzePhraseBoundaries(notes) {
       }
     }
   }
-  addMotifSupport(attacks, boundaries);
+  const motifRelations = addMotifSupport(attacks, boundaries);
   const repeatedFigureRuns = addRepeatedFigureContinuity(attacks, boundaries);
   const rhythmicGestureGroups = addRhythmicGestureContinuity(attacks, boundaries);
   for (let index = 1; index < events.length; index++) {
@@ -248,7 +259,7 @@ export function analyzePhraseBoundaries(notes) {
     boundary.reliable = boundary.supported || boundary.continuity >= .75;
     boundary.state = boundary.supported ? 'boundary' : boundary.continuity >= .75 ? 'continuous' : 'unknown';
   }
-  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', repeatedFigureRuns, rhythmicGestureGroups, boundaries };
+  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, repeatedFigureRuns, rhythmicGestureGroups, boundaries };
 }
 
 /** Only adjacent INTERNAL mapped transitions are comparable; use full candidate indices. */
