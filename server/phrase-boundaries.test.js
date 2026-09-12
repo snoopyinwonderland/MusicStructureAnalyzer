@@ -82,11 +82,13 @@ describe('uncalibrated local boundary evidence', () => {
     }
   });
 
-  it('adds bounded motif-start evidence only with a separate local cue', () => {
+  it('records bounded motif starts without adding Phrase-boundary strength', () => {
     const input = notes([60, 64, 62, 67, 69, 71, 60, 64, 62, 67, 69, 71], [0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13]);
     const boundary = analyzePhraseBoundaries(input).boundaries[6];
     expect(boundary.supported).toBe(true);
-    expect(boundary.cues.find(item => item.name === 'repeated-motif-start')?.evidence).toMatchObject({ previousIndex: 0, distanceInAttacks: 6, requiresIndependentCue: true });
+    expect(boundary.cues.find(item => item.name === 'repeated-motif-start')?.evidence).toMatchObject({ previousIndex: 0, distanceInAttacks: 6, layer: 'motif', contributesToPhraseStrength: false });
+    const phraseEvidenceStrength = boundary.cues.filter(item => item.name !== 'repeated-motif-start').reduce((sum, item) => sum + item.strength, 0);
+    expect(boundary.strength).toBeCloseTo(Math.min(1, phraseEvidenceStrength), 5);
   });
 
   it('does not report repeated scales, oscillations, or every ostinato rotation as motif starts', () => {
@@ -106,8 +108,8 @@ describe('uncalibrated local boundary evidence', () => {
     const analysis = analyzePhraseBoundaries(input), boundaries = analysis.boundaries;
     expect(analysis.repeatedFigureRuns).toHaveLength(1);
     expect(analysis.repeatedFigureRuns[0]).toMatchObject({ startIndex: 1, endIndex: 17, cellLengthInAttacks: 4, internalBoundaryIndices: [5, 9, 13] });
-    expect(boundaries[1].cues.some(item => item.name === 'repeated-figure-run-start')).toBe(true);
-    expect(boundaries[1].supported).toBe(true);
+    expect(boundaries[1].cues.find(item => item.name === 'repeated-figure-run-start')?.evidence).toMatchObject({ layer: 'motif', contributesToPhraseStrength: false, promotedToPhraseBoundary: false });
+    expect(boundaries[1].supported).toBe(false);
     for (const index of [5, 9, 13]) {
       expect(boundaries[index]).toMatchObject({ supported: false, state: 'continuous', primaryLevel: 'subphrase-cell' });
       expect(boundaries[index].rawStrength).toBeGreaterThanOrEqual(.65);

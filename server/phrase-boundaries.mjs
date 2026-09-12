@@ -1,5 +1,5 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1.3';
+const VERSION = 'local-boundary-evidence-v1.4';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -87,8 +87,7 @@ function addMotifSupport(attacks, boundaries) {
     }
     if (best) {
       const boundary = boundaries[attacks[start].index];
-      boundary.cues.push(cue('repeated-motif-start', .2, { ...best, maxDistanceInAttacks: 64, requiresIndependentCue: true }));
-      boundary.strength = round(clamp(boundary.strength + .2));
+      boundary.cues.push(cue('repeated-motif-start', .2, { ...best, maxDistanceInAttacks: 64, layer: 'motif', contributesToPhraseStrength: false }));
     }
   }
 }
@@ -153,9 +152,9 @@ function addRepeatedFigureContinuity(attacks, boundaries) {
     }
     if (startIndex > 0) {
       const boundary = boundaries[startIndex];
-      boundary.cues.push(cue('repeated-figure-run-start', .72, evidence));
-      boundary.strength = round(clamp(boundary.strength + .72));
-      boundary.primaryLevel = 'phrase';
+      const independentBoundary = boundary.strength >= .65 && boundary.continuity < .75;
+      boundary.cues.push(cue('repeated-figure-run-start', .35, { ...evidence, layer: 'motif', contributesToPhraseStrength: false, promotedToPhraseBoundary: independentBoundary }));
+      if (independentBoundary) boundary.primaryLevel = 'phrase';
     }
     if (endIndex > 0 && endIndex < boundaries.length - 1) {
       const boundary = boundaries[endIndex];
@@ -249,7 +248,7 @@ export function analyzePhraseBoundaries(notes) {
     boundary.reliable = boundary.supported || boundary.continuity >= .75;
     boundary.state = boundary.supported ? 'boundary' : boundary.continuity >= .75 ? 'continuous' : 'unknown';
   }
-  return { version: VERSION, calibrated: false, label: 'local boundary evidence with repeated-figure hierarchy; harmonic cadence is a separate layer', repeatedFigureRuns, rhythmicGestureGroups, boundaries };
+  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', repeatedFigureRuns, rhythmicGestureGroups, boundaries };
 }
 
 /** Only adjacent INTERNAL mapped transitions are comparable; use full candidate indices. */
