@@ -83,4 +83,56 @@ describe('motif overlay spans',()=>{
     const transposed=[note(0,65,1),note(1,67,1),note(2,70,1),note(3,69,1)];
     expect(motifSimilarityEvidence(left,transposed)).toMatchObject({similarity:100,interval:100,contour:100,rhythm:100,coverage:100});
   });
+
+  it('projects the complete prototype extent onto a distant recurrence instead of the matched signature length',()=>{
+    const notes=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(index=>note(index,60+index%6,Math.floor(index/4)+1));
+    const relations=[
+      {length:4,signatureKey:'close',previousIndex:0,currentIndex:6,distanceInAttacks:6,closeContinuation:true},
+      {length:5,signatureKey:'distant',previousIndex:0,currentIndex:10,distanceInAttacks:10,closeContinuation:false},
+    ];
+    const spans=buildMotifSpans(notes,relations);
+    expect(spans.find(span=>span.startIndex===0)?.endIndex).toBe(5);
+    expect(spans.find(span=>span.startIndex===10)?.endIndex).toBe(15);
+  });
+
+  it('uses parallel relation cells, not Phrase endpoints, to bound repeated Motif variants',()=>{
+    const notes=Array.from({length:40},(_,index)=>note(index,[60,62,64,65,67,69,71,72][index%8],Math.floor(index/4)+1));
+    const relations=[
+      {length:8,signatureKey:'left',previousIndex:4,currentIndex:24,distanceInAttacks:20,closeContinuation:false},
+      {length:4,signatureKey:'right',previousIndex:8,currentIndex:28,distanceInAttacks:20,closeContinuation:false},
+    ];
+    const misleadingPhraseSpans=buildPhraseSpans(notes,[{index:4,supported:true},{index:12,supported:true},{index:24,supported:true},{index:32,supported:true}] as any);
+    const spans=buildMotifSpans(notes,relations,misleadingPhraseSpans);
+    expect(spans.filter(span=>[4,8,24,28].includes(span.startIndex)).map(span=>[span.startIndex,span.endIndex])).toEqual([[4,7],[8,15],[24,27],[28,35]]);
+  });
+
+  it('keeps an established local prototype shorter than a broader parallel match',()=>{
+    const notes=Array.from({length:40},(_,index)=>note(index,[66,64,67,66,62,57][index%6],Math.floor(index/4)+1));
+    const relations=[
+      {length:4,signatureKey:'local',previousIndex:6,currentIndex:13,distanceInAttacks:7,closeContinuation:true},
+      {length:5,signatureKey:'left',previousIndex:0,currentIndex:20,distanceInAttacks:20,closeContinuation:false},
+      {length:8,signatureKey:'right',previousIndex:6,currentIndex:26,distanceInAttacks:20,closeContinuation:false},
+    ];
+    const spans=buildMotifSpans(notes,relations,[]);
+    expect(spans.find(span=>span.startIndex===6)?.endIndex).toBe(12);
+    expect(spans.find(span=>span.startIndex===26)?.endIndex).toBe(32);
+  });
+
+  it('keeps the parallel Motif attack extent independent while its terminal note may be tied',()=>{
+    const notes=Array.from({length:40},(_,index)=>note(index,60+index%5,Math.floor(index/4)+1));
+    for(const [held,attack] of [[15,16],[35,36]]){notes[held].pitchMidi=66;notes[attack].pitchMidi=66;Object.assign(notes[held],{tieEndMeasure:Number(notes[held].measure)+1,durationRatio:1})}
+    const relations=[
+      {length:8,signatureKey:'left',previousIndex:4,currentIndex:24,distanceInAttacks:20,closeContinuation:false},
+      {length:4,signatureKey:'right',previousIndex:8,currentIndex:28,distanceInAttacks:20,closeContinuation:false},
+    ];
+    const spans=buildMotifSpans(notes,relations,[]);
+    expect(spans.find(span=>span.startIndex===8)?.endIndex).toBe(15);
+    expect(spans.find(span=>span.startIndex===28)?.endIndex).toBe(35);
+  });
+
+  it('does not invent Motifs from short Phrase spans without recurrence evidence',()=>{
+    const notes=Array.from({length:8},(_,index)=>note(index,60+index,index<4?1:2));
+    const phraseSpans=buildPhraseSpans(notes,[{index:4,supported:true}] as any);
+    expect(buildMotifSpans(notes,[],phraseSpans)).toEqual([]);
+  });
 });

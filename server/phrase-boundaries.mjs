@@ -1,5 +1,5 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1.6';
+const VERSION = 'local-boundary-evidence-v1.7';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -134,6 +134,22 @@ function shiftTieCarryoverBoundaries(events,boundaries){
     shifts.push(evidence);
   }
   return shifts;
+}
+
+export function addRepeatedPassageContinuity(events,parallelGroups,boundaries){
+  const passages=[];
+  for(const group of parallelGroups){
+    const sourceStart=group.firstPair[0],recurrenceStart=group.recurrencePair[0],displacement=group.displacementInEvents,available=Math.min(displacement,events.length-recurrenceStart);
+    if(available<12)continue;
+    const differences=[];for(let offset=0;offset<available;offset++){const left=events[sourceStart+offset],right=events[recurrenceStart+offset];if(left?.pitch!==null&&right?.pitch!==null)differences.push(right.pitch-left.pitch)}
+    const counts=new Map();for(const difference of differences)counts.set(difference,(counts.get(difference)||0)+1);const transposition=[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0],pitchSimilarity=differences.length?differences.filter(value=>value===transposition).length/differences.length:0;
+    let comparableRhythm=0,matchingRhythm=0;for(let offset=0;offset<available;offset++){const left=events[sourceStart+offset]?.duration,right=events[recurrenceStart+offset]?.duration;if(left===null||right===null||!left||!right)continue;comparableRhythm++;if(Math.abs(left-right)/Math.max(left,right)<=.36)matchingRhythm++}const rhythmSimilarity=comparableRhythm?matchingRhythm/comparableRhythm:0;
+    if(pitchSimilarity<.85||rhythmSimilarity<.7)continue;
+    const passageId=`repeated-passage-${sourceStart}-${recurrenceStart}`,evidence={passageId,sourceSpan:[sourceStart,recurrenceStart],recurrenceSpan:[recurrenceStart,Math.min(events.length,recurrenceStart+displacement)],displacementInEvents:displacement,alignedEvents:available,transpositionSemitones:transposition,pitchSimilarity:round(pitchSimilarity),rhythmSimilarity:round(rhythmSimilarity),requiresCadenceReview:true};
+    for(const [start,end] of [evidence.sourceSpan,evidence.recurrenceSpan])for(let index=start+1;index<end;index++){const boundary=boundaries[index],prior=events[index-1],current=events[index],tieCarriesIntoBoundary=prior?.tieEndMeasure!==null&&current?.measure!==null&&prior.tieEndMeasure>=current.measure,clearObservedBreak=!tieCarriesIntoBoundary&&boundary?.cues?.some(item=>item.name==='observed-gap'&&item.strength>=.75);if(!boundary||boundary.strength<.65||clearObservedBreak)continue;boundary.rawStrength=boundary.rawStrength??boundary.strength;boundary.continuity=Math.max(boundary.continuity,.93);boundary.cues.push(cue('repeated-passage-internal-continuation',.93,evidence));boundary.primaryLevel='internal-repeated-passage';boundary.suppressedBy=passageId;boundary.strength=round(Math.min(boundary.strength,.49))}
+    passages.push(evidence);
+  }
+  return passages;
 }
 
 function cellShape(attacks, start, length) {
@@ -284,6 +300,7 @@ export function analyzePhraseBoundaries(notes) {
   const repeatedFigureRuns = addRepeatedFigureContinuity(attacks, boundaries);
   const rhythmicGestureGroups = addRhythmicGestureContinuity(attacks, boundaries);
   const tieCarryoverShifts = shiftTieCarryoverBoundaries(events,boundaries);
+  const repeatedPassageGroups = addRepeatedPassageContinuity(events,motifParallelGroups,boundaries);
   for (let index = 1; index < events.length; index++) {
     const boundary = boundaries[index];
     if (!events[index].attack) {
@@ -294,7 +311,7 @@ export function analyzePhraseBoundaries(notes) {
     boundary.reliable = boundary.supported || boundary.continuity >= .75;
     boundary.state = boundary.supported ? 'boundary' : boundary.continuity >= .75 ? 'continuous' : 'unknown';
   }
-  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, motifParallelGroups, repeatedFigureRuns, rhythmicGestureGroups, tieCarryoverShifts, boundaries };
+  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, motifParallelGroups, repeatedPassageGroups, repeatedFigureRuns, rhythmicGestureGroups, tieCarryoverShifts, boundaries };
 }
 
 /** Only adjacent INTERNAL mapped transitions are comparable; use full candidate indices. */

@@ -101,28 +101,38 @@ export function motifSimilarityEvidence(left:CorpusNote[],right:CorpusNote[]){
 }
 
 export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],phraseSpans:PhraseSpanMarker[]=[]):MotifSpanMarker[]{
-  type Candidate={startIndex:number;endIndex:number;priority:number;source:'relation'|'cycle'|'short-phrase'};
+  type Candidate={startIndex:number;endIndex:number;priority:number;source:'relation'|'cycle'|'projected'|'parallel-cell'};
   const candidates=new Map<number,Candidate>();
   const add=(candidate:Candidate)=>{const prior=candidates.get(candidate.startIndex);if(!prior||candidate.priority>prior.priority)candidates.set(candidate.startIndex,candidate)};
   const cycleEnd=(start:number,exclusiveOnset:number)=>{let end:number|null=null;for(let index=start;index<notes.length;index++){const note=notes[index];if(Number(note.onset)>=exclusiveOnset)break;if(note?.isAttack!==false&&!note?.tieStop)end=index}return end};
   const attackEnd=(start:number,length:number)=>{let remaining=length,end=start;for(let index=start;index<notes.length&&remaining>0;index++){const note=notes[index];if(note?.isAttack!==false&&!note?.tieStop){remaining--;end=index}}return remaining===0?end:null};
-  for(const relation of relations){
-    if(!relation.signatureKey)continue;
-    for(const startIndex of [relation.previousIndex,relation.currentIndex]){const endIndex=attackEnd(startIndex,relation.length);if(endIndex!==null)add({startIndex,endIndex,priority:1,source:'relation'})}
-    if(!relation.closeContinuation)continue;
+  const attackCount=(candidate:Candidate)=>notes.slice(candidate.startIndex,candidate.endIndex+1).filter(note=>note.isAttack!==false&&!note.tieStop).length;
+  const validRelations=relations.filter(relation=>relation.signatureKey);
+  for(const relation of validRelations.filter(relation=>relation.closeContinuation)){
     const previousOnset=Number(notes[relation.previousIndex]?.onset),currentOnset=Number(notes[relation.currentIndex]?.onset),cycleDuration=currentOnset-previousOnset;
     if(!Number.isFinite(cycleDuration)||cycleDuration<=0)continue;
     for(const [startIndex,exclusiveOnset] of [[relation.previousIndex,currentOnset],[relation.currentIndex,currentOnset+cycleDuration]] as const){
-      const endIndex=cycleEnd(startIndex,exclusiveOnset);if(endIndex!==null)add({startIndex,endIndex,priority:3,source:'cycle'});
+      const endIndex=cycleEnd(startIndex,exclusiveOnset);if(endIndex!==null)add({startIndex,endIndex,priority:4,source:'cycle'});
     }
   }
-  for(const span of phraseSpans){const measureLength=span.endMeasure-span.startMeasure+1,attacks=notes.slice(span.startIndex,span.endIndex+1).filter(note=>note.isAttack!==false&&!note.tieStop).length;if(measureLength<=3&&attacks>=3&&attacks<=12)add({startIndex:span.startIndex,endIndex:span.endIndex,priority:2,source:'short-phrase'})}
-  const raw=[...candidates.values()].sort((a,b)=>a.startIndex-b.startIndex||a.endIndex-b.endIndex),recurrent=raw.filter((candidate,index)=>candidate.source!=='short-phrase'||raw.some((other,otherIndex)=>otherIndex!==index&&motifSimilarityEvidence(notes.slice(candidate.startIndex,candidate.endIndex+1),notes.slice(other.startIndex,other.endIndex+1)).similarity>=80));
+  for(const relation of validRelations){
+    const prototype=candidates.get(relation.previousIndex),length=prototype?attackCount(prototype):relation.length,priority=prototype?3:1;
+    if(!prototype){const endIndex=attackEnd(relation.previousIndex,relation.length);if(endIndex!==null)add({startIndex:relation.previousIndex,endIndex,priority:1,source:'relation'})}
+    const endIndex=attackEnd(relation.currentIndex,length);if(endIndex!==null)add({startIndex:relation.currentIndex,endIndex,priority,source:prototype?'projected':'relation'});
+  }
+  const byDisplacement=new Map<number,MotifRelation[]>();for(const relation of validRelations){const displacement=relation.currentIndex-relation.previousIndex,items=byDisplacement.get(displacement)||[];items.push(relation);byDisplacement.set(displacement,items)}
+  for(const [displacement,items] of byDisplacement){items.sort((a,b)=>a.previousIndex-b.previousIndex);for(let index=1;index<items.length;index++){
+    const left=items[index-1],right=items[index],cellDistance=right.previousIndex-left.previousIndex;if(cellDistance<=0||right.currentIndex-left.currentIndex!==cellDistance||cellDistance>Math.max(left.length,right.length)*2)continue;
+    for(const [start,exclusive] of [[left.previousIndex,right.previousIndex],[left.currentIndex,right.currentIndex]] as const){const endIndex=cycleEnd(start,Number(notes[exclusive]?.onset));if(endIndex!==null)add({startIndex:start,endIndex,priority:5,source:'parallel-cell'})}
+    const establishedPrototype=candidates.get(right.previousIndex),cellLength=establishedPrototype?.source==='cycle'?attackCount(establishedPrototype):Math.max(left.length,right.length);
+    for(const start of [right.previousIndex,right.currentIndex]){const endIndex=attackEnd(start,cellLength);if(endIndex!==null)add({startIndex:start,endIndex,priority:5,source:'parallel-cell'})}
+  }}
+  const recurrent=[...candidates.values()].sort((a,b)=>a.startIndex-b.startIndex||a.endIndex-b.endIndex);
   const families:Array<{number:number;base:Candidate;variants:Candidate[]}>=[];
   return recurrent.map((candidate,motifNumber)=>{
     const segment=notes.slice(candidate.startIndex,candidate.endIndex+1);let family=families.map(item=>({item,evidence:motifSimilarityEvidence(notes.slice(item.base.startIndex,item.base.endIndex+1),segment)})).filter(match=>match.evidence.similarity>=80).sort((a,b)=>b.evidence.similarity-a.evidence.similarity)[0]?.item;
     if(!family){family={number:families.length+1,base:candidate,variants:[candidate]};families.push(family)}
-    let variantIndex=family.variants.findIndex(variant=>motifSimilarityEvidence(notes.slice(variant.startIndex,variant.endIndex+1),segment).similarity>=99);if(variantIndex<0){variantIndex=family.variants.length;family.variants.push(candidate)}
+    let variantIndex=family.variants.findIndex(variant=>{const evidence=motifSimilarityEvidence(notes.slice(variant.startIndex,variant.endIndex+1),segment);return evidence.interval>=99&&evidence.contour>=99&&evidence.coverage>=98});if(variantIndex<0){variantIndex=family.variants.length;family.variants.push(candidate)}
     const similarity=motifSimilarityEvidence(notes.slice(family.base.startIndex,family.base.endIndex+1),segment),label=`Motif ${family.number}${'′'.repeat(variantIndex)}`;
     return{motifNumber:motifNumber+1,familyNumber:family.number,variantIndex,label,startIndex:candidate.startIndex,endIndex:candidate.endIndex,startNote:notes[candidate.startIndex],endNote:notes[candidate.endIndex],similarity};
   });
@@ -144,7 +154,7 @@ export function phraseEndingBoundaryIndex(phraseNumber:number,boundaries:PhraseB
 }
 
 const cueNames:Record<string,string>={
-  'observed-gap':'실제 시간 공백','pitch-discontinuity':'음정 도약 변화','ioi-discontinuity':'리듬 간격 변화','repeated-motif-start':'반복 모티프 시작','observed-continuity':'시간적 연속','tie-continuation':'타이 지속',
+  'observed-gap':'실제 시간 공백','pitch-discontinuity':'음정 도약 변화','ioi-discontinuity':'리듬 간격 변화','repeated-motif-start':'반복 모티프 시작','observed-continuity':'시간적 연속','tie-continuation':'타이 지속','repeated-passage-internal-continuation':'반복 구간 내부 연속성',
 };
 
 function MotifReviewPanel({span}:{span:MotifSpanMarker}){

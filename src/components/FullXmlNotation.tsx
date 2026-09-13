@@ -284,8 +284,10 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
         if (!note) return;playbackUsed.add(note);const id=note.getAttribute('id')||`playback-note-${playbackIndex}`;note.setAttribute('id',id);playbackIds.set(id,playbackIndex);
       });
       const phraseIds = new Map<string, {noteIndex:number;boundary?:PhraseBoundaryMarker}>(), phraseUsed = new Set<Element>(), phraseTargets=new Map<number,CorpusNote>();
+      const spanEndIndexes=new Set<number>();
       for(const span of phraseSpans){phraseTargets.set(span.startIndex,span.startNote);phraseTargets.set(span.endIndex,span.endNote)}
-      for(const span of motifSpans){phraseTargets.set(span.startIndex,span.startNote);phraseTargets.set(span.endIndex,span.endNote)}
+      for(const span of phraseSpans)spanEndIndexes.add(span.endIndex);
+      for(const span of motifSpans){phraseTargets.set(span.startIndex,span.startNote);phraseTargets.set(span.endIndex,span.endNote);spanEndIndexes.add(span.endIndex)}
       const markerByNote=new Map(phraseMarkers.map(marker=>[marker.note,marker]));
       for (const [noteIndex,target] of [...phraseTargets].sort((a,b)=>a[0]-b[0])) {
         const note = ordered.find(n => { const position = positions.get(n),measureMatches=target.measureOrdinal?position?.measureOrdinal===target.measureOrdinal:n.closest('measure')?.getAttribute('number')===String(target.measure); return !phraseUsed.has(n) && measureMatches && !n.getElementsByTagName('rest').length && position?.staff === staff && position?.voice === voice && Math.abs(position.beat - Number(target.beat)) < 1e-6 && midi(n) === target.pitchMidi });
@@ -293,6 +295,7 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
         phraseUsed.add(note);
         const id=note.getAttribute('id')||`phrase-span-note-${noteIndex}`;
         note.setAttribute('id',id);phraseIds.set(id,{noteIndex,boundary:markerByNote.get(target)});
+        if(spanEndIndexes.has(noteIndex)){const seed=tieEvents.find(event=>event.value===note);if(seed)for(const [tieIndex,continuation] of tiedNoteChain(seed,tieEvents).slice(1).entries()){const continuationId=continuation.getAttribute('id')||`phrase-span-note-${noteIndex}-tie-${tieIndex}`;continuation.setAttribute('id',continuationId);phraseIds.set(continuationId,{noteIndex})}}
       }
       if(!live)return;
       // Normalize only the temporary render document; source XML and analysis stay unchanged.
@@ -374,6 +377,7 @@ export function FullXmlNotation({ xml, start, end, targets, playbackNotes = EMPT
         for(let index=first;index<=last;index++){
           const system=systems[index],systemRect=system.getBoundingClientRect(),startRect=startNode.getBoundingClientRect(),endRect=endNode.getBoundingClientRect(),left=index===first?startRect.left+startRect.width/2:systemRect.left+4,right=index===last?endRect.left+endRect.width/2:systemRect.right-4;
           const marker=document.createElement('button');marker.type='button';marker.className=`motif-range-segment${span.motifNumber===selectedMotifNumber?' selected':''}`;marker.style.left=`${left-rootRect.left}px`;marker.style.top=`${systemRect.top-rootRect.top+22}px`;marker.style.width=`${Math.max(8,right-left)}px`;marker.setAttribute('aria-label',`${span.label} 후보 구간 · 상세 보기`);marker.addEventListener('click',()=>onMotifSelect?.(span.motifNumber));
+          marker.dataset.motifNumber=String(span.motifNumber);marker.dataset.motifStart=String(span.startIndex);marker.dataset.motifEnd=String(span.endIndex);marker.dataset.motifSegment=String(index-first);
           if(index===first){const label=document.createElement('span');label.textContent=span.label;marker.append(label)}
           container.append(marker);
         }

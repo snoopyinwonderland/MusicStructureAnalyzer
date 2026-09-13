@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addParallelRecurrenceContinuity, analyzePhraseBoundaries, comparePhraseBoundaries } from './phrase-boundaries.mjs';
+import { addParallelRecurrenceContinuity, addRepeatedPassageContinuity, analyzePhraseBoundaries, comparePhraseBoundaries } from './phrase-boundaries.mjs';
 
 const notes = (pitches, onsets, durations = []) => pitches.map((pitchMidi, i) => ({
   pitchMidi, durationRatio: durations[i] ?? 1, ...(onsets ? { onset: onsets[i] } : {}),
@@ -107,6 +107,35 @@ describe('uncalibrated local boundary evidence', () => {
     expect(groups).toHaveLength(1);
     expect(boundaries[33]).toMatchObject({primaryLevel:'subphrase-cell',strength:.49});
     expect(boundaries[33].cues.some(item=>item.name==='parallel-motif-recurrence-continuation')).toBe(true);
+  });
+
+  it('keeps strongly aligned repeated passages consistent at Phrase level',()=>{
+    const pitches=[60,62,64,65,67,69,67,65,64,62,60,59,57,59,60,62,64,65,67,69];
+    const events=[...pitches,...pitches].map((pitch,index)=>({pitch,duration:1,onset:index,attack:true,index}));
+    const boundaries=Array.from({length:events.length+1},(_,index)=>({index,strength:0,continuity:0,cues:[],primaryLevel:'unknown'}));
+    for(const index of [7,27])boundaries[index].strength=.82;
+    const groups=addRepeatedPassageContinuity(events,[{firstPair:[0,4],recurrencePair:[20,24],displacementInEvents:20}],boundaries);
+    expect(groups).toHaveLength(1);
+    for(const index of [7,27])expect(boundaries[index]).toMatchObject({strength:.49,primaryLevel:'internal-repeated-passage'});
+  });
+
+  it('preserves a true observed break but ignores a notated gap covered by a tie',()=>{
+    const pitches=[60,62,64,65,67,69,67,65,64,62,60,59,57,59,60,62,64,65,67,69];
+    const events=[...pitches,...pitches].map((pitch,index)=>({pitch,duration:1,onset:index,attack:true,index,measure:Math.floor(index/4)+1,tieEndMeasure:null}));
+    const boundaries=Array.from({length:events.length+1},(_,index)=>({index,strength:0,continuity:0,cues:[],primaryLevel:'unknown'}));
+    for(const index of [7,27]){boundaries[index].strength=.82;boundaries[index].cues.push({name:'observed-gap',strength:.8})}
+    events[26].tieEndMeasure=events[27].measure;
+    addRepeatedPassageContinuity(events,[{firstPair:[0,4],recurrencePair:[20,24],displacementInEvents:20}],boundaries);
+    expect(boundaries[7].strength).toBe(.82);
+    expect(boundaries[27]).toMatchObject({strength:.49,primaryLevel:'internal-repeated-passage'});
+  });
+
+  it('does not suppress a clear observed break inside a repeated passage',()=>{
+    const pitches=Array.from({length:16},(_,index)=>60+index%5),events=[...pitches,...pitches].map((pitch,index)=>({pitch,duration:1,onset:index,attack:true,index}));
+    const boundaries=Array.from({length:events.length+1},(_,index)=>({index,strength:0,continuity:0,cues:[],primaryLevel:'unknown'}));
+    boundaries[8]={...boundaries[8],strength:.9,cues:[{name:'observed-gap',strength:.9}]};
+    addRepeatedPassageContinuity(events,[{firstPair:[0,4],recurrencePair:[16,20],displacementInEvents:16}],boundaries);
+    expect(boundaries[8]).toMatchObject({strength:.9,primaryLevel:'unknown'});
   });
 
   it('moves a boundary from a barline-spanning tied carryover to the following same-pitch reattack',()=>{

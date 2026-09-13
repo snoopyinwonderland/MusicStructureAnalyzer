@@ -76,6 +76,22 @@
         "aggregateAsOnePhrase": true
       }
     ],
+    "motifOccurrences": [
+      { "label": "Motif 1", "startIndex": 0, "endIndex": 5, "role": "prototype" },
+      { "label": "Motif 1′", "startIndex": 6, "endIndex": 12, "role": "prototype-variant" },
+      { "label": "Motif 1", "startIndex": 27, "endIndex": 32, "role": "melodically-equivalent-recurrence" },
+      { "label": "Motif 1′", "startIndex": 33, "endIndex": 39, "role": "variant-recurrence" },
+      { "label": "Motif 2", "startIndex": 54, "endIndex": 57, "role": "prototype" },
+      { "label": "Motif 2′", "startIndex": 58, "endIndex": 65, "role": "prototype-variant", "displayEnd": "tie-continuation" },
+      { "label": "Motif 2", "startIndex": 83, "endIndex": 86, "role": "recurrence" },
+      { "label": "Motif 2′", "startIndex": 87, "endIndex": 94, "role": "variant-recurrence", "displayEnd": "measure-32-first-tie-continuation" }
+    ],
+    "repeatedPassagePhraseGroups": [
+      { "startIndex": 0, "endIndexExclusive": 27 },
+      { "startIndex": 27, "endIndexExclusive": 54 },
+      { "startIndex": 54, "endIndexExclusive": 83 },
+      { "startIndex": 83, "endIndexExclusive": 112 }
+    ],
     "phraseRules": [
       "Parallel recurrence must preserve the internal Motif boundary without promoting it to a Phrase boundary.",
       "A Phrase start must move from a barline-spanning tied carryover to the following re-articulated attack."
@@ -112,6 +128,22 @@
     {
       "kind": "boundary-harmony",
       "message": "Phrase 1의 A3는 12마디로 타이되어 그 첫 박 D3–F#3–A3의 I 화음 위에서 지속된다."
+    },
+    {
+      "kind": "motif-extent",
+      "message": "세 번째 Motif 1은 마지막 음가만 조금 다르고 멜로디는 기준형과 같으므로 F#4에서 중도 절단하지 않고 기준형과 같은 attack 수로 재현해야 한다."
+    },
+    {
+      "kind": "motif-variant-extent",
+      "message": "재등장한 Motif 1′은 첫 Motif 1′보다 한 음 길어지지 않으며 기준 변형의 길이를 보존해야 한다."
+    },
+    {
+      "kind": "tie-display-endpoint",
+      "message": "Motif 2′의 마지막 음이 다음 마디로 tie되면 분석 span은 notated attack에서 끝나더라도 화면 표시는 tie continuation까지 이어져야 한다."
+    },
+    {
+      "kind": "repeated-passage-phrase-consistency",
+      "message": "20–28마디와 28–38마디의 평행 반복 구간 내부에만 생긴 짧은 Phrase들은 앞선 형태와 불일치하므로 상위 Phrase 분할로 채택하지 않는다."
     }
   ],
   "diagnoses": [
@@ -122,6 +154,18 @@
     {
       "stage": "boundary-harmony-input",
       "message": "단선율 검색 인덱스가 MusicXML <chord> 구성음을 생략하여 12마디 I 대신 불완전한 후속 수직음향을 종결 화음으로 골랐다."
+    },
+    {
+      "stage": "motif-extent",
+      "message": "이전 Motif 표시가 짧은 Phrase 후보와 relation의 부분 일치 길이를 완전한 Motif 길이처럼 사용하여 F#4–F#4 절단과 재등장 변형의 한 음 과장을 만들었다."
+    },
+    {
+      "stage": "phrase-repeat-consistency",
+      "message": "긴 평행 반복 구간을 상위 단위로 비교하지 않아 뒤쪽 반복에서만 Phrase 8–12와 같은 짧은 경계가 남았다."
+    },
+    {
+      "stage": "tie-duration-gap",
+      "message": "31마디 종결 attack의 검색용 음가만 사용해 32마디 새 attack 앞에 observed-gap을 만들었지만, 실제 sounding event는 tie로 32마디까지 이어진다."
     }
   ],
   "proposals": [
@@ -144,6 +188,36 @@
       "id": "motif-family-prime-label",
       "status": "implemented",
       "message": "조옮김 불변 음정·윤곽·정규화 음가 유사도로 Motif family를 만들고 변형에는 prime 표기를 사용한다."
+    },
+    {
+      "id": "motif-prototype-extent-projection",
+      "status": "implemented",
+      "message": "부분 일치 signature가 아니라 이미 확립된 기준 occurrence의 attack 수를 먼 재등장 위치에 투영한다. 마지막 음가만 다른 동일 멜로디는 같은 변형 번호를 유지한다."
+    },
+    {
+      "id": "no-phrase-to-motif-span",
+      "status": "implemented",
+      "message": "Phrase 후보의 시작·끝을 Motif occurrence 길이로 재사용하지 않는다."
+    },
+    {
+      "id": "parallel-cell-bounding",
+      "status": "implemented",
+      "message": "동일 displacement와 내부 간격을 공유하는 relation 쌍으로 기준 cell 및 재등장 cell의 대응 끝을 정한다."
+    },
+    {
+      "id": "tie-chain-overlay-endpoint",
+      "status": "implemented",
+      "message": "Motif의 마지막 attack이 tie chain을 시작하면 악보 overlay는 그 tie continuation glyph까지 포함한다."
+    },
+    {
+      "id": "repeated-passage-phrase-consistency",
+      "status": "implemented",
+      "message": "12개 이상의 attack이 높은 음고·리듬 유사도로 평행 재현되면 한쪽에만 생긴 내부 Phrase 경계를 억제하고 원래 경계 강도는 raw evidence로 보존한다. 독립적으로 검증된 Cadence는 추후 override할 수 있다."
+    },
+    {
+      "id": "tie-covered-gap-rejection",
+      "status": "implemented",
+      "message": "observed-gap이 있어도 직전 tie chain이 현재 마디까지 지속되면 실제 쉼으로 취급하지 않는다. tie가 덮지 않는 강한 실제 공백은 보존한다."
     }
   ],
   "runs": [],
@@ -196,11 +270,19 @@
         "When two motif relations preserve the same recurrence displacement and internal spacing, retain the second cell boundary below Phrase level.",
         "Move a proposed Phrase start from a tied barline carryover to the following same-pitch re-articulation.",
         "For a terminal note tied into the next measure, evaluate the complete vertical sonority at the tie-continuation onset before later surface sonorities."
+        ,"Project a complete prototype Motif occurrence by attack count onto distant recurrences; a bounded matching signature is evidence of relation, not the occurrence endpoint."
+        ,"Never infer Motif extent from a provisional Phrase span."
+        ,"When a long source passage and recurrence agree strongly in pitch and rhythm, keep their Phrase segmentation structurally consistent unless independently validated closure overrides it."
+        ,"Render a terminal tied attack through its tie continuation while retaining the canonical occurrence endpoint semantics."
+        ,"Prefer a locally established Motif prototype extent over a later broader partial match."
+        ,"Do not treat a notated-duration gap as a breath when the preceding tie chain carries the sounding event into the boundary measure."
       ],
       "counterexamples": [
         "Do not merge repeated cells when an independently strong cadence closes the first cell.",
         "Do not shift a boundary when the following same pitch is still a tie continuation rather than a new attack.",
         "Do not reuse a terminal-note harmony when the note neither reaches the boundary nor crosses a barline by tie."
+        ,"Do not suppress an internal boundary merely from repetition when a separately validated Cadence or clear temporal break closes the unit."
+        ,"Do not extend a Motif simply to reach a nearby Phrase boundary."
       ],
       "reusableFor": [
         "retrieval-regression",
