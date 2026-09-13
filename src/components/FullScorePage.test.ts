@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CorpusNote } from '../types';
-import { buildMotifSpans, buildPhraseSpans, harmonyRomanParts, jumpByMeasures, motifSimilarityEvidence, notePitchAndValue, noteValueLabel, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange, usesCampaniaAnalysisFont } from './FullScorePage';
+import { buildMotifSpans, buildPhraseSpans, harmonyRomanParts, jumpByMeasures, motifSearchEstimate, motifSimilarityEvidence, notePitchAndValue, noteValueLabel, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange, usesCampaniaAnalysisFont } from './FullScorePage';
 
 const note=(onset:number,pitchMidi:number,measureOrdinal:number)=>({onset,pitchMidi,measureOrdinal,measure:measureOrdinal,kind:'note',durationRatio:1} as CorpusNote);
 
@@ -72,6 +72,12 @@ describe('boundary harmony display semantics',()=>{
 });
 
 describe('motif overlay spans',()=>{
+  it('uses a learned motif-search estimate and bounds stale values',()=>{
+    expect(motifSearchEstimate(10,null)).toBe(25);
+    expect(motifSearchEstimate(10,7.2)).toBe(8);
+    expect(motifSearchEstimate(10,999)).toBe(120);
+  });
+
   it('labels a close transformed occurrence as a prime variant in the same Motif family',()=>{
     const notes=[0,1,2,3,4,5,6,7,8,9].map(index=>note(index,60+index,Math.floor(index/2)+1));
     const spans=buildMotifSpans(notes,[{length:4,signatureKey:'motif-a',previousIndex:0,currentIndex:6,distanceInAttacks:6,closeContinuation:true}]);
