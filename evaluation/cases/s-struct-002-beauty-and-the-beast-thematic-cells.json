@@ -1,0 +1,283 @@
+{
+  "schema": "musicanote-evaluation-case/v1",
+  "caseId": "S-STRUCT-002",
+  "createdAt": "2026-09-13",
+  "status": "diagnosed",
+  "replayable": true,
+  "tags": [
+    "rhythmic-theme-cell",
+    "syncopation-variant",
+    "phrase-aggregation",
+    "motif-restart",
+    "cadence-context"
+  ],
+  "query": {
+    "version": 1,
+    "mode": "melody_rhythm",
+    "meter": "4/4",
+    "startsOnDownbeat": false,
+    "events": [
+      {
+        "id": "theme-1",
+        "kind": "note",
+        "pitchMidi": 81,
+        "spelling": "A5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "theme-2",
+        "kind": "note",
+        "pitchMidi": 82,
+        "spelling": "Bb5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "theme-3",
+        "kind": "note",
+        "pitchMidi": 79,
+        "spelling": "G5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "theme-4",
+        "kind": "note",
+        "pitchMidi": 81,
+        "spelling": "A5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "theme-5",
+        "kind": "note",
+        "pitchMidi": 77,
+        "spelling": "F5",
+        "durationRatio": 4
+      }
+    ],
+    "absoluteExactOnly": false
+  },
+  "expected": {
+    "workId": "work-467bc6c2c130b1dd",
+    "themeRhythmFamily": "four-short-plus-long-arrival",
+    "rhythmVariants": [
+      "straight",
+      "syncopated"
+    ],
+    "reviewedPhraseBoundaryIndices": [
+      22,
+      32,
+      47,
+      57,
+      72,
+      82,
+      97,
+      112
+    ],
+    "reviewedPhraseGroups": [
+      {
+        "startIndex": 22,
+        "endIndexExclusive": 32,
+        "cellCount": 2,
+        "comment": "두 Motif가 변형을 거쳐 Half Cadence로 향한다."
+      },
+      {
+        "startIndex": 32,
+        "endIndexExclusive": 47,
+        "cellCount": 3,
+        "comment": "기존 Phrase 4는 유지한다."
+      },
+      {
+        "startIndex": 47,
+        "endIndexExclusive": 57,
+        "cellCount": 2,
+        "comment": "뒤의 A-C-E-F-G cell을 앞 Phrase에 포함한다."
+      },
+      {
+        "startIndex": 57,
+        "endIndexExclusive": 72,
+        "cellCount": 3
+      },
+      {
+        "startIndex": 72,
+        "endIndexExclusive": 82,
+        "cellCount": 2,
+        "comment": "기존 Phrase 7과 8의 주제 Motif를 한 Phrase로 묶는다."
+      },
+      {
+        "startIndex": 82,
+        "endIndexExclusive": 97,
+        "cellCount": 3,
+        "comment": "32마디 첫 긴 음까지 포함한다."
+      },
+      {
+        "startIndex": 97,
+        "endIndexExclusive": 112,
+        "cellCount": 3,
+        "comment": "32마디 두 번째 음에서 새 주제 Motif와 Phrase가 시작한다."
+      }
+    ],
+    "intro": {
+      "startIndex": 0,
+      "endIndexExclusive": 22,
+      "classification": "intro",
+      "keepAsPhrase": true
+    },
+    "display": {
+      "showPitchAndNotatedValue": true,
+      "formatExample": "F#4(8분음표)"
+    }
+  },
+  "observations": [
+    {
+      "kind": "pervasive-theme-rhythm",
+      "message": "이 곡의 주요 음형은 8분음표 네 개와 2분·점2분·온음표 계열의 긴 도착음으로 이루어져 전곡에 반복된다."
+    },
+    {
+      "kind": "syncopation-variant",
+      "message": "중간 음가를 점8분음표와 16분음표 등으로 재분배한 당김음형은 같은 주제 Motif의 리듬 변형이다."
+    },
+    {
+      "kind": "missing-intro-motif",
+      "message": "1–2마디 A-Bb-G-A-F에도 같은 Motif 골격이 있으므로 표시되어야 한다."
+    },
+    {
+      "kind": "motif-to-phrase",
+      "message": "한 Motif cell을 곧바로 Phrase로 확정하지 않고, 보통 두세 cell의 진행과 종결을 상위 Phrase로 검토한다."
+    },
+    {
+      "kind": "cadential-aggregation",
+      "message": "9–12마디의 두 Motif는 변형을 거쳐 Half Cadence로 향하는 하나의 Phrase로 듣는 것이 적절하다."
+    },
+    {
+      "kind": "phrase-boundary-shift",
+      "message": "17마디 시작 cell과 19마디 A-C-E-F-G cell은 한 Phrase이며 다음 Phrase는 20마디 A5에서 시작한다."
+    },
+    {
+      "kind": "theme-restart",
+      "message": "28마디부터의 Phrase는 32마디 첫 긴 G5까지이며, 두 번째 음 B4에서 새 주제 Motif가 시작한다."
+    }
+  ],
+  "diagnoses": [
+    {
+      "stage": "motif-detection",
+      "message": "기존 exact signature는 긴 종결음의 음가 차이와 syncopation 재분배, 변형된 마지막 음정을 허용하지 않아 전곡 주제 rhythm family를 놓쳤다."
+    },
+    {
+      "stage": "phrase-selection",
+      "message": "강한 local gap마다 Phrase를 만들면서 한-cell Phrase가 연속되고, 반대로 여러 주제 cell을 포함한 지나치게 긴 Phrase도 남았다."
+    }
+  ],
+  "proposals": [
+    {
+      "id": "four-short-long-arrival-cell",
+      "status": "implemented",
+      "message": "네 개의 짧은 pickup attack과 긴 도착음을 tempo-relative ratio로 검출한다."
+    },
+    {
+      "id": "syncopation-duration-redistribution",
+      "status": "implemented",
+      "message": "짧은 네 음의 총 span을 유지하는 직선형과 syncopation형을 같은 rhythm family의 변형으로 저장한다."
+    },
+    {
+      "id": "dominant-theme-phrase-grouping",
+      "status": "implemented",
+      "message": "이 cell이 attack의 55% 이상을 차지하고 두 리듬 변형이 있을 때만 2–3 cell Phrase prior를 적용한다."
+    },
+    {
+      "id": "single-cell-phrase-repair",
+      "status": "implemented",
+      "message": "연속된 한-cell Phrase를 합치고, 1+4 cell 불균형은 2+3 cell로 이동한다. 원래 경계 strength는 raw evidence로 보존한다."
+    },
+    {
+      "id": "theme-restart-boundary",
+      "status": "implemented",
+      "message": "네 cell 이상인 구간은 완전한 2–3 cell 뒤의 다음 주제 attack을 Phrase 시작 후보로 추가한다."
+    },
+    {
+      "id": "pitch-duration-display",
+      "status": "implemented",
+      "message": "Phrase와 Motif의 시작·마지막 음을 음높이(기보 음가) 형식으로 표시한다."
+    }
+  ],
+  "runs": [],
+  "knowledgeBase": {
+    "schema": "musicanote-case-knowledge/v1",
+    "status": "captured",
+    "capturedAt": "2026-09-13T09:08:43.340Z",
+    "identity": {
+      "workId": "work-467bc6c2c130b1dd",
+      "sourceId": "Beauty and the Beast.musicxml.xml",
+      "streamId": "P1:1:1",
+      "partName": "P1"
+    },
+    "sourceSnapshot": {
+      "xmlSha256": "ce9012882faddc0ac2b08397dceb367245aeb7ae1815478b68aaf78addb6a733",
+      "eventsSha256": "9a5ec8180dc18e91261797a8a7eafd4c3dce2a92d1f42b8fd15d21ff8919498f",
+      "searchDatabaseWorkId": "work-467bc6c2c130b1dd"
+    },
+    "focus": {
+      "startMeasureOrdinal": 1,
+      "endMeasureOrdinal": 54,
+      "targets": []
+    },
+    "context": {
+      "beforeMeasures": 0,
+      "afterMeasures": 0,
+      "startMeasureOrdinal": 1,
+      "endMeasureOrdinal": 54
+    },
+    "assets": {
+      "musicXml": "../case-assets/S-STRUCT-002/context.musicxml",
+      "events": "../case-assets/S-STRUCT-002/events.json"
+    },
+    "classification": {
+      "phenomenonTypes": [
+        "rhythmic-theme-cell",
+        "syncopation-variant",
+        "phrase-aggregation",
+        "motif-restart",
+        "cadence-context"
+      ],
+      "musicalFunctions": [
+        "thematic-rhythm-recurrence",
+        "motif-variation",
+        "phrase-grouping",
+        "cadential-direction"
+      ],
+      "contextualConditions": [
+        "four short attacks lead to a substantially longer arrival",
+        "straight and duration-redistributed syncopated cells coexist",
+        "the rhythmic family covers a majority of melodic attacks",
+        "two or three motif cells form a higher phrase hypothesis"
+      ],
+      "exclusions": [
+        "score title or work ID as an inference feature",
+        "lyrics or capitalization",
+        "fixed absolute pitch",
+        "every five-note group without a long arrival",
+        "single-cell repetition as proof of Phrase closure"
+      ],
+      "confidence": "user-reviewed-case"
+    },
+    "ruleLearning": {
+      "candidateRules": [
+        "Detect a four-short-plus-long-arrival Motif from tempo-relative duration ratios rather than fixed note values.",
+        "Treat straight and total-span-preserving syncopated duration distributions as variants of one rhythmic family.",
+        "Use a two-to-three-cell Phrase prior only when this family dominates the work, and preserve all displaced local boundary evidence.",
+        "A new Phrase may begin at the next thematic attack immediately after a long arrival releases, even without a written rest.",
+        "Phrase and Motif review labels should display pitch together with readable notated duration."
+      ],
+      "counterexamples": [
+        "Do not group sparse coincidental short-short patterns when the rhythmic family covers less than a majority of attacks.",
+        "Do not override an independently validated full cadence or human correction merely to obtain two or three cells.",
+        "Do not equate syncopation variants whose four-note pickup span changes materially.",
+        "Do not infer Motif identity from rhythm alone when a work contains several equally common unrelated rhythmic families."
+      ],
+      "reusableFor": [
+        "retrieval-regression",
+        "ranking-regression",
+        "notation-highlight-regression",
+        "human-rule-review"
+      ]
+    }
+  }
+}

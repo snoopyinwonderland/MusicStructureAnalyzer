@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addParallelRecurrenceContinuity, addRepeatedPassageContinuity, analyzePhraseBoundaries, comparePhraseBoundaries } from './phrase-boundaries.mjs';
+import { addParallelRecurrenceContinuity, addRepeatedPassageContinuity, analyzePhraseBoundaries, applyThematicCellPhraseGrouping, comparePhraseBoundaries, detectLongArrivalMotifCells } from './phrase-boundaries.mjs';
 
 const notes = (pitches, onsets, durations = []) => pitches.map((pitchMidi, i) => ({
   pitchMidi, durationRatio: durations[i] ?? 1, ...(onsets ? { onset: onsets[i] } : {}),
@@ -9,6 +9,28 @@ const withRest = () => notes([60, 62, 64, 65, 67, 69], [0, 1, 2, 5, 6, 7]);
 const comparable = (query, candidate, mapping = pairs(query.length)) => comparePhraseBoundaries(analyzePhraseBoundaries(query), analyzePhraseBoundaries(candidate), mapping);
 
 describe('uncalibrated local boundary evidence', () => {
+  it('detects straight and middle-syncopated four-short-plus-long Motif cells',()=>{
+    const straight=notes([60,62,64,65,67],[0,.5,1,1.5,2],[.5,.5,.5,.5,2]).map((note,index)=>({...note,index,pitch:note.pitchMidi,duration:note.durationRatio,attack:true}));
+    const syncopated=notes([60,62,64,65,67],[4,4.5,5.25,5.5,6],[.5,.75,.25,.5,3]).map((note,index)=>({...note,index:index+5,pitch:note.pitchMidi,duration:note.durationRatio,attack:true}));
+    expect(detectLongArrivalMotifCells([...straight,...syncopated]).map(cell=>[cell.startIndex,cell.endIndex,cell.rhythmVariant])).toEqual([[0,4,'straight'],[5,9,'syncopated']]);
+  });
+
+  it('groups a dominant thematic-cell texture into two-to-three-cell Phrase spans',()=>{
+    const events=Array.from({length:70},(_,index)=>({index,pitch:60+(index%7),duration:.5,onset:index*.5,attack:true,measure:Math.floor(index/5)+1,tieEndMeasure:null}));
+    const motifCells=Array.from({length:13},(_,cell)=>({startIndex:5+cell*5,endIndex:9+cell*5,attackCount:5,rhythmFamily:'four-short-plus-long-arrival',rhythmVariant:cell%2?'syncopated':'straight'}));
+    const boundaries=Array.from({length:71},(_,index)=>({index,strength:0,continuity:0,cues:[],primaryLevel:'unknown'}));
+    for(const index of [5,10,15,20,40])boundaries[index].strength=.9;
+    const grouped=applyThematicCellPhraseGrouping(events,motifCells,boundaries);
+    expect(grouped).toMatchObject({applicable:true,suppressedBoundaryIndices:[10,20],promotedBoundaryIndices:[25,55]});
+    expect(grouped.phraseGroups.map(group=>[group.startIndex,group.endIndexExclusive,group.cellCount])).toEqual([[5,15,2],[15,25,2],[25,40,3],[40,55,3],[55,70,3]]);
+  });
+
+  it('does not apply thematic Phrase grouping without both rhythmic variants',()=>{
+    const events=Array.from({length:40},(_,index)=>({index,pitch:60,duration:.5,onset:index*.5,attack:true})),boundaries=Array.from({length:41},(_,index)=>({index,strength:index===5?0.9:0,continuity:0,cues:[]}));
+    const cells=Array.from({length:8},(_,cell)=>({startIndex:cell*5,endIndex:cell*5+4,rhythmVariant:'straight'}));
+    expect(applyThematicCellPhraseGrouping(events,cells,boundaries)).toMatchObject({applicable:false});
+  });
+
   it('leaves both cropped endpoints unknown, including empty and one-note input', () => {
     for (const input of [[], notes([60]), withRest()]) {
       const analysis = analyzePhraseBoundaries(input);

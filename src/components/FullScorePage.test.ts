@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CorpusNote } from '../types';
-import { buildMotifSpans, buildPhraseSpans, harmonyRomanParts, jumpByMeasures, motifSimilarityEvidence, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange, usesCampaniaAnalysisFont } from './FullScorePage';
+import { buildMotifSpans, buildPhraseSpans, harmonyRomanParts, jumpByMeasures, motifSimilarityEvidence, notePitchAndValue, noteValueLabel, phraseEndingBoundaryIndex, phraseRangeLabel, playbackMatchRange, usesCampaniaAnalysisFont } from './FullScorePage';
 
 const note=(onset:number,pitchMidi:number,measureOrdinal:number)=>({onset,pitchMidi,measureOrdinal,measure:measureOrdinal,kind:'note',durationRatio:1} as CorpusNote);
 
@@ -27,7 +27,7 @@ describe('phrase range visualization',()=>{
     const spans=buildPhraseSpans(notes,[boundary(2),boundary(5)]);
     expect(spans.map(span=>[span.startIndex,span.endIndex])).toEqual([[0,1],[2,4],[5,6]]);
     expect(spans.map(span=>[span.sharedStart,span.sharedEnd])).toEqual([[false,false],[false,false],[false,false]]);
-    expect(phraseRangeLabel(spans[0])).toBe('Phrase 1 · 1마디 · C4 → C♯4');
+    expect(phraseRangeLabel(spans[0])).toBe('Phrase 1 · 1마디 · C4(4분음표) → C♯4(4분음표)');
   });
 
   it('ignores unsupported and endpoint boundaries',()=>{
@@ -46,6 +46,13 @@ describe('phrase range visualization',()=>{
     const boundaries=[boundary(2),boundary(4,false),boundary(5)];
     expect(phraseEndingBoundaryIndex(1,boundaries)).toBe(2);
     expect(phraseEndingBoundaryIndex(2,boundaries)).toBe(5);
+  });
+
+  it('shows readable note values and marks a tied duration without using the analysis font',()=>{
+    const eighth={...note(0,66,1),spelling:'F#4',durationRatio:.5};
+    const tied={...note(1,69,1),spelling:'A4',durationRatio:5,tieEndMeasure:2};
+    expect(notePitchAndValue(eighth)).toBe('F#4(8분음표)');
+    expect(noteValueLabel(tied)).toBe('5박·타이 지속');
   });
 });
 

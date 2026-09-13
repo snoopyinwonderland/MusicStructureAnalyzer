@@ -1,5 +1,5 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1.7';
+const VERSION = 'local-boundary-evidence-v1.8';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -62,6 +62,93 @@ function motifSignature(attacks, start, length) {
   const incoming = before?.pitch !== null && before?.onset !== null && before
     ? `${round(phrase[0].pitch - before.pitch)}:${round((phrase[0].onset - before.onset) / unit)}` : null;
   return { key: `${length}|${intervals.join(',')}|${rhythm.join(',')}|${iois.join(',')}`, incoming };
+}
+
+export function detectLongArrivalMotifCells(attacks) {
+  const cells = [];
+  for (let start = 0; start + 4 < attacks.length; start++) {
+    const notes = attacks.slice(start, start + 5), shorts = notes.slice(0, 4);
+    if (notes.some(note => note.pitch === null || note.duration === null || note.onset === null)) continue;
+    const unit = median(shorts.map(note => note.duration));
+    if (!unit) continue;
+    const ratios = shorts.map(note => note.duration / unit), pickupSpan = (notes[4].onset - notes[0].onset) / unit, terminalRatio = notes[4].duration / unit;
+    if (ratios.some(value => value < .45 || value > 1.65) || pickupSpan < 3.5 || pickupSpan > 4.5 || terminalRatio < 3.5) continue;
+    const straight = ratios.every(value => Math.abs(value - 1) <= .2);
+    const redistributedSyncopation = !straight && Math.abs(ratios.reduce((sum, value) => sum + value, 0) - 4) <= .25;
+    if (!straight && !redistributedSyncopation) continue;
+    cells.push({
+      startIndex: notes[0].index, endIndex: notes[4].index, attackCount: 5,
+      rhythmFamily: 'four-short-plus-long-arrival', rhythmVariant: straight ? 'straight' : 'syncopated',
+      normalizedPickupDurations: ratios.map(round), terminalDurationRatio: round(terminalRatio),
+      pitchContour: notes.slice(1).map((note, index) => Math.sign(note.pitch - notes[index].pitch)),
+    });
+  }
+  return cells;
+}
+
+export function applyThematicCellPhraseGrouping(events, motifCells, boundaries) {
+  const result = { applicable: false, rhythmFamily: 'four-short-plus-long-arrival', suppressedBoundaryIndices: [], promotedBoundaryIndices: [], phraseGroups: [] };
+  if (motifCells.length < 8) return result;
+  const attackCount = events.filter(event => event.attack).length, coverage = motifCells.length * 5 / Math.max(1, attackCount), variants = new Set(motifCells.map(cell => cell.rhythmVariant));
+  if (coverage < .55 || variants.size < 2) return result;
+  const cellByStart = new Map(motifCells.map(cell => [cell.startIndex, cell])), cellStarts = motifCells.map(cell => cell.startIndex).sort((a, b) => a - b);
+  let active = boundaries.filter(boundary => boundary.index > 0 && boundary.index < events.length && boundary.strength >= .65 && cellByStart.has(boundary.index)).map(boundary => boundary.index).sort((a, b) => a - b);
+  if (!active.length) return result;
+  const first = active[0], terminal = events.length;
+  active = [...new Set([...active, terminal])].sort((a, b) => a - b);
+  const countCells = (start, end) => cellStarts.filter(index => index >= start && index < end).length;
+  const suppress = (index, reason) => {
+    const boundary = boundaries[index]; if (!boundary) return;
+    boundary.rawStrength = boundary.rawStrength ?? boundary.strength; boundary.continuity = Math.max(boundary.continuity, .9);
+    boundary.cues.push(cue('thematic-cell-internal-continuation', .9, { rhythmFamily: result.rhythmFamily, reason, requiresCadenceReview: true }));
+    boundary.primaryLevel = 'subphrase-cell'; boundary.suppressedBy = `thematic-cell-group-${first}`; boundary.strength = round(Math.min(boundary.strength, .49));
+    result.suppressedBoundaryIndices.push(index);
+  };
+  const promote = (index, reason) => {
+    const boundary = boundaries[index]; if (!boundary) return;
+    boundary.cues.push(cue('thematic-cell-phrase-restart', .7, { rhythmFamily: result.rhythmFamily, reason, requiresCadenceReview: true }));
+    boundary.strength = round(Math.max(boundary.strength, .7)); boundary.primaryLevel = 'phrase';
+    result.promotedBoundaryIndices.push(index);
+  };
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (let i = 0; i < active.length - 2; i++) {
+      const leftCount = countCells(active[i], active[i + 1]), rightCount = countCells(active[i + 1], active[i + 2]);
+      if (leftCount !== 1) continue;
+      if (rightCount === 1) {
+        const removed = active[i + 1]; suppress(removed, 'two adjacent one-cell Phrase hypotheses form a two-cell thematic unit'); active.splice(i + 1, 1); changed = true; break;
+      }
+      if (rightCount >= 4) {
+        const removed = active[i + 1], followingCells = cellStarts.filter(index => index >= removed && index < active[i + 2]), replacement = followingCells[1];
+        if (replacement !== undefined) { suppress(removed, 'move boundary after the pickup cell so neighboring thematic groups contain two to three cells'); promote(replacement, 'balanced two-to-three-cell thematic restart'); active[i + 1] = replacement; active.sort((a, b) => a - b); changed = true; break; }
+      }
+    }
+  }
+  const restartScore = index => {
+    const cellPosition = motifCells.findIndex(cell => cell.startIndex === index), previous = motifCells[cellPosition - 1], current = cellByStart.get(index);
+    if (!previous || !current) return 0;
+    const leap = Math.abs((events[index]?.pitch ?? 0) - (events[previous.endIndex]?.pitch ?? 0));
+    return leap / 12 + (boundaries[index]?.strength ?? 0) * .25;
+  };
+  const stableAnchors = [...active], insertions = [];
+  for (let i = 0; i < stableAnchors.length - 1; i++) {
+    const start = stableAnchors[i], end = stableAnchors[i + 1], cells = motifCells.filter(cell => cell.startIndex >= start && cell.startIndex < end);
+    if (cells.length <= 3) continue;
+    let offset = 0, remaining = cells.length;
+    while (remaining > 3) {
+      let size = remaining === 4 ? 2 : 3;
+      if (remaining === 5) size = restartScore(cells[2].startIndex) > restartScore(cells[3].startIndex) ? 2 : 3;
+      offset += size; remaining -= size;
+      const index = cells[offset].startIndex; promote(index, 'new thematic cell after a complete two-to-three-cell group'); insertions.push(index);
+    }
+  }
+  active = [...new Set([...active, ...insertions])].sort((a, b) => a - b);
+  result.applicable = true; result.coverage = round(coverage); result.variants = [...variants];
+  result.suppressedBoundaryIndices = [...new Set(result.suppressedBoundaryIndices)].sort((a, b) => a - b);
+  result.promotedBoundaryIndices = [...new Set(result.promotedBoundaryIndices)].sort((a, b) => a - b);
+  result.phraseGroups = active.slice(0, -1).map((start, index) => ({ startIndex: start, endIndexExclusive: active[index + 1], cellCount: countCells(start, active[index + 1]) }));
+  return result;
 }
 
 function addMotifSupport(attacks, boundaries) {
@@ -270,6 +357,7 @@ export function analyzePhraseBoundaries(notes) {
   const events = timeline(Array.isArray(notes) ? notes : []);
   const boundaries = Array.from({ length: events.length + 1 }, (_, index) => unknown(index));
   const attacks = events.filter(note => note.attack);
+  const motifCells = detectLongArrivalMotifCells(attacks);
   const pitchDistances = attacks.map((note, i) => i && note.pitch !== null && attacks[i - 1].pitch !== null ? Math.abs(note.pitch - attacks[i - 1].pitch) : null);
   const iois = attacks.map((note, i) => i && note.onset !== null && attacks[i - 1].onset !== null && note.onset > attacks[i - 1].onset ? note.onset - attacks[i - 1].onset : null);
   for (let position = 0; position < attacks.length; position++) {
@@ -301,6 +389,7 @@ export function analyzePhraseBoundaries(notes) {
   const rhythmicGestureGroups = addRhythmicGestureContinuity(attacks, boundaries);
   const tieCarryoverShifts = shiftTieCarryoverBoundaries(events,boundaries);
   const repeatedPassageGroups = addRepeatedPassageContinuity(events,motifParallelGroups,boundaries);
+  const thematicCellGrouping = applyThematicCellPhraseGrouping(events,motifCells,boundaries);
   for (let index = 1; index < events.length; index++) {
     const boundary = boundaries[index];
     if (!events[index].attack) {
@@ -311,7 +400,7 @@ export function analyzePhraseBoundaries(notes) {
     boundary.reliable = boundary.supported || boundary.continuity >= .75;
     boundary.state = boundary.supported ? 'boundary' : boundary.continuity >= .75 ? 'continuous' : 'unknown';
   }
-  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, motifParallelGroups, repeatedPassageGroups, repeatedFigureRuns, rhythmicGestureGroups, tieCarryoverShifts, boundaries };
+  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, motifCells, motifParallelGroups, repeatedPassageGroups, thematicCellGrouping, repeatedFigureRuns, rhythmicGestureGroups, tieCarryoverShifts, boundaries };
 }
 
 /** Only adjacent INTERNAL mapped transitions are comparable; use full candidate indices. */
