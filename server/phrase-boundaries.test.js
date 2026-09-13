@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addParallelRecurrenceContinuity, addRepeatedPassageContinuity, analyzePhraseBoundaries, applyThematicCellPhraseGrouping, comparePhraseBoundaries, detectLongArrivalMotifCells } from './phrase-boundaries.mjs';
+import { addParallelRecurrenceContinuity, addRepeatedPassageContinuity, analyzePhraseBoundaries, applyMinimumPhraseAttackConstraint, applyRecurringMotifPhraseFrames, applyThematicCellPhraseGrouping, comparePhraseBoundaries, detectLongArrivalMotifCells } from './phrase-boundaries.mjs';
 
 const notes = (pitches, onsets, durations = []) => pitches.map((pitchMidi, i) => ({
   pitchMidi, durationRatio: durations[i] ?? 1, ...(onsets ? { onset: onsets[i] } : {}),
@@ -9,6 +9,40 @@ const withRest = () => notes([60, 62, 64, 65, 67, 69], [0, 1, 2, 5, 6, 7]);
 const comparable = (query, candidate, mapping = pairs(query.length)) => comparePhraseBoundaries(analyzePhraseBoundaries(query), analyzePhraseBoundaries(candidate), mapping);
 
 describe('uncalibrated local boundary evidence', () => {
+  it('demotes Phrase fragments shorter than four attacks but keeps a four-attack repeated-note unit reviewable',()=>{
+    const events=Array.from({length:12},(_,index)=>({index,attack:true,pitch:60,duration:1,onset:index}));
+    const boundaries=Array.from({length:13},(_,index)=>({index,strength:0,continuity:0,cues:[]}));
+    for(const index of [1,2,6,10])boundaries[index].strength=.9;
+    const result=applyMinimumPhraseAttackConstraint(events,boundaries);
+    expect(result.suppressedBoundaryIndices).toEqual([1,2]);
+    expect(boundaries[6].strength).toBe(.9);
+    expect(boundaries[10].strength).toBe(.9);
+  });
+
+  it('groups a recurring prepared Motif core and its answer into one Phrase frame',()=>{
+    const events=Array.from({length:78},(_,index)=>({index,attack:true,pitch:60+index%7,duration:1,onset:index}));
+    const boundaries=Array.from({length:79},(_,index)=>({index,strength:0,continuity:0,cues:[]}));
+    for(const index of [2,9,15,19,26,32,48,52,59,65])boundaries[index].strength=.9;
+    applyMinimumPhraseAttackConstraint(events,boundaries);
+    const relations=[
+      {signatureKey:'shared-core',previousIndex:2,currentIndex:19,length:6},
+      {signatureKey:'shared-core',previousIndex:19,currentIndex:52,length:6},
+    ];
+    const result=applyRecurringMotifPhraseFrames(events,relations,boundaries);
+    expect(result.applicable).toBe(true);
+    expect(result.frames.map(frame=>[frame.frameStartIndex,frame.frameEndIndex])).toEqual([[0,15],[15,32],[48,65]]);
+    expect(result.suppressedBoundaryIndices).toEqual([2,9,19,26,52,59]);
+    expect(boundaries[15].strength).toBe(.9);
+    expect(boundaries[32].strength).toBe(.9);
+    expect(boundaries[65].strength).toBe(.9);
+  });
+
+  it('does not infer a Phrase frame from only two Motif occurrences',()=>{
+    const events=Array.from({length:30},(_,index)=>({index,attack:true,pitch:60,duration:1,onset:index}));
+    const boundaries=Array.from({length:31},(_,index)=>({index,strength:index%7===0?.9:0,continuity:0,cues:[]}));
+    expect(applyRecurringMotifPhraseFrames(events,[{signatureKey:'pair-only',previousIndex:2,currentIndex:16,length:6}],boundaries)).toMatchObject({applicable:false,frames:[]});
+  });
+
   it('detects straight and middle-syncopated four-short-plus-long Motif cells',()=>{
     const straight=notes([60,62,64,65,67],[0,.5,1,1.5,2],[.5,.5,.5,.5,2]).map((note,index)=>({...note,index,pitch:note.pitchMidi,duration:note.durationRatio,attack:true}));
     const syncopated=notes([60,62,64,65,67],[4,4.5,5.25,5.5,6],[.5,.75,.25,.5,3]).map((note,index)=>({...note,index:index+5,pitch:note.pitchMidi,duration:note.durationRatio,attack:true}));

@@ -148,7 +148,7 @@ export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],
     const establishedPrototype=candidates.get(right.previousIndex),cellLength=establishedPrototype?.source==='cycle'?attackCount(establishedPrototype):Math.max(left.length,right.length);
     for(const start of [right.previousIndex,right.currentIndex]){const endIndex=attackEnd(start,cellLength);if(endIndex!==null)add({startIndex:start,endIndex,priority:5,source:'parallel-cell'})}
   }}
-  const recurrent=[...candidates.values()].sort((a,b)=>a.startIndex-b.startIndex||a.endIndex-b.endIndex);
+  const recurrent=[...candidates.values()].filter(candidate=>attackCount(candidate)>=4).sort((a,b)=>a.startIndex-b.startIndex||a.endIndex-b.endIndex);
   const families:Array<{number:number;base:Candidate;variants:Candidate[];familyKey?:string}>=[];
   return recurrent.map((candidate,motifNumber)=>{
     const segment=notes.slice(candidate.startIndex,candidate.endIndex+1);let family=candidate.familyKey?families.find(item=>item.familyKey===candidate.familyKey):families.map(item=>({item,evidence:motifSimilarityEvidence(notes.slice(item.base.startIndex,item.base.endIndex+1),segment)})).filter(match=>match.evidence.similarity>=80).sort((a,b)=>b.evidence.similarity-a.evidence.similarity)[0]?.item;
@@ -175,7 +175,7 @@ export function phraseEndingBoundaryIndex(phraseNumber:number,boundaries:PhraseB
 }
 
 const cueNames:Record<string,string>={
-  'observed-gap':'실제 시간 공백','pitch-discontinuity':'음정 도약 변화','ioi-discontinuity':'리듬 간격 변화','repeated-motif-start':'반복 모티프 시작','observed-continuity':'시간적 연속','tie-continuation':'타이 지속','repeated-passage-internal-continuation':'반복 구간 내부 연속성','thematic-cell-internal-continuation':'주제 Motif 내부 연속성','thematic-cell-phrase-restart':'주제 Motif 재시작',
+  'observed-gap':'실제 시간 공백','pitch-discontinuity':'음정 도약 변화','ioi-discontinuity':'리듬 간격 변화','repeated-motif-start':'반복 모티프 시작','observed-continuity':'시간적 연속','tie-continuation':'타이 지속','repeated-passage-internal-continuation':'반복 구간 내부 연속성','thematic-cell-internal-continuation':'주제 Motif 내부 연속성','thematic-cell-phrase-restart':'주제 Motif 재시작','short-phrase-fragment-continuation':'너무 짧은 Phrase 조각','recurring-motif-preparation-continuation':'반복 Motif 준비부 연속','recurring-motif-answer-continuation':'반복 Motif 응답부 연속',
 };
 
 function MotifReviewPanel({span}:{span:MotifSpanMarker}){

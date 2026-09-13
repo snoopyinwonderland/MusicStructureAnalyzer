@@ -84,9 +84,15 @@ describe('motif overlay spans',()=>{
     expect(spans.map(span=>[span.label,span.startIndex,span.endIndex])).toEqual([['Motif 1',0,5],['Motif 1′',6,9]]);
   });
 
-  it('retains a distant recurrence as a reviewable reappearance without turning it into a Phrase rule',()=>{
+  it('does not display a two-attack recurrence as a Motif',()=>{
     const notes=[0,1,2,3,4,5].map(index=>note(index,60+index,Math.floor(index/2)+1));
     const spans=buildMotifSpans(notes,[{length:2,signatureKey:'motif-a',previousIndex:0,currentIndex:4,distanceInAttacks:4,closeContinuation:false}]);
+    expect(spans).toEqual([]);
+  });
+
+  it('retains a distant four-attack recurrence as a reviewable reappearance',()=>{
+    const notes=[0,1,2,3,4,5,6,7].map(index=>note(index,60+index,Math.floor(index/2)+1));
+    const spans=buildMotifSpans(notes,[{length:4,signatureKey:'motif-a',previousIndex:0,currentIndex:4,distanceInAttacks:4,closeContinuation:false}]);
     expect(spans).toHaveLength(2);
     expect(spans[1].familyNumber).toBe(spans[0].familyNumber);
   });

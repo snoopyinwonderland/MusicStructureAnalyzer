@@ -1,0 +1,294 @@
+{
+  "schema": "musicanote-evaluation-case/v1",
+  "caseId": "S-STRUCT-003",
+  "createdAt": "2026-09-13",
+  "status": "diagnosed",
+  "replayable": true,
+  "tags": [
+    "prepared-motif-frame",
+    "short-fragment-suppression",
+    "motif-minimum-attacks",
+    "phrase-aggregation",
+    "ambiguous-repeated-note-phrase"
+  ],
+  "query": {
+    "version": 1,
+    "mode": "melody_rhythm",
+    "meter": "4/4",
+    "startsOnDownbeat": false,
+    "events": [
+      {
+        "id": "motif-1",
+        "kind": "note",
+        "pitchMidi": 73,
+        "spelling": "C#5",
+        "durationRatio": 1
+      },
+      {
+        "id": "motif-2",
+        "kind": "note",
+        "pitchMidi": 73,
+        "spelling": "C#5",
+        "durationRatio": 1.5
+      },
+      {
+        "id": "motif-3",
+        "kind": "note",
+        "pitchMidi": 73,
+        "spelling": "C#5",
+        "durationRatio": 0.75
+      },
+      {
+        "id": "motif-4",
+        "kind": "note",
+        "pitchMidi": 74,
+        "spelling": "D5",
+        "durationRatio": 0.75
+      },
+      {
+        "id": "motif-5",
+        "kind": "note",
+        "pitchMidi": 76,
+        "spelling": "E5",
+        "durationRatio": 0.5
+      },
+      {
+        "id": "motif-6",
+        "kind": "note",
+        "pitchMidi": 76,
+        "spelling": "E5",
+        "durationRatio": 1.5
+      },
+      {
+        "id": "motif-7",
+        "kind": "note",
+        "pitchMidi": 74,
+        "spelling": "D5",
+        "durationRatio": 0.25
+      },
+      {
+        "id": "motif-8",
+        "kind": "note",
+        "pitchMidi": 73,
+        "spelling": "C#5",
+        "durationRatio": 0.25
+      },
+      {
+        "id": "motif-9",
+        "kind": "note",
+        "pitchMidi": 74,
+        "spelling": "D5",
+        "durationRatio": 2
+      }
+    ],
+    "absoluteExactOnly": false
+  },
+  "expected": {
+    "workId": "work-9b94778a6ef069b8",
+    "minimumMotifAttacks": 4,
+    "reviewedPhraseBoundaryIndices": [
+      15,
+      32,
+      44,
+      50,
+      62,
+      71,
+      75,
+      90,
+      108
+    ],
+    "reviewedPhraseGroups": [
+      {
+        "startIndex": 0,
+        "endIndexExclusive": 15,
+        "measures": "3-7",
+        "motifCount": 2,
+        "comment": "초기 연장 조각과 Motif 1, Motif 2를 첫 Phrase로 묶는다."
+      },
+      {
+        "startIndex": 15,
+        "endIndexExclusive": 32,
+        "measures": "8-13",
+        "comment": "기존 Phrase 5, 6, 7을 준비부-핵심형-응답 프레임으로 묶는다."
+      },
+      {
+        "startIndex": 32,
+        "endIndexExclusive": 44,
+        "measures": "14-19",
+        "comment": "두 음 조각을 독립 Motif로 만들지 않고 뒤의 진행에 붙인다."
+      },
+      {
+        "startIndex": 50,
+        "endIndexExclusive": 62,
+        "measures": "22-26",
+        "comment": "기존 Phrase 11, 12를 하나로 묶는다."
+      },
+      {
+        "startIndex": 75,
+        "endIndexExclusive": 90,
+        "measures": "33-37",
+        "comment": "기존 Phrase 15, 16, 17을 앞서 나온 Phrase 프레임의 재현으로 묶는다."
+      },
+      {
+        "startIndex": 90,
+        "endIndexExclusive": 108,
+        "measures": "38-43",
+        "comment": "기존 Phrase 18, 19, 20을 같은 반복 프레임으로 묶는다."
+      }
+    ],
+    "ambiguousSpans": [
+      {
+        "startIndex": 71,
+        "endIndexExclusive": 75,
+        "measures": "30-32",
+        "status": "ambiguous",
+        "alternatives": [
+          "standalone_phrase",
+          "attach_to_previous_phrase"
+        ],
+        "comment": "같은 음 네 번의 반복이므로 최소 길이는 충족하지만 독립 Phrase 여부는 판단 보류한다."
+      }
+    ]
+  },
+  "observations": [
+    {
+      "kind": "initial-prolongation",
+      "message": "초기 1–2번 Phrase 후보는 너무 짧고 4마디 첫 C#으로 향하는 연장처럼 들린다."
+    },
+    {
+      "kind": "motif-hierarchy",
+      "message": "3–5마디 Motif 1과 6–7마디 Motif 2가 합쳐져 첫 Phrase가 된다."
+    },
+    {
+      "kind": "rhythmic-scaffold",
+      "message": "준비음 또는 같은 음의 분할 뒤에 네 개의 beamed note가 오고, 다시 긴 음이나 tie 도착음으로 이어지는 구조를 먼저 파악해야 한다."
+    },
+    {
+      "kind": "minimum-motif-size",
+      "message": "A4–F#4처럼 두 음뿐인 조각은 독립 Motif로 보기 어렵고 Motif는 원칙적으로 네 attack 이상이어야 한다."
+    },
+    {
+      "kind": "recurring-phrase-frame",
+      "message": "중반과 후반의 짧은 Phrase 후보들은 앞서 제시된 준비부-핵심형-응답 프레임의 반복이다."
+    }
+  ],
+  "diagnoses": [
+    {
+      "stage": "local-boundary-selection",
+      "message": "큰 쉼과 IOI 변화가 모두 Phrase 경계로 승격되어 1–3 attack 조각이 만들어졌다."
+    },
+    {
+      "stage": "motif-to-phrase",
+      "message": "반복 Motif 핵심만 검출하고 그 앞의 가변 준비음과 뒤의 응답 단위를 같은 상위 Phrase로 연결하지 못했다."
+    },
+    {
+      "stage": "motif-display",
+      "message": "음표 수가 지나치게 적은 반복 후보를 Motif로 표시할 수 있는 명시적 최소 attack 계약이 없었다."
+    }
+  ],
+  "proposals": [
+    {
+      "id": "minimum-four-attack-motif",
+      "status": "implemented",
+      "message": "Motif overlay는 네 attack 미만 후보를 표시하지 않는다."
+    },
+    {
+      "id": "short-phrase-fragment-continuation",
+      "status": "implemented",
+      "message": "충분히 긴 작품에서 네 attack 미만 Phrase 조각의 원래 경계 증거를 보존한 채 하위 연속으로 내린다."
+    },
+    {
+      "id": "recurring-prepared-motif-frame",
+      "status": "implemented",
+      "message": "동일 Motif 핵심이 세 번 이상 나타나고 1–4 attack 준비부와 두 개의 4–10 attack 하위단위가 반복되면 하나의 Phrase 프레임으로 묶는다."
+    },
+    {
+      "id": "beam-aware-canonical-events",
+      "status": "deferred",
+      "message": "MusicXML beam membership을 Canonical event evidence로 보존해 duration proxy가 아닌 실제 beaming을 후속 규격에서 사용한다."
+    }
+  ],
+  "runs": [],
+  "knowledgeBase": {
+    "schema": "musicanote-case-knowledge/v1",
+    "status": "captured",
+    "capturedAt": "2026-09-13T11:10:40.199Z",
+    "identity": {
+      "workId": "work-9b94778a6ef069b8",
+      "sourceId": "Endless Love.xml",
+      "streamId": "P1:1:1",
+      "partName": "P1"
+    },
+    "sourceSnapshot": {
+      "xmlSha256": "609257c240fefd3e6e6482ad3c405e2139819d16dda4d01c4a297e293fed5b68",
+      "eventsSha256": "9e0149692b6a49054c8e2b6498e87bef1f5820056bb29bd3e40f52550054fc14",
+      "searchDatabaseWorkId": "work-9b94778a6ef069b8"
+    },
+    "focus": {
+      "startMeasureOrdinal": 1,
+      "endMeasureOrdinal": 66,
+      "targets": []
+    },
+    "context": {
+      "beforeMeasures": 0,
+      "afterMeasures": 0,
+      "startMeasureOrdinal": 1,
+      "endMeasureOrdinal": 66
+    },
+    "assets": {
+      "musicXml": "../case-assets/S-STRUCT-003/context.musicxml",
+      "events": "../case-assets/S-STRUCT-003/events.json"
+    },
+    "classification": {
+      "phenomenonTypes": [
+        "prepared-motif-frame",
+        "short-fragment-suppression",
+        "motif-minimum-attacks",
+        "phrase-aggregation",
+        "ambiguous-repeated-note-phrase"
+      ],
+      "musicalFunctions": [
+        "motif-preparation",
+        "motif-core",
+        "motif-answer",
+        "phrase-aggregation",
+        "repeated-note-prolongation"
+      ],
+      "contextualConditions": [
+        "a repeated Motif core occurs at least three times",
+        "one to four preparation attacks precede the core",
+        "two following subunits each contain four to ten attacks",
+        "a local boundary would otherwise produce fewer than four Phrase attacks"
+      ],
+      "exclusions": [
+        "score title, work ID, measure number, or fixed pitch as an inference feature",
+        "two-note interval as a complete Motif",
+        "automatic rejection of a four-attack repeated-note Phrase",
+        "using beaming inferred only from duration as Canonical fact",
+        "overriding a validated Cadence or human correction"
+      ],
+      "confidence": "user-reviewed-case"
+    },
+    "ruleLearning": {
+      "candidateRules": [
+        "Do not display a Motif occurrence with fewer than four attacks.",
+        "In a work-level analysis, demote a Phrase boundary that closes fewer than four attacks while preserving its raw evidence.",
+        "When a Motif core recurs three or more times with a short preparation and a repeated two-subunit continuation, represent the complete preparation-core-answer frame as the Phrase hypothesis.",
+        "Keep exactly four repeated attacks as an ambiguous Phrase candidate until Cadence or human evidence resolves it.",
+        "Store MusicXML beam membership in a future Canonical evidence extension before using actual beaming as a deterministic analyzer input."
+      ],
+      "counterexamples": [
+        "Do not apply the work-level minimum-span repair to short excerpts used only for local comparison.",
+        "Do not group a core observed only twice; recurrence support is insufficient.",
+        "Do not group frames whose preparation exceeds four attacks or whose following units fall outside four to ten attacks.",
+        "Do not suppress a human-validated boundary merely to satisfy the recurring frame prior."
+      ],
+      "reusableFor": [
+        "retrieval-regression",
+        "ranking-regression",
+        "notation-highlight-regression",
+        "human-rule-review"
+      ]
+    }
+  }
+}

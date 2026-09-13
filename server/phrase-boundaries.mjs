@@ -1,5 +1,5 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1.8';
+const VERSION = 'local-boundary-evidence-v1.9';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -148,6 +148,73 @@ export function applyThematicCellPhraseGrouping(events, motifCells, boundaries) 
   result.suppressedBoundaryIndices = [...new Set(result.suppressedBoundaryIndices)].sort((a, b) => a - b);
   result.promotedBoundaryIndices = [...new Set(result.promotedBoundaryIndices)].sort((a, b) => a - b);
   result.phraseGroups = active.slice(0, -1).map((start, index) => ({ startIndex: start, endIndexExclusive: active[index + 1], cellCount: countCells(start, active[index + 1]) }));
+  return result;
+}
+
+function demotePhraseBoundary(boundary, name, evidence, strength = .9) {
+  if (!boundary) return;
+  boundary.rawStrength = boundary.rawStrength ?? boundary.strength;
+  boundary.continuity = Math.max(boundary.continuity, strength);
+  boundary.cues.push(cue(name, strength, evidence));
+  boundary.primaryLevel = 'subphrase-cell';
+  boundary.suppressedBy = evidence.groupId;
+  boundary.strength = round(Math.min(boundary.strength, .49));
+}
+
+// A Phrase claim shorter than four attacks is normally only a fragment. Keep the
+// original local evidence, but attach the fragment to the following material.
+// Four repeated attacks remain reviewable because repetition can itself be a
+// complete rhetorical unit; cadence or human annotation may later override this.
+export function applyMinimumPhraseAttackConstraint(events, boundaries, minimumAttacks = 4) {
+  const result = { minimumAttacks, suppressedBoundaryIndices: [] };
+  let phraseStart = 0;
+  for (let index = 1; index < events.length; index++) {
+    const boundary = boundaries[index];
+    if (!boundary || boundary.strength < .65) continue;
+    const attackCount = events.slice(phraseStart, index).filter(event => event.attack).length;
+    if (attackCount < minimumAttacks) {
+      const evidence = { groupId: `minimum-phrase-attacks-${phraseStart}`, phraseStartIndex: phraseStart, boundaryIndex: index, attackCount, minimumAttacks, requiresCadenceReview: true };
+      demotePhraseBoundary(boundary, 'short-phrase-fragment-continuation', evidence, .92);
+      result.suppressedBoundaryIndices.push(index);
+    } else phraseStart = index;
+  }
+  return result;
+}
+
+// When the same Motif core occurs at least three times, compare the boundary
+// frame around each occurrence. A short 1–4 attack lead plus two 4–10 attack
+// subunits is treated as one recurring Phrase frame. This groups preparation,
+// Motif core, and answer without relying on title, measure number, or pitch.
+export function applyRecurringMotifPhraseFrames(events, motifRelations, boundaries) {
+  const result = { applicable: false, suppressedBoundaryIndices: [], frames: [] };
+  const bySignature = new Map();
+  for (const relation of motifRelations || []) {
+    const occurrences = bySignature.get(relation.signatureKey) || new Set();
+    occurrences.add(relation.previousIndex); occurrences.add(relation.currentIndex);
+    bySignature.set(relation.signatureKey, occurrences);
+  }
+  const rawCandidate = boundary => boundary && Number(boundary.rawStrength ?? boundary.strength) >= .65;
+  for (const [signatureKey, occurrenceSet] of bySignature) {
+    const occurrences = [...occurrenceSet].sort((a, b) => a - b);
+    if (occurrences.length < 3) continue;
+    for (const occurrenceIndex of occurrences) {
+      const activeBefore = boundaries.slice(1, occurrenceIndex).filter(boundary => boundary.strength >= .65).map(boundary => boundary.index);
+      const frameStart = activeBefore.at(-1) ?? 0, leadAttacks = events.slice(frameStart, occurrenceIndex).filter(event => event.attack).length;
+      if (leadAttacks < 1 || leadAttacks > 4) continue;
+      const following = boundaries.slice(occurrenceIndex + 1, events.length).filter(rawCandidate).map(boundary => boundary.index);
+      if (following.length < 2) continue;
+      const [internalEnd, frameEnd] = following;
+      const coreAttacks = events.slice(occurrenceIndex, internalEnd).filter(event => event.attack).length;
+      const answerAttacks = events.slice(internalEnd, frameEnd).filter(event => event.attack).length;
+      if (coreAttacks < 4 || coreAttacks > 10 || answerAttacks < 4 || answerAttacks > 10) continue;
+      const groupId = `recurring-motif-phrase-frame-${occurrenceIndex}`, evidence = { groupId, signatureKey, occurrenceCount: occurrences.length, frameStartIndex: frameStart, motifCoreIndex: occurrenceIndex, internalBoundaryIndex: internalEnd, frameEndIndex: frameEnd, leadAttacks, coreAttacks, answerAttacks, requiresCadenceReview: true };
+      if (rawCandidate(boundaries[occurrenceIndex])) { demotePhraseBoundary(boundaries[occurrenceIndex], 'recurring-motif-preparation-continuation', evidence); result.suppressedBoundaryIndices.push(occurrenceIndex); }
+      if (rawCandidate(boundaries[internalEnd])) { demotePhraseBoundary(boundaries[internalEnd], 'recurring-motif-answer-continuation', evidence); result.suppressedBoundaryIndices.push(internalEnd); }
+      result.frames.push(evidence);
+    }
+  }
+  result.applicable = result.frames.length > 0;
+  result.suppressedBoundaryIndices = [...new Set(result.suppressedBoundaryIndices)].sort((a, b) => a - b);
   return result;
 }
 
@@ -390,6 +457,12 @@ export function analyzePhraseBoundaries(notes) {
   const tieCarryoverShifts = shiftTieCarryoverBoundaries(events,boundaries);
   const repeatedPassageGroups = addRepeatedPassageContinuity(events,motifParallelGroups,boundaries);
   const thematicCellGrouping = applyThematicCellPhraseGrouping(events,motifCells,boundaries);
+  const minimumPhraseConstraint = attacks.length >= 12
+    ? applyMinimumPhraseAttackConstraint(events,boundaries)
+    : { minimumAttacks: 4, suppressedBoundaryIndices: [], applicable: false, reason: 'excerpt too short for work-level Phrase aggregation' };
+  const recurringMotifPhraseFrames = attacks.length >= 12
+    ? applyRecurringMotifPhraseFrames(events,motifRelations,boundaries)
+    : { applicable: false, suppressedBoundaryIndices: [], frames: [] };
   for (let index = 1; index < events.length; index++) {
     const boundary = boundaries[index];
     if (!events[index].attack) {
@@ -400,7 +473,7 @@ export function analyzePhraseBoundaries(notes) {
     boundary.reliable = boundary.supported || boundary.continuity >= .75;
     boundary.state = boundary.supported ? 'boundary' : boundary.continuity >= .75 ? 'continuous' : 'unknown';
   }
-  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, motifCells, motifParallelGroups, repeatedPassageGroups, thematicCellGrouping, repeatedFigureRuns, rhythmicGestureGroups, tieCarryoverShifts, boundaries };
+  return { version: VERSION, calibrated: false, label: 'phrase boundary evidence with separate motif-group hypotheses; harmonic cadence is a separate layer', motifRelations, motifCells, motifParallelGroups, repeatedPassageGroups, thematicCellGrouping, minimumPhraseConstraint, recurringMotifPhraseFrames, repeatedFigureRuns, rhythmicGestureGroups, tieCarryoverShifts, boundaries };
 }
 
 /** Only adjacent INTERNAL mapped transitions are comparable; use full candidate indices. */
