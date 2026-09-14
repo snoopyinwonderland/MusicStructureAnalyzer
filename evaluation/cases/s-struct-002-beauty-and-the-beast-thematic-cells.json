@@ -9,7 +9,8 @@
     "syncopation-variant",
     "phrase-aggregation",
     "motif-restart",
-    "cadence-context"
+    "cadence-context",
+    "motif-family-overmerge"
   ],
   "query": {
     "version": 1,
@@ -154,6 +155,10 @@
     {
       "kind": "theme-restart",
       "message": "28마디부터의 Phrase는 32마디 첫 긴 G5까지이며, 두 번째 음 B4에서 새 주제 Motif가 시작한다."
+    },
+    {
+      "kind": "motif-family-overmerge",
+      "message": "같은 긴 도착음 리듬형이라는 이유만으로 서로 다른 선율 후보가 모두 Motif 1, 1′, 1′′ 계열로 표시되었다. 리듬형은 후보 근거이지 가족 정체성이 아니다."
     }
   ],
   "diagnoses": [
@@ -164,6 +169,10 @@
     {
       "stage": "phrase-selection",
       "message": "강한 local gap마다 Phrase를 만들면서 한-cell Phrase가 연속되고, 반대로 여러 주제 cell을 포함한 지나치게 긴 Phrase도 남았다."
+    },
+    {
+      "stage": "motif-family-classification",
+      "message": "34개 cell이 같은 rhythmFamily 문자열을 공유하자 다중 증거 비교를 건너뛰고 한 가족으로 강제되어 다른 음형까지 prime 변형으로 과잉 병합되었다."
     }
   ],
   "proposals": [
@@ -196,9 +205,29 @@
       "id": "pitch-duration-display",
       "status": "implemented",
       "message": "Phrase와 Motif의 시작·마지막 음을 음높이(기보 음가) 형식으로 표시한다."
+    },
+    {
+      "id": "rhythm-proposal-not-family-identity",
+      "status": "implemented",
+      "message": "rhythmFamily는 후보 생성에만 사용한다. 가족 자동 재사용은 멜로디·음형·리듬 결합 유사도 84 이상과 coverage 70 이상을 요구한다."
+    },
+    {
+      "id": "family-variant-numbering",
+      "status": "implemented",
+      "message": "prime 누적 대신 Motif 가족-변형 표기(1-1, 1-2, 2-1)를 사용하고 occurrence ID는 별도로 유지한다."
     }
   ],
-  "runs": [],
+  "runs": [
+    {
+      "date": "2026-09-15",
+      "analyzer": "motif-similarity-v0.2",
+      "inputCandidates": 34,
+      "previousForcedFamilies": 1,
+      "resultFamilies": 6,
+      "testStatus": "36 targeted tests passed",
+      "note": "미보정 결과다. 동일 가족 내부의 음악적 타당성은 악보 검토와 competing-hypothesis 저장으로 계속 평가한다."
+    }
+  ],
   "knowledgeBase": {
     "schema": "musicanote-case-knowledge/v1",
     "status": "captured",

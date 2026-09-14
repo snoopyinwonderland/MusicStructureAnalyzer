@@ -1083,3 +1083,11 @@ G4(0.5)–G4(0.5)–B4(0.5)–D5(0.5)–F5(0.5)–E♭5(2)
 - Motif 상세 패널은 결합 점수뿐 아니라 멜로디·음형·리듬·정렬 범위와 감지된 변형을 따로 표시한다.
 - `docs/README.md`를 문서 진입점으로 추가해 현재 기준 문서, 구현 설명, 날짜순 기록, 역사 문서를 구분했다. 기존 문서는 사례 링크를 깨지 않도록 이동하지 않았다.
 - 회귀 검사는 완전 조옮김, 장식음 삽입, 긴 종결음 길이 변형을 포함한다. Beam transport와 exact signature 없는 sliding-window 후보 생성은 다음 단계다.
+
+## 2026-09-15 — Beauty and the Beast Motif 가족 과잉 병합 수정
+
+- `S-STRUCT-002`의 34개 `four-short-plus-long-arrival` 후보가 rhythmFamily 문자열 하나 때문에 모두 Motif 1의 prime 변형으로 강제되던 원인을 확인했다.
+- rhythmFamily를 후보 생성 근거로만 낮추고, 가족 자동 재사용에는 결합 유사도 84 이상과 coverage 70 이상을 요구한다. 짧은 동일 길이 구간의 delete+insert 정렬이 다른 음형을 과대평가하지 않도록 gap cost도 0.48로 높였다.
+- 표기는 prime 누적 대신 가족-변형 번호인 `Motif 1-1`, `Motif 1-2`, `Motif 2-1`을 사용한다. 같은 변형의 재등장은 같은 표기를 쓰되 occurrence ID는 독립적이다.
+- 실제 34개 후보는 6개 가족 후보로 분리됐다. 이는 정답 가족 수가 아니라 이전의 강제 단일 가족 오류가 해소됐다는 진단 결과다.
+- 관련 악보·event snapshot은 기존 `S-STRUCT-002` 자산을 재사용하고 사용자 피드백, 원인, 일반화 규칙, 실행 결과를 evaluation case에 추가했다. 대상 테스트 36개와 production build가 통과했다.

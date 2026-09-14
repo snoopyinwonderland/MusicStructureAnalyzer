@@ -128,7 +128,9 @@ export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],
   const cycleEnd=(start:number,exclusiveOnset:number)=>{let end:number|null=null;for(let index=start;index<notes.length;index++){const note=notes[index];if(Number(note.onset)>=exclusiveOnset)break;if(note?.isAttack!==false&&!note?.tieStop)end=index}return end};
   const attackEnd=(start:number,length:number)=>{let remaining=length,end=start;for(let index=start;index<notes.length&&remaining>0;index++){const note=notes[index];if(note?.isAttack!==false&&!note?.tieStop){remaining--;end=index}}return remaining===0?end:null};
   const attackCount=(candidate:Candidate)=>notes.slice(candidate.startIndex,candidate.endIndex+1).filter(note=>note.isAttack!==false&&!note.tieStop).length;
-  for(const cell of motifCells){if(cell.startIndex>=0&&cell.endIndex>=cell.startIndex&&cell.endIndex<notes.length)add({startIndex:cell.startIndex,endIndex:cell.endIndex,priority:6,source:'rhythmic-theme-cell',familyKey:cell.rhythmFamily,variantKey:cell.rhythmVariant})}
+  // A recurrent rhythm family proposes candidate extents; it does not establish
+  // melodic Motif identity. Family assignment happens below from all channels.
+  for(const cell of motifCells){if(cell.startIndex>=0&&cell.endIndex>=cell.startIndex&&cell.endIndex<notes.length)add({startIndex:cell.startIndex,endIndex:cell.endIndex,priority:6,source:'rhythmic-theme-cell',variantKey:cell.rhythmVariant})}
   // Exact recurrence locates a stable core, but it must not define the displayed
   // musical extent. Reuse the Phrase layer's recurring internal boundaries to
   // include the varied long arrival and to expose the following answer unit.
@@ -160,10 +162,10 @@ export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],
   const recurrent=[...candidates.values()].filter(candidate=>attackCount(candidate)>=4).sort((a,b)=>a.startIndex-b.startIndex||a.endIndex-b.endIndex);
   const families:Array<{number:number;base:Candidate;variants:Candidate[];familyKey?:string}>=[];
   return recurrent.map((candidate,motifNumber)=>{
-    const segment=notes.slice(candidate.startIndex,candidate.endIndex+1);let family=candidate.familyKey?families.find(item=>item.familyKey===candidate.familyKey):families.map(item=>({item,evidence:motifSimilarityEvidence(notes.slice(item.base.startIndex,item.base.endIndex+1),segment)})).filter(match=>match.evidence.similarity>=80).sort((a,b)=>b.evidence.similarity-a.evidence.similarity)[0]?.item;
+    const segment=notes.slice(candidate.startIndex,candidate.endIndex+1);let family=candidate.familyKey?families.find(item=>item.familyKey===candidate.familyKey):families.map(item=>({item,evidence:motifSimilarityEvidence(notes.slice(item.base.startIndex,item.base.endIndex+1),segment)})).filter(match=>match.evidence.similarity>=84&&match.evidence.coverage>=70).sort((a,b)=>b.evidence.similarity-a.evidence.similarity)[0]?.item;
     if(!family){family={number:families.length+1,base:candidate,variants:[candidate],familyKey:candidate.familyKey};families.push(family)}
-    let variantIndex=candidate.variantKey?family.variants.findIndex(variant=>variant.variantKey===candidate.variantKey):family.variants.findIndex(variant=>{const evidence=motifSimilarityEvidence(notes.slice(variant.startIndex,variant.endIndex+1),segment);return evidence.interval>=99&&evidence.contour>=99&&evidence.coverage>=98});if(variantIndex<0){variantIndex=family.variants.length;family.variants.push(candidate)}
-    const similarity=motifSimilarityEvidence(notes.slice(family.base.startIndex,family.base.endIndex+1),segment),label=`Motif ${family.number}${'′'.repeat(variantIndex)}`;
+    let variantIndex=family.variants.findIndex(variant=>{const evidence=motifSimilarityEvidence(notes.slice(variant.startIndex,variant.endIndex+1),segment);return evidence.melodic>=99&&evidence.shape>=99&&evidence.rhythm>=98&&evidence.coverage>=98});if(variantIndex<0){variantIndex=family.variants.length;family.variants.push(candidate)}
+    const similarity=motifSimilarityEvidence(notes.slice(family.base.startIndex,family.base.endIndex+1),segment),label=`Motif ${family.number}-${variantIndex+1}`;
     return{motifNumber:motifNumber+1,familyNumber:family.number,variantIndex,label,startIndex:candidate.startIndex,endIndex:candidate.endIndex,startNote:notes[candidate.startIndex],endNote:notes[candidate.endIndex],similarity};
   });
 }

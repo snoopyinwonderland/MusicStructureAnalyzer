@@ -30,7 +30,9 @@ function features(notes:CorpusNote[]){
  * ornament insertion/deletion and repeat expansion without hiding channel scores. */
 export function compareMotifs(left:CorpusNote[],right:CorpusNote[]):MotifSimilarityEvidence{
   if(!left.length||!right.length)return{similarity:0,melodic:0,interval:0,contour:0,shape:0,rhythm:0,coverage:0,matchedNotes:0,transformations:[],alignment:[]};
-  const a=features(left),b=features(right),rows=a.length+1,cols=b.length+1,gap=.38;
+  // A gap must be costly enough that equal-length short figures are compared as
+  // substitutions instead of being made deceptively similar by a delete+insert.
+  const a=features(left),b=features(right),rows=a.length+1,cols=b.length+1,gap=.48;
   const dp=Array.from({length:rows},()=>Array(cols).fill(0)),back=Array.from({length:rows},()=>Array(cols).fill(''));
   for(let i=1;i<rows;i++){dp[i][0]=i*gap;back[i][0]='deletion'}
   for(let j=1;j<cols;j++){dp[0][j]=j*gap;back[0][j]='insertion'}

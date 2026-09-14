@@ -22,6 +22,8 @@ Generate interval, contour, log duration/IOI, metric, beam position, pitch entro
 
 Status 2026-09-15: interval, contour, step/leap shape, normalized duration/IOI, optional metric strength, coverage, alignment, and transformation tags are implemented in `src/music/motifSimilarity.ts`. Beam, entropy, long-arrival, and persisted evidence remain open.
 
+Correction 2026-09-15: a detected rhythm-family name is proposal evidence only. It no longer forces all such cells into one Motif family. Automatic family reuse requires combined similarity >= 0.84 and coverage >= 0.70; the 0.72–0.84 ambiguity band still needs persisted competing hypotheses.
+
 ### Stage C — multi-channel proposals
 
 Keep exact anchors, add approximate melodic alignment, repeated-note rhythm proposals, short correspondence fragments, and Phrase-parallel units. Record the proposal channel and do not discard low-retrieval candidates.

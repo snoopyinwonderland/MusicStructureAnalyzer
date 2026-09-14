@@ -78,10 +78,10 @@ describe('motif overlay spans',()=>{
     expect(motifSearchEstimate(10,999)).toBe(120);
   });
 
-  it('labels a close transformed occurrence as a prime variant in the same Motif family',()=>{
-    const notes=[0,1,2,3,4,5,6,7,8,9].map(index=>note(index,60+index,Math.floor(index/2)+1));
+  it('labels a complete changed-ending occurrence as a variant in the same Motif family',()=>{
+    const pitches=[60,61,62,63,64,65,67,68,69,70,71,73],notes=pitches.map((pitch,index)=>note(index,pitch,Math.floor(index/2)+1));
     const spans=buildMotifSpans(notes,[{length:4,signatureKey:'motif-a',previousIndex:0,currentIndex:6,distanceInAttacks:6,closeContinuation:true}]);
-    expect(spans.map(span=>[span.label,span.startIndex,span.endIndex])).toEqual([['Motif 1',0,5],['Motif 1′',6,9]]);
+    expect(spans.map(span=>[span.label,span.startIndex,span.endIndex])).toEqual([['Motif 1-1',0,5],['Motif 1-2',6,11]]);
   });
 
   it('does not display a two-attack recurrence as a Motif',()=>{
@@ -115,6 +115,16 @@ describe('motif overlay spans',()=>{
     const left=[note(0,60,1),note(1,62,1),note(2,65,1),note(3,64,1)];
     const transposed=[note(0,65,1),note(1,67,1),note(2,70,1),note(3,69,1)];
     expect(motifSimilarityEvidence(left,transposed)).toMatchObject({similarity:100,melodic:100,interval:100,contour:100,shape:100,rhythm:100,coverage:100,transformations:['transposition']});
+  });
+
+  it('does not turn a shared rhythm-family proposal into shared Motif identity',()=>{
+    const pitches=[60,62,64,65,67,60,67,60,67,60],notes=pitches.map((pitch,index)=>note(index,pitch,index<5?1:2));
+    const cells=[
+      {startIndex:0,endIndex:4,attackCount:5,rhythmFamily:'four-short-plus-long-arrival',rhythmVariant:'straight'},
+      {startIndex:5,endIndex:9,attackCount:5,rhythmFamily:'four-short-plus-long-arrival',rhythmVariant:'straight'},
+    ];
+    const spans=buildMotifSpans(notes,[],[],cells);
+    expect(spans.map(span=>[span.label,span.familyNumber])).toEqual([['Motif 1-1',1],['Motif 2-1',2]]);
   });
 
   it('keeps an ornamented variation close while exposing insertion and coverage evidence',()=>{
