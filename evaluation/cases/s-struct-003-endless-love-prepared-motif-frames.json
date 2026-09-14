@@ -147,6 +147,17 @@
           "attach_to_previous_phrase"
         ],
         "comment": "같은 음 네 번의 반복이므로 최소 길이는 충족하지만 독립 Phrase 여부는 판단 보류한다."
+      },
+      {
+        "startIndex": 32,
+        "endIndexExclusive": 50,
+        "measures": "14-21",
+        "status": "ambiguous-prefer-merged",
+        "alternatives": [
+          "merge_phrase_3_and_4",
+          "retain_phrase_3_and_4"
+        ],
+        "comment": "20마디 앞의 큰 공백은 분할을 허용하지만 Cadence가 없어 14-21마디 결합 해석을 조금 더 선호한다."
       }
     ]
   },
@@ -170,6 +181,22 @@
     {
       "kind": "recurring-phrase-frame",
       "message": "중반과 후반의 짧은 Phrase 후보들은 앞서 제시된 준비부-핵심형-응답 프레임의 반복이다."
+    },
+    {
+      "kind": "motif-closure",
+      "message": "첫 Motif의 도레미레도 진행은 뒤의 D5 2분음표 도착음까지 포함해야 하며 16분음표 C#5에서 자르면 음형 도중 절단이 된다."
+    },
+    {
+      "kind": "rhythmic-repeated-note-motif",
+      "message": "6-7마디의 반복 B와 C#은 선율 식별력은 약하지만 같은 음을 여러 음가로 분할한 리듬 형태가 작품 내부 Motif 역할을 한다."
+    },
+    {
+      "kind": "work-internal-motif-role",
+      "message": "Phrase 2 시작의 E-D-C# 순차 하행은 외부 검색 식별력은 약해도 작품 내부 대응 관계에서는 Motif 역할을 할 수 있다."
+    },
+    {
+      "kind": "tonic-repetition-continuity",
+      "message": "Phrase 6과 7은 A5 반복과 으뜸화음 복귀의 연속으로 보고 합치는 해석을 선호한다."
     }
   ],
   "diagnoses": [
@@ -184,6 +211,22 @@
     {
       "stage": "motif-display",
       "message": "음표 수가 지나치게 적은 반복 후보를 Motif로 표시할 수 있는 명시적 최소 attack 계약이 없었다."
+    },
+    {
+      "stage": "exact-motif-signature",
+      "message": "Motif 1은 event index 2-7의 여섯 attack까지만 exact signature가 일치한다. 도착 D5는 첫 출현 2박, 재현 3박이어서 signature에서 탈락했고, 결과적으로 완결성보다 공통 부분의 정확 일치를 우선하는 오류가 발생했다."
+    },
+    {
+      "stage": "pitch-identity-filter",
+      "message": "반복음과 짧은 순차 진행을 검색 식별력이 낮다는 이유로 제거하여 작품 내부의 리듬적·관계적 Motif를 누락한다. 외부 검색용 distinctiveness와 내부 구조 역할을 분리해야 한다."
+    },
+    {
+      "stage": "motif-family-clustering",
+      "message": "four-short-plus-long-arrival 후보들이 동일 rhythmFamily key만으로 한 가족에 강제 배정되어 서로 다른 윤곽까지 Motif 2/2-prime으로 합쳐진다."
+    },
+    {
+      "stage": "phrase-gap-overweighting",
+      "message": "Phrase 3/4 경계와 Phrase 6/7 경계는 observed-gap과 IOI 변화가 점수를 포화시켰지만 Cadence 지지는 없다. 특히 반복 A5와 화성적 복귀를 continuation evidence로 사용하지 못한다."
     }
   ],
   "proposals": [
@@ -206,6 +249,26 @@
       "id": "beam-aware-canonical-events",
       "status": "deferred",
       "message": "MusicXML beam membership을 Canonical event evidence로 보존해 duration proxy가 아닌 실제 beaming을 후속 규격에서 사용한다."
+    },
+    {
+      "id": "closure-aware-motif-extension",
+      "status": "proposed",
+      "message": "exactly matched core 뒤의 긴 도착음을 리듬·윤곽·tie·metric·harmony evidence로 비교해 변형 가능한 Motif 종결로 확장한다."
+    },
+    {
+      "id": "separate-internal-role-from-search-distinctiveness",
+      "status": "proposed",
+      "message": "작품 내부 Motif 역할 점수와 타 작품 검색 식별력 점수를 분리해 반복음·짧은 순차진행도 구조 후보로 보존한다."
+    },
+    {
+      "id": "motif-family-multifeature-clustering",
+      "status": "proposed",
+      "message": "rhythmFamily 단독 키를 제거하고 rhythm, interval contour, extent, arrival role을 함께 사용해 Motif family와 variant를 구분한다."
+    },
+    {
+      "id": "cadence-conditioned-gap-boundary",
+      "status": "proposed",
+      "message": "큰 공백만으로 Phrase 경계 신뢰도를 1.0으로 포화시키지 말고 Cadence 부재, 동일음 연장, tonic return을 반대 증거로 반영한다."
     }
   ],
   "runs": [],
@@ -276,6 +339,10 @@
         "When a Motif core recurs three or more times with a short preparation and a repeated two-subunit continuation, represent the complete preparation-core-answer frame as the Phrase hypothesis.",
         "Keep exactly four repeated attacks as an ambiguous Phrase candidate until Cadence or human evidence resolves it.",
         "Store MusicXML beam membership in a future Canonical evidence extension before using actual beaming as a deterministic analyzer input."
+        ,"Extend an exact recurring Motif core through a structurally corresponding long arrival even when the arrival duration is ornamentally or notationally varied."
+        ,"Score work-internal Motif role separately from cross-work melodic distinctiveness."
+        ,"Do not assign a Motif family from rhythm family alone; compare contour, interval, extent, and arrival role."
+        ,"Treat a gap-only Phrase boundary without Cadence support as a competing hypothesis, especially during repeated tonic prolongation."
       ],
       "counterexamples": [
         "Do not apply the work-level minimum-span repair to short excerpts used only for local comparison.",

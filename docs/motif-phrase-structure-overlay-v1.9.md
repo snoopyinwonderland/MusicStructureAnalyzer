@@ -40,3 +40,19 @@ The source MusicXML contains explicit `<beam>` membership, but the current searc
 
 All changes are uncalibrated Analysis Layer hypotheses. A validated Cadence or human boundary correction must override minimum-span and recurring-frame priors. The original boundary cues and strengths remain traceable.
 
+## Follow-up diagnosis: Motif completeness
+
+The displayed first Motif currently ends on the sixteenth-note C#5 in measure 5 because the matcher selected the longest **exact** six-attack signature shared by event indexes 2–7 and 19–24. The following D5 arrival lasts two beats in the first statement and three beats in the recurrence, so exact normalized-duration matching rejects it. No cadence, harmonic closure, beam membership, or long-arrival extension rule participates in that endpoint. This explains the result but does not justify it musically: the preferred reading extends through the D5 arrival.
+
+The repeated B/C# figure in measures 6–7 and the short E–D–C# descent at the next Phrase opening expose a second distinction. They have weak cross-work search distinctiveness but can still have a clear work-internal Motif role. The current signature filter conflates these two questions and therefore misses both kinds of structural evidence.
+
+The apparent `Motif 2` / `Motif 2-prime` family is also over-compressed. All `four-short-plus-long-arrival` cells receive the same family key before pitch contour and phrase role are considered. Consequently the UI presents a small number of inconsistent families even though the work contains more Motif functions.
+
+Phrase segmentation is more stable because it has independent gap, IOI, tie, minimum-span, and repeated-frame evidence. It is not complete: the Phrase 3/4 split is a gap-supported alternate without Cadence support, and the Phrase 6/7 split overweights a local gap while missing repeated-A tonic-prolongation continuity.
+
+### Proposed next rules
+
+- extend exact recurring cores to corresponding long arrivals before displaying Motif bounds;
+- preserve repeated-note and short scalar cells as internal-role candidates even when they are poor search queries;
+- cluster Motif families by rhythm, contour, interval, extent, and arrival role rather than rhythm-family key alone;
+- calibrate gap-only Phrase boundaries against Cadence absence, same-pitch continuation, and tonic-return evidence.
