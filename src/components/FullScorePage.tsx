@@ -14,7 +14,8 @@ type PhraseCue = { name: string; strength: number; evidence?: Record<string, unk
 type PhraseBoundary = { index: number; strength: number; supported: boolean; reliable: boolean; state: 'boundary'|'continuous'|'unknown'; continuity: number; cues: PhraseCue[] };
 type MotifRelation={length:number;signatureKey:string;previousIndex:number;currentIndex:number;distanceInAttacks:number;closeContinuation:boolean};
 type MotifCell={startIndex:number;endIndex:number;attackCount:number;rhythmFamily:string;rhythmVariant:string;normalizedPickupDurations?:number[];terminalDurationRatio?:number};
-type PhraseAnalysis = { version: string; calibrated: false; label: string; boundaries: PhraseBoundary[]; motifRelations?:MotifRelation[]; motifCells?:MotifCell[] };
+type RecurringMotifPhraseFrame={signatureKey:string;frameStartIndex:number;motifCoreIndex:number;internalBoundaryIndex:number;frameEndIndex:number};
+type PhraseAnalysis = { version: string; calibrated: false; label: string; boundaries: PhraseBoundary[]; motifRelations?:MotifRelation[]; motifCells?:MotifCell[]; recurringMotifPhraseFrames?:{applicable:boolean;frames:RecurringMotifPhraseFrame[]} };
 type BoundaryHarmonyRecord={boundaryIndex:number;harmonyProgression:{display:string;romanDisplay?:string;preparationRoman?:string|null;arrivalRoman?:string|null;afterBoundaryRoman?:string|null};selectedKey?:{label:string;score:number}|null;selectedCadence?:{type:string;strength:number}|null;cadenceHypotheses?:Array<{type:string;strength:number;against?:string[]}>;status:string};
 type BoundaryHarmonyAnalysis={version:string;calibrated:false;scope:string;records:BoundaryHarmonyRecord[];limitations:string[]};
 type Work = { workId: string; sourceId?: string; streamId: string; partName: string; title: string; artist?: string; youtubeId?: string; xml: string; notes: CorpusNote[]; stats: any; phraseAnalysis?: PhraseAnalysis; boundaryHarmony?:BoundaryHarmonyAnalysis; accessPolicy?: string; fullScoreAvailable?: boolean; restrictedPreviewActive?: boolean; previewOrdinalStart?: number; keyFifths?: number; clefShape?: 'G'|'F'|'C'; clefLine?: number; meter?: string };
@@ -120,14 +121,22 @@ export function motifSimilarityEvidence(left:CorpusNote[],right:CorpusNote[]){
   return{similarity:Math.round(similarity),interval:Math.round(interval),contour:Math.round(contour),rhythm:Math.round(rhythm),coverage:Math.round(coverage)};
 }
 
-export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],phraseSpans:PhraseSpanMarker[]=[],motifCells:MotifCell[]=[]):MotifSpanMarker[]{
-  type Candidate={startIndex:number;endIndex:number;priority:number;source:'relation'|'cycle'|'projected'|'parallel-cell'|'rhythmic-theme-cell';familyKey?:string;variantKey?:string};
+export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],phraseSpans:PhraseSpanMarker[]=[],motifCells:MotifCell[]=[],phraseFrames:RecurringMotifPhraseFrame[]=[]):MotifSpanMarker[]{
+  type Candidate={startIndex:number;endIndex:number;priority:number;source:'relation'|'cycle'|'projected'|'parallel-cell'|'rhythmic-theme-cell'|'phrase-frame-core'|'phrase-frame-answer';familyKey?:string;variantKey?:string};
   const candidates=new Map<number,Candidate>();
   const add=(candidate:Candidate)=>{const prior=candidates.get(candidate.startIndex);if(!prior||candidate.priority>prior.priority)candidates.set(candidate.startIndex,candidate)};
   const cycleEnd=(start:number,exclusiveOnset:number)=>{let end:number|null=null;for(let index=start;index<notes.length;index++){const note=notes[index];if(Number(note.onset)>=exclusiveOnset)break;if(note?.isAttack!==false&&!note?.tieStop)end=index}return end};
   const attackEnd=(start:number,length:number)=>{let remaining=length,end=start;for(let index=start;index<notes.length&&remaining>0;index++){const note=notes[index];if(note?.isAttack!==false&&!note?.tieStop){remaining--;end=index}}return remaining===0?end:null};
   const attackCount=(candidate:Candidate)=>notes.slice(candidate.startIndex,candidate.endIndex+1).filter(note=>note.isAttack!==false&&!note.tieStop).length;
   for(const cell of motifCells){if(cell.startIndex>=0&&cell.endIndex>=cell.startIndex&&cell.endIndex<notes.length)add({startIndex:cell.startIndex,endIndex:cell.endIndex,priority:6,source:'rhythmic-theme-cell',familyKey:cell.rhythmFamily,variantKey:cell.rhythmVariant})}
+  // Exact recurrence locates a stable core, but it must not define the displayed
+  // musical extent. Reuse the Phrase layer's recurring internal boundaries to
+  // include the varied long arrival and to expose the following answer unit.
+  for(const frame of phraseFrames){
+    const coreEnd=frame.internalBoundaryIndex-1,answerEnd=frame.frameEndIndex-1;
+    if(frame.motifCoreIndex>=0&&coreEnd>=frame.motifCoreIndex&&coreEnd<notes.length)add({startIndex:frame.motifCoreIndex,endIndex:coreEnd,priority:8,source:'phrase-frame-core',familyKey:`phrase-frame-core:${frame.signatureKey}`});
+    if(frame.internalBoundaryIndex>=0&&answerEnd>=frame.internalBoundaryIndex&&answerEnd<notes.length)add({startIndex:frame.internalBoundaryIndex,endIndex:answerEnd,priority:8,source:'phrase-frame-answer'});
+  }
   const validRelations=relations.filter(relation=>relation.signatureKey);
   for(const relation of validRelations.filter(relation=>relation.closeContinuation)){
     const previousOnset=Number(notes[relation.previousIndex]?.onset),currentOnset=Number(notes[relation.currentIndex]?.onset),cycleDuration=currentOnset-previousOnset;
@@ -206,7 +215,7 @@ export function FullScorePage() {
   const supportedPhraseBoundaries=useMemo(()=>(work?.phraseAnalysis?.boundaries||[]).filter(boundary=>boundary.supported),[work]);
   const phraseMarkers=useMemo(()=>{if(!work)return[];const visible=new Set(visibleNotes);return supportedPhraseBoundaries.filter(boundary=>visible.has(work.notes[boundary.index])).map(boundary=>{const order=supportedPhraseBoundaries.indexOf(boundary);return{note:work.notes[boundary.index],boundaryIndex:boundary.index,strength:boundary.strength,beforePhrase:order+1,afterPhrase:order+2}})},[work,visibleNotes,supportedPhraseBoundaries]);
   const phraseSpans=useMemo(()=>buildPhraseSpans(visibleNotes,phraseMarkers.map(marker=>({index:visibleNotes.indexOf(marker.note),supported:true} as PhraseBoundary))),[visibleNotes,phraseMarkers]);
-  const motifSpans=useMemo(()=>work&&!restricted?buildMotifSpans(work.notes,work.phraseAnalysis?.motifRelations||[],buildPhraseSpans(work.notes,supportedPhraseBoundaries),work.phraseAnalysis?.motifCells||[]):[],[work,restricted,supportedPhraseBoundaries]);
+  const motifSpans=useMemo(()=>work&&!restricted?buildMotifSpans(work.notes,work.phraseAnalysis?.motifRelations||[],buildPhraseSpans(work.notes,supportedPhraseBoundaries),work.phraseAnalysis?.motifCells||[],work.phraseAnalysis?.recurringMotifPhraseFrames?.frames||[]):[],[work,restricted,supportedPhraseBoundaries]);
   const selectedMotif=motifSpans.find(span=>span.motifNumber===selectedMotifNumber)||null;
   useEffect(()=>{if(!phraseEnabled){setSelectedPhraseBoundary(null);setSelectedMotifNumber(null);return}if(selectedMotifNumber===null&&!supportedPhraseBoundaries.some(boundary=>boundary.index===selectedPhraseBoundary))setSelectedPhraseBoundary(supportedPhraseBoundaries[0]?.index??null)},[phraseEnabled,supportedPhraseBoundaries,selectedPhraseBoundary,selectedMotifNumber]);
   const flashPhrase=useCallback((phraseNumber:number)=>{setFlashingPhraseNumber(phraseNumber);setPhraseFlashToken(token=>token+1)},[]);

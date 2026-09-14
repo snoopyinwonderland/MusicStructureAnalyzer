@@ -252,7 +252,7 @@
     },
     {
       "id": "closure-aware-motif-extension",
-      "status": "proposed",
+      "status": "implemented",
       "message": "exactly matched core 뒤의 긴 도착음을 리듬·윤곽·tie·metric·harmony evidence로 비교해 변형 가능한 Motif 종결로 확장한다."
     },
     {

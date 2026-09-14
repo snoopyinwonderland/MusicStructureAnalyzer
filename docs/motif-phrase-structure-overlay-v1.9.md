@@ -56,3 +56,9 @@ Phrase segmentation is more stable because it has independent gap, IOI, tie, min
 - preserve repeated-note and short scalar cells as internal-role candidates even when they are poor search queries;
 - cluster Motif families by rhythm, contour, interval, extent, and arrival role rather than rhythm-family key alone;
 - calibrate gap-only Phrase boundaries against Cadence absence, same-pitch continuation, and tonic-return evidence.
+
+## Implemented follow-up: core anchor versus complete extent
+
+The exact signature is now treated only as a core-location anchor. When that core belongs to a recurring preparation-core-answer Phrase frame, the displayed Motif extends from `motifCoreIndex` to the event immediately before the Phrase layer's `internalBoundaryIndex`. This includes a structurally corresponding long arrival even when its duration differs between occurrences. The unit from `internalBoundaryIndex` to `frameEndIndex` is emitted as a separate answer-Motif candidate and is grouped by multi-feature similarity rather than by exact signature.
+
+For the first reviewed occurrence, the old extent `[2, 8)` ended on the sixteenth-note C#5. The new extent `[2, 9)` includes the following D5 half note. The recurrence analogously extends through its three-beat D5, preserving the musical ending while recording the duration change as variation.

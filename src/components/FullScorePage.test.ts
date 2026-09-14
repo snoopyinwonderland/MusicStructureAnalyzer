@@ -97,6 +97,20 @@ describe('motif overlay spans',()=>{
     expect(spans[1].familyNumber).toBe(spans[0].familyNumber);
   });
 
+  it('uses Phrase-frame boundaries to extend an exact core through a varied long arrival and emits its answer',()=>{
+    const pitches=[60,60,61,62,64,64,62,61,62,59,59,59,59,61,61,65,64,61,61,61,62,64,64,62,61,62,59,59,59,59,64,61];
+    const notes=pitches.map((pitch,index)=>note(index,pitch,Math.floor(index/4)+1));
+    notes[8].durationRatio=2;notes[25].durationRatio=3;
+    const relations=[{length:6,signatureKey:'shared-exact-core',previousIndex:2,currentIndex:19,distanceInAttacks:17,closeContinuation:false}];
+    const frames=[
+      {signatureKey:'shared-exact-core',frameStartIndex:0,motifCoreIndex:2,internalBoundaryIndex:9,frameEndIndex:15},
+      {signatureKey:'shared-exact-core',frameStartIndex:15,motifCoreIndex:19,internalBoundaryIndex:26,frameEndIndex:32},
+    ];
+    const spans=buildMotifSpans(notes,relations,[],[],frames);
+    expect(spans.filter(span=>[2,9,19,26].includes(span.startIndex)).map(span=>[span.startIndex,span.endIndex])).toEqual([[2,8],[9,14],[19,25],[26,31]]);
+    expect(spans.find(span=>span.startIndex===2)?.familyNumber).toBe(spans.find(span=>span.startIndex===19)?.familyNumber);
+  });
+
   it('compares transposition-invariant melodic shape and normalized rhythm',()=>{
     const left=[note(0,60,1),note(1,62,1),note(2,65,1),note(3,64,1)];
     const transposed=[note(0,65,1),note(1,67,1),note(2,70,1),note(3,69,1)];
