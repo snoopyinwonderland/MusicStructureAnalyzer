@@ -114,7 +114,26 @@ describe('motif overlay spans',()=>{
   it('compares transposition-invariant melodic shape and normalized rhythm',()=>{
     const left=[note(0,60,1),note(1,62,1),note(2,65,1),note(3,64,1)];
     const transposed=[note(0,65,1),note(1,67,1),note(2,70,1),note(3,69,1)];
-    expect(motifSimilarityEvidence(left,transposed)).toMatchObject({similarity:100,interval:100,contour:100,rhythm:100,coverage:100});
+    expect(motifSimilarityEvidence(left,transposed)).toMatchObject({similarity:100,melodic:100,interval:100,contour:100,shape:100,rhythm:100,coverage:100,transformations:['transposition']});
+  });
+
+  it('keeps an ornamented variation close while exposing insertion and coverage evidence',()=>{
+    const left=[note(0,60,1),note(1,62,1),note(2,65,1),note(3,64,1),note(4,60,2)];
+    const varied=[note(0,67,1),note(1,69,1),note(1.5,70,1),note(2,72,1),note(3,71,1),note(4,67,2)];
+    varied[2].durationRatio=.5;
+    const evidence=motifSimilarityEvidence(left,varied);
+    expect(evidence.similarity).toBeGreaterThanOrEqual(75);
+    expect(evidence.transformations).toContain('ornament-insertion');
+    expect(evidence.coverage).toBe(83);
+  });
+
+  it('recognizes terminal duration change without losing melodic identity',()=>{
+    const left=[note(0,60,1),note(1,62,1),note(2,64,1),note(3,65,1)];
+    const varied=[note(0,67,1),note(1,69,1),note(2,71,1),note(3,72,1)];
+    left.at(-1)!.durationRatio=2;varied.at(-1)!.durationRatio=3;
+    const evidence=motifSimilarityEvidence(left,varied);
+    expect(evidence.melodic).toBe(100);
+    expect(evidence.transformations).toContain('terminal-extension');
   });
 
   it('projects the complete prototype extent onto a distant recurrence instead of the matched signature length',()=>{

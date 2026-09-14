@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Pause, Play, Search } from 'lucide-react';
 import type { CorpusNote, MatchResult, Query, QueryEvent } from '../types';
-import { collapseTies, featureVector } from '../search/features';
+import { collapseTies } from '../search/features';
+import { compareMotifs } from '../music/motifSimilarity';
 import { pitchName } from '../music/pitch';
 import { schedulePhrase, type ScheduledPlayback } from '../music/audioPlayback';
 import { FullXmlNotation, type MotifSpanMarker, type PhraseSpanMarker } from './FullXmlNotation';
@@ -117,8 +118,7 @@ export function phraseRangeLabel(span:PhraseSpanMarker){
 }
 
 export function motifSimilarityEvidence(left:CorpusNote[],right:CorpusNote[]){
-  const a=featureVector(left),b=featureVector(right),mean=(values:number[])=>values.length?values.reduce((sum,value)=>sum+value,0)/values.length:0,numberScore=(x:number[],y:number[],scale:number)=>100-mean(x.slice(0,Math.min(x.length,y.length)).map((value,index)=>Math.min(100,Math.abs(value-y[index])*scale))),interval=Math.max(0,numberScore(a.intervals,b.intervals,14)),contour=100-mean(a.contour.slice(0,Math.min(a.contour.length,b.contour.length)).map((value,index)=>value===b.contour[index]?0:100)),rhythm=Math.max(0,numberScore(a.durations,b.durations,45)),coverage=100*Math.min(left.length,right.length)/Math.max(1,left.length,right.length),similarity=.45*interval+.25*contour+.2*rhythm+.1*coverage;
-  return{similarity:Math.round(similarity),interval:Math.round(interval),contour:Math.round(contour),rhythm:Math.round(rhythm),coverage:Math.round(coverage)};
+  return compareMotifs(left,right);
 }
 
 export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],phraseSpans:PhraseSpanMarker[]=[],motifCells:MotifCell[]=[],phraseFrames:RecurringMotifPhraseFrame[]=[]):MotifSpanMarker[]{
@@ -189,7 +189,8 @@ const cueNames:Record<string,string>={
 
 function MotifReviewPanel({span}:{span:MotifSpanMarker}){
   const measures=Number(span.startNote.measure)===Number(span.endNote.measure)?`${span.startNote.measure}마디`:`${span.startNote.measure}–${span.endNote.measure}마디`,start=notePitchAndValue(span.startNote),end=notePitchAndValue(span.endNote);
-  return <section className="phrase-review motif-review analysis-block"><div className="phrase-review-head"><div><h3>{span.label} 상세</h3><p>Motif Analysis Layer 후보 · Phrase와 별도</p></div><span>{span.variantIndex?'변형/재등장':'기준형'}</span></div><div className="phrase-selected-range"><strong>{span.label} · {measures}</strong><dl><div><dt>시작음</dt><dd>{start}</dd></div><div><dt>마지막 음</dt><dd>{end}</dd></div><div><dt>가족 기준 유사도</dt><dd>{span.similarity.similarity}/100</dd></div><div><dt>음정 진행</dt><dd>{span.similarity.interval}/100</dd></div><div><dt>윤곽</dt><dd>{span.similarity.contour}/100</dd></div><div><dt>리듬</dt><dd>{span.similarity.rhythm}/100</dd></div></dl><p>조옮김에 무관한 음정·윤곽과 정규화된 음가를 음악 검색과 같은 계열의 증거로 비교했습니다. 점수는 미보정 유사도이며 확정 Motif 판정이 아닙니다.</p></div></section>;
+  const transformations=span.similarity.transformations?.length?span.similarity.transformations.join(' · '):'뚜렷한 변형 없음';
+  return <section className="phrase-review motif-review analysis-block"><div className="phrase-review-head"><div><h3>{span.label} 상세</h3><p>Motif Analysis Layer 후보 · Phrase와 별도</p></div><span>{span.variantIndex?'변형/재등장':'기준형'}</span></div><div className="phrase-selected-range"><strong>{span.label} · {measures}</strong><dl><div><dt>시작음</dt><dd>{start}</dd></div><div><dt>마지막 음</dt><dd>{end}</dd></div><div><dt>결합 유사도</dt><dd>{span.similarity.similarity}/100</dd></div><div><dt>멜로디</dt><dd>{span.similarity.melodic}/100</dd></div><div><dt>음형</dt><dd>{span.similarity.shape}/100</dd></div><div><dt>리듬</dt><dd>{span.similarity.rhythm}/100</dd></div><div><dt>정렬 범위</dt><dd>{span.similarity.coverage}/100</dd></div><div><dt>감지된 변형</dt><dd>{transformations}</dd></div></dl><p>삽입·누락을 허용한 정렬 뒤 멜로디 40%, 음형 20%, 리듬 25%, 정렬 범위 15%를 결합했습니다. 각 채널은 따로 보존되며 점수는 미보정 가설입니다.</p></div></section>;
 }
 
 function PhraseReviewPanel({work,boundaryIndex,onSelect}:{work:Work;boundaryIndex:number|null;onSelect:(index:number)=>void}){

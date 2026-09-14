@@ -20,6 +20,8 @@ Define and validate beam objects in Canonical JSON Schema, normalize stable beam
 
 Generate interval, contour, log duration/IOI, metric, beam position, pitch entropy, rhythmic entropy, long-arrival ratio, and gap/tie evidence. Persist raw channels so weights can change without reparsing.
 
+Status 2026-09-15: interval, contour, step/leap shape, normalized duration/IOI, optional metric strength, coverage, alignment, and transformation tags are implemented in `src/music/motifSimilarity.ts`. Beam, entropy, long-arrival, and persisted evidence remain open.
+
 ### Stage C — multi-channel proposals
 
 Keep exact anchors, add approximate melodic alignment, repeated-note rhythm proposals, short correspondence fragments, and Phrase-parallel units. Record the proposal channel and do not discard low-retrieval candidates.
@@ -50,4 +52,3 @@ Display work-internal role separately from cross-work retrieval distinctiveness.
 - treating every beam group as a Motif;
 - forcing one family label when alternatives are close;
 - using one score for both structural analysis and copyright/search ranking.
-

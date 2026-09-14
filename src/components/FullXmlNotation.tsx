@@ -191,7 +191,7 @@ export const fullScoreBreakMode = 'auto' as const;
 export const normalizeMusicXmlInput = (xml: string) => xml.replace(/^\uFEFF/, '');
 export type PhraseBoundaryMarker = { note: CorpusNote; boundaryIndex: number; strength: number; beforePhrase?:number; afterPhrase?:number };
 export type PhraseSpanMarker = { phraseNumber: number; startIndex: number; endIndex: number; startNote: CorpusNote; endNote: CorpusNote; sharedStart: boolean; sharedEnd: boolean; startMeasure?:number; endMeasure?:number; startPitch?:string; endPitch?:string; startDisplay?:string; endDisplay?:string };
-export type MotifSimilarityEvidence={similarity:number;interval:number;contour:number;rhythm:number;coverage:number};
+export type MotifSimilarityEvidence={similarity:number;melodic:number;interval:number;contour:number;shape:number;rhythm:number;coverage:number;matchedNotes:number;transformations:string[];alignment:Array<{leftIndex:number|null;rightIndex:number|null;type:string}>};
 export type MotifSpanMarker = { motifNumber:number; familyNumber:number; variantIndex:number; label:string; startIndex:number; endIndex:number; startNote:CorpusNote; endNote:CorpusNote; similarity:MotifSimilarityEvidence };
 export const phraseBoundaryLabel = (marker: Pick<PhraseBoundaryMarker, 'afterPhrase'>) => marker.afterPhrase ? `P${marker.afterPhrase} 시작` : '경계';
 export const phraseColorIndex = (phraseNumber:number) => Math.max(0, phraseNumber - 1) % 4;
