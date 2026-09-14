@@ -1,3 +1,11 @@
+## 2026-09-15 — 주요 Motif 목록과 악보 가족 통합
+
+- 오른쪽 목록을 악보의 motifSpans에서 집계하도록 연결했다. 가족별 횟수, 형태별 대표 악보·등장 위치, 전체 선율 attack 대비 비중을 표시한다.
+- 중복 occurrence와 가족 내 겹치는 attack은 한 번만 계산하고 tie continuation은 분모·분자에서 제외한다. 비중은 중요도나 지속시간 점수가 아니다.
+- 각 등장 위치 선택을 악보/상세 패널과 연결하고, 변형별 대표 구간으로 기존 타 작품 검색을 유지했다.
+- 관련 테스트 25개와 production build 통과. 상세 계약: docs/motif-family-summary.md.
+
+
 # MUSICANOTE 개발 기록
 
 ## 기록 완료 기준

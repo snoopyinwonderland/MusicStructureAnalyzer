@@ -4,6 +4,8 @@ import { ArrowLeft, Pause, Play, Search } from 'lucide-react';
 import type { CorpusNote, MatchResult, Query, QueryEvent } from '../types';
 import { collapseTies } from '../search/features';
 import { compareMotifs } from '../music/motifSimilarity';
+import { summarizeMotifFamilies } from '../music/motifFamilies';
+import '../motif-families.css';
 import { pitchName } from '../music/pitch';
 import { schedulePhrase, type ScheduledPlayback } from '../music/audioPlayback';
 import { FullXmlNotation, type MotifSpanMarker, type PhraseSpanMarker } from './FullXmlNotation';
@@ -47,7 +49,10 @@ function MotifCard({motif,work}:{motif:any;work:Work}){
   return <article className="motif-card"><div className="motif-card-head"><div><b>{motif.label}</b><span>{motif.count}회 · m.{motif.startMeasure}{motif.endMeasure!==motif.startMeasure?`–${motif.endMeasure}`:''}</span></div><div className="motif-search-action"><small>{loading?(remainingSeconds===0?'검색 결과 정리 중…':`검색 중 · 약 ${remainingSeconds??estimatedSeconds}초 남음`):`예상 검색 시간 · 약 ${estimatedSeconds}초`}</small><button type="button" onClick={search}><Search/>{open?'닫기':'비슷한 Motif'}</button></div></div><Notation query={query}/>{open&&<div className="motif-similar-results">{loading&&<p>현재 악보와 같은 제목의 판본을 제외하고 검색하는 중…</p>}{error&&<p className="motif-error">{error}</p>}{!loading&&!error&&!results.length&&<p>다른 작품에서 충분히 비슷한 motif를 찾지 못했습니다.</p>}{results.map((result,index)=><a href={resultHref(result)} key={result.work.workId+`-${index}`}><span>{index+1}</span><div><b>{result.work.title}</b><small>{result.work.artist} · {result.work.partName||result.work.streamId} · m.{result.startMeasure}–{result.endMeasure}</small></div><strong>{Math.round(result.ranking??result.localSimilarity)}%</strong></a>)}</div>}</article>
 }
 
-const MotifAnalysis=({work}:{work:Work})=><section className="analysis-block motif-analysis"><h3>주요 Motif</h3><p>반복·길이·음가를 함께 고려한 후보입니다. 악보 아래 버튼으로 다른 작품의 유사 구간을 찾을 수 있습니다.</p>{(work.stats.motifs||[]).map((motif:any)=><MotifCard key={motif.id||motif.label} motif={motif} work={work}/>)}</section>;
+function MotifAnalysis({work,spans,onSelect,selectedNumber}:{work:Work;spans:MotifSpanMarker[];onSelect:(number:number)=>void;selectedNumber:number|null}){
+  const families=useMemo(()=>summarizeMotifFamilies(work.notes,spans),[work.notes,spans]);
+  return <section className="analysis-block motif-analysis"><h3>주요 Motif · 가족별</h3><p>악보의 구조 분석과 같은 모티프입니다. 비중은 선택된 선율 성부의 전체 발음 음표 중 해당 가족이 차지하는 비율입니다. 겹친 음은 가족 안에서 한 번만 셉니다.</p>{!families.length&&<p>현재 표시할 구조 분석 Motif가 없습니다.</p>}{families.map(family=><section key={family.familyNumber} className="motif-family"><h4>Motif {family.familyNumber} · 총 {family.count}회</h4><p>{family.variants.length}개 형태 · 선율 비중 {family.coveragePercent.toFixed(1)}% ({family.coveredAttacks}/{family.totalAttacks}음)</p>{family.variants.map(variant=><details key={`${work.workId}:${family.familyNumber}:${variant.variantIndex}`} open={variant.occurrences.some(span=>span.motifNumber===selectedNumber)||undefined}><summary>{variant.label} · {variant.variantIndex===0?'기준형':'변형'} · {variant.count}회</summary><div className="motif-occurrences">{variant.occurrences.map(span=><button type="button" key={span.motifNumber} aria-pressed={span.motifNumber===selectedNumber} onClick={()=>onSelect(span.motifNumber)}>{span.startNote.measure}–{span.endNote.measure}마디 · {notePitchAndValue(span.startNote)} → {notePitchAndValue(span.endNote)}</button>)}</div><MotifCard motif={variant} work={work}/></details>)}</section>)}<p>가족 간 구간이 겹치면 비중의 합은 100%를 넘을 수 있습니다. 이 비율은 음악적 중요도 점수가 아닙니다.</p></section>;
+}
 const restored = (): StoredState => { try { return JSON.parse(sessionStorage.getItem('musicanote-search-state') || '{}') } catch { return {} } };
 const same = (a: number | undefined, b: number | undefined) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a! - b!) < 1e-6;
 
@@ -224,7 +229,7 @@ export function FullScorePage() {
   const flashPhrase=useCallback((phraseNumber:number)=>{setFlashingPhraseNumber(phraseNumber);setPhraseFlashToken(token=>token+1)},[]);
   const selectPhraseBoundary=useCallback((boundaryIndex:number)=>{setSelectedMotifNumber(null);setSelectedPhraseBoundary(boundaryIndex);const order=supportedPhraseBoundaries.findIndex(boundary=>boundary.index===boundaryIndex);if(order>=0)flashPhrase(order+1)},[supportedPhraseBoundaries,flashPhrase]);
   const selectPhrase=useCallback((phraseNumber:number)=>{setSelectedMotifNumber(null);flashPhrase(phraseNumber);const endingBoundaryIndex=phraseEndingBoundaryIndex(phraseNumber,supportedPhraseBoundaries);if(endingBoundaryIndex!==null)setSelectedPhraseBoundary(endingBoundaryIndex)},[supportedPhraseBoundaries,flashPhrase]);
-  const selectMotif=useCallback((motifNumber:number)=>{setSelectedMotifNumber(motifNumber)},[]);
+  const selectMotif=useCallback((motifNumber:number)=>{setPhraseEnabled(true);setSelectedMotifNumber(motifNumber)},[]);
   const playbackMatch=useMemo(()=>searchEntry?playbackMatchRange(playbackNotes,matches):null,[searchEntry,playbackNotes,matches]);
   useEffect(()=>{playbackPositionManuallySet.current=false;renderCompleteRef.current=false;setPlaybackPosition(playbackMatch?.first??0);setRenderedPlaybackRange({first:null,last:null,complete:false})},[id,work?.streamId,playbackMatch?.first]);
   useEffect(()=>{playingRef.current=playing},[playing]);
@@ -263,7 +268,7 @@ export function FullScorePage() {
       <aside>
         {work.youtubeId ? <iframe src={`https://www.youtube-nocookie.com/embed/${work.youtubeId}`} title="대표 영상" allowFullScreen /> : <div className="video-placeholder">대표 YouTube 영상 수집 대기</div>}
         {phraseEnabled&&(selectedMotif?<MotifReviewPanel span={selectedMotif}/>:<PhraseReviewPanel work={work} boundaryIndex={selectedPhraseBoundary} onSelect={selectPhraseBoundary}/>)}
-        <div className="score-summary"><h2>Analysis and Statistics</h2><p>{work.stats.structure.measures} measures · {work.stats.structure.notes} melody notes</p><Bars title="많이 사용된 음" items={work.stats.pitches} /><Bars title="리듬 통계 (beats)" items={work.stats.rhythms} /><MotifAnalysis work={work} /><Bars title="음표 밀도가 높은 마디" items={work.stats.structure.peakMeasures} /></div>
+        <div className="score-summary"><h2>Analysis and Statistics</h2><p>{work.stats.structure.measures} measures · {work.stats.structure.notes} melody notes</p><MotifAnalysis work={work} spans={motifSpans} onSelect={selectMotif} selectedNumber={selectedMotifNumber}/><Bars title="많이 사용된 음" items={work.stats.pitches} /><Bars title="리듬 통계 (beats)" items={work.stats.rhythms} /><Bars title="음표 밀도가 높은 마디" items={work.stats.structure.peakMeasures} /></div>
       </aside>
     </div>}
   </main>;
