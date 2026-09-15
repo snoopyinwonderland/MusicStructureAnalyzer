@@ -1,0 +1,14 @@
+import {mkdirSync,writeFileSync,existsSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {resolve} from 'node:path';
+const [workId,caseId]=process.argv.slice(2);
+if(!/^work-[a-f0-9]+$/.test(workId)||!/^S-STRUCT-\d+$/.test(caseId))throw Error('Expected work ID and case ID');
+const response=await fetch(`http://127.0.0.1:5173/api/work/${workId}?start=0&end=0`);
+if(!response.ok)throw Error(`HTTP ${response.status}`);
+const work=await response.json();if(!work.xml||!work.notes?.length)throw Error('Missing score');
+const directory=resolve('evaluation/case-assets',caseId);
+if(existsSync(directory))throw Error('Snapshot already exists; preserve it');
+mkdirSync(directory,{recursive:true});
+writeFileSync(resolve(directory,'context.musicxml'),work.xml,'utf8');
+writeFileSync(resolve(directory,'review-snapshot.json'),JSON.stringify({schema:'musicanote-structure-review/v1',capturedAt:new Date().toISOString(),xmlSha256:createHash('sha256').update(work.xml).digest('hex'),work:{...work,xml:undefined}},null,2)+'\n','utf8');
+console.log(JSON.stringify({caseId,title:work.title,notes:work.notes.length,directory}));

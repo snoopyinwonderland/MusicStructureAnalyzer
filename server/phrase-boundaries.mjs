@@ -1,5 +1,6 @@
 // Uncalibrated local boundary evidence, not harmonic cadence or phrase analysis.
-const VERSION = 'local-boundary-evidence-v1.9';
+import {applyBreathSymbolEvidence} from './phrase-breath-symbols.mjs';
+const VERSION = 'local-boundary-evidence-v1.10';
 const clamp = value => Math.max(0, Math.min(1, value));
 const round = value => Math.round(value * 1e6) / 1e6;
 const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -463,6 +464,7 @@ export function analyzePhraseBoundaries(notes) {
   const recurringMotifPhraseFrames = attacks.length >= 12
     ? applyRecurringMotifPhraseFrames(events,motifRelations,boundaries)
     : { applicable: false, suppressedBoundaryIndices: [], frames: [] };
+  applyBreathSymbolEvidence(notes,boundaries);
   for (let index = 1; index < events.length; index++) {
     const boundary = boundaries[index];
     if (!events[index].attack) {

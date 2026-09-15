@@ -1,3 +1,16 @@
+## 2026-09-15 — Motif complete extent 후속 수정
+
+- long-arrival-rest-v1: 긴 타이 종결음 뒤 실제 쉼을 확인해 반복 주기 투영이 다음 음형을 포함하지 않도록 수정했다.
+- rest-anchored-short-pickup-v1: 고정 rhythm-cell에서 누락한 연속 짧은 앞부분을 쉼 근거로 복구하고 core/complete 시작을 보존한다.
+- S-STRUCT-004의 D#5 종결과 미–파#–솔# 시작을 검증했다. 가족 기준 변경 없이 복구 후보는 Motif 3-3(유사도 91, coverage 78)으로 분류된다. 관련 54개 테스트/빌드 통과. 상세: docs/structure-review-004.md.
+
+## 2026-09-15 — S-STRUCT-004 부분 Motif와 기보 호흡
+
+- The Last Night of the World 전체 XML과 298개 이벤트, 변경 전 분석 번호를 보존했다.
+- 큰 Motif 내부 rhythm-cell 후보는 containedFragments로 보존하고 독립 표시를 제외한다.
+- v1.10은 원본 fermata/breath-mark/caesura의 출처를 다음 attack 경계에 연결한다. 타이 지속을 건너뛰고 단독 fermata는 종결을 확정하지 않는다.
+- Phrase 2+3, 5+6, 10+11 후 재분할, 25마디 대안은 검토 사례에 저장했다. 관련 회귀 59개 및 빌드 통과. 상세: docs/structure-review-004.md.
+
 ## 2026-09-15 — 주요 Motif 목록과 악보 가족 통합
 
 - 오른쪽 목록을 악보의 motifSpans에서 집계하도록 연결했다. 가족별 횟수, 형태별 대표 악보·등장 위치, 전체 선율 attack 대비 비중을 표시한다.

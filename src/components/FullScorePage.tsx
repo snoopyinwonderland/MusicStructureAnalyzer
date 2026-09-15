@@ -4,6 +4,7 @@ import { ArrowLeft, Pause, Play, Search } from 'lucide-react';
 import type { CorpusNote, MatchResult, Query, QueryEvent } from '../types';
 import { collapseTies } from '../search/features';
 import { compareMotifs } from '../music/motifSimilarity';
+import { projectedMotifEnd, rhythmCellStart } from '../music/motifExtent';
 import { summarizeMotifFamilies } from '../music/motifFamilies';
 import '../motif-families.css';
 import { pitchName } from '../music/pitch';
@@ -130,7 +131,7 @@ export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],
   type Candidate={startIndex:number;endIndex:number;priority:number;source:'relation'|'cycle'|'projected'|'parallel-cell'|'rhythmic-theme-cell'|'phrase-frame-core'|'phrase-frame-answer';familyKey?:string;variantKey?:string};
   const candidates=new Map<number,Candidate>();
   const add=(candidate:Candidate)=>{const prior=candidates.get(candidate.startIndex);if(!prior||candidate.priority>prior.priority)candidates.set(candidate.startIndex,candidate)};
-  const cycleEnd=(start:number,exclusiveOnset:number)=>{let end:number|null=null;for(let index=start;index<notes.length;index++){const note=notes[index];if(Number(note.onset)>=exclusiveOnset)break;if(note?.isAttack!==false&&!note?.tieStop)end=index}return end};
+  const cycleEnd=(start:number,exclusiveOnset:number)=>projectedMotifEnd(notes,start,exclusiveOnset);
   const attackEnd=(start:number,length:number)=>{let remaining=length,end=start;for(let index=start;index<notes.length&&remaining>0;index++){const note=notes[index];if(note?.isAttack!==false&&!note?.tieStop){remaining--;end=index}}return remaining===0?end:null};
   const attackCount=(candidate:Candidate)=>notes.slice(candidate.startIndex,candidate.endIndex+1).filter(note=>note.isAttack!==false&&!note.tieStop).length;
   // A recurrent rhythm family proposes candidate extents; it does not establish
@@ -164,14 +165,23 @@ export function buildMotifSpans(notes:CorpusNote[],relations:MotifRelation[]=[],
     const establishedPrototype=candidates.get(right.previousIndex),cellLength=establishedPrototype?.source==='cycle'?attackCount(establishedPrototype):Math.max(left.length,right.length);
     for(const start of [right.previousIndex,right.currentIndex]){const endIndex=attackEnd(start,cellLength);if(endIndex!==null)add({startIndex:start,endIndex,priority:5,source:'parallel-cell'})}
   }}
-  const recurrent=[...candidates.values()].filter(candidate=>attackCount(candidate)>=4).sort((a,b)=>a.startIndex-b.startIndex||a.endIndex-b.endIndex);
+  const initialCandidates=[...candidates.values()];
+  const completeCandidates=initialCandidates.map(candidate=>{
+    if(candidate.source!=='rhythmic-theme-cell')return candidate;
+    const startIndex=rhythmCellStart(notes,candidate.startIndex,candidate.endIndex,initialCandidates.filter(other=>other!==candidate));
+    return startIndex===candidate.startIndex?candidate:{...candidate,startIndex,coreStartIndex:candidate.startIndex};
+  }).filter(candidate=>attackCount(candidate)>=4);
+  // A rhythm detector can rediscover the tail of a larger recurrent gesture.
+  // Keep that relation as evidence instead of displaying a competing whole Motif.
+  const containedRhythmCandidates=completeCandidates.filter(candidate=>candidate.source==='rhythmic-theme-cell'&&completeCandidates.some(parent=>parent.startIndex<candidate.startIndex&&parent.endIndex>=candidate.endIndex));
+  const recurrent=completeCandidates.filter(candidate=>!containedRhythmCandidates.includes(candidate)).sort((a,b)=>a.startIndex-b.startIndex||a.endIndex-b.endIndex);
   const families:Array<{number:number;base:Candidate;variants:Candidate[];familyKey?:string}>=[];
   return recurrent.map((candidate,motifNumber)=>{
     const segment=notes.slice(candidate.startIndex,candidate.endIndex+1);let family=candidate.familyKey?families.find(item=>item.familyKey===candidate.familyKey):families.map(item=>({item,evidence:motifSimilarityEvidence(notes.slice(item.base.startIndex,item.base.endIndex+1),segment)})).filter(match=>match.evidence.similarity>=84&&match.evidence.coverage>=70).sort((a,b)=>b.evidence.similarity-a.evidence.similarity)[0]?.item;
     if(!family){family={number:families.length+1,base:candidate,variants:[candidate],familyKey:candidate.familyKey};families.push(family)}
     let variantIndex=family.variants.findIndex(variant=>{const evidence=motifSimilarityEvidence(notes.slice(variant.startIndex,variant.endIndex+1),segment);return evidence.melodic>=99&&evidence.shape>=99&&evidence.rhythm>=98&&evidence.coverage>=98});if(variantIndex<0){variantIndex=family.variants.length;family.variants.push(candidate)}
     const similarity=motifSimilarityEvidence(notes.slice(family.base.startIndex,family.base.endIndex+1),segment),label=`Motif ${family.number}-${variantIndex+1}`;
-    return{motifNumber:motifNumber+1,familyNumber:family.number,variantIndex,label,startIndex:candidate.startIndex,endIndex:candidate.endIndex,startNote:notes[candidate.startIndex],endNote:notes[candidate.endIndex],similarity};
+    return{motifNumber:motifNumber+1,familyNumber:family.number,variantIndex,label,startIndex:candidate.startIndex,endIndex:candidate.endIndex,startNote:notes[candidate.startIndex],endNote:notes[candidate.endIndex],similarity,extentEvidence:candidate.coreStartIndex===undefined?undefined:{rule:'rest-anchored-short-pickup-v1',coreStartIndex:candidate.coreStartIndex,completeStartIndex:candidate.startIndex},containedFragments:containedRhythmCandidates.filter(fragment=>candidate.startIndex<fragment.startIndex&&candidate.endIndex>=fragment.endIndex)};
   });
 }
 
@@ -191,6 +201,7 @@ export function phraseEndingBoundaryIndex(phraseNumber:number,boundaries:PhraseB
 }
 
 const cueNames:Record<string,string>={
+  'notated-breath-symbol':'기보된 호흡 기호',
   'observed-gap':'실제 시간 공백','pitch-discontinuity':'음정 도약 변화','ioi-discontinuity':'리듬 간격 변화','repeated-motif-start':'반복 모티프 시작','observed-continuity':'시간적 연속','tie-continuation':'타이 지속','repeated-passage-internal-continuation':'반복 구간 내부 연속성','thematic-cell-internal-continuation':'주제 Motif 내부 연속성','thematic-cell-phrase-restart':'주제 Motif 재시작','short-phrase-fragment-continuation':'너무 짧은 Phrase 조각','recurring-motif-preparation-continuation':'반복 Motif 준비부 연속','recurring-motif-answer-continuation':'반복 Motif 응답부 연속',
 };
 

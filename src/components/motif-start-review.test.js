@@ -1,0 +1,20 @@
+import {it,expect} from 'vitest';
+import {readFileSync} from 'node:fs';
+import {buildMotifSpans,motifSimilarityEvidence} from './FullScorePage';
+it('restores the rest-anchored pickup without forcing family identity',()=>{
+ const {work:w}=JSON.parse(readFileSync('evaluation/case-assets/S-STRUCT-004/review-snapshot.json','utf8'));
+ const a=w.phraseAnalysis;
+ const spans=buildMotifSpans(w.notes,a.motifRelations,[],a.motifCells,a.recurringMotifPhraseFrames?.frames);
+ const restored=spans.find(s=>s.startIndex===73&&s.endIndex===79);
+ expect(restored).toBeDefined();
+ expect(spans.some(s=>s.startIndex===75)).toBe(false);
+ expect(restored.startNote.spelling).toBe('E5');
+ expect(w.notes.slice(73,76).map(n=>n.spelling)).toEqual(['E5','F#5','G#5']);
+ expect(restored.extentEvidence.coreStartIndex).toBe(75);
+ expect(spans.some(s=>s.startIndex===53&&s.endIndex===61)).toBe(true);
+ const comparison=motifSimilarityEvidence(w.notes.slice(53,62),w.notes.slice(73,80));
+ expect(restored.familyNumber).toBe(spans.find(s=>s.startIndex===53).familyNumber);
+ expect(restored.label).toBe('Motif 3-3');
+ expect(comparison.similarity).toBe(91);
+ expect(comparison.coverage).toBe(78);
+});

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { seedWindows } from './seed-windows.mjs';
 import { analyzePhraseBoundaries, comparePhraseBoundaries } from './phrase-boundaries.mjs';
+import { attachBreathSymbols } from './phrase-breath-symbols.mjs';
 import { analyzeBoundaryHarmony } from './boundary-harmony.mjs';
 import { musicXmlHarmonyStreams } from './musicxml-harmony-events.mjs';
 
@@ -491,6 +492,7 @@ export function getWork(id,options={}){
  const row=database().prepare('SELECT * FROM works WHERE id=?').get(id);if(!row)return null;
  const raw=JSON.parse(row.notes),notes=corpusNotes(row.id,raw),labels=sourceMeasures(row.source,row.stream_id),label=n=>labels.find(x=>x.ordinal===n)?.label??String(n),clef=sourceClef(row.source,row.stream_id,raw[0]?.m||1,notes),meter=sourceMeter(row.source,row.stream_id,raw[0]?.m||1),basePartName=sourcePartName(row.source,row.stream_id),partName=row.stream_id.endsWith(':structural')?`${basePartName} · structural melody`:basePartName,keyFifths=sourceKey(row.source),pitchNames=new Map(),durations=new Map(),motifs=new Map(),measures=new Map();
  for(const note of notes){note.measureOrdinal=note.measure;note.measure=displayMeasure(label(note.measure));note.clefShape=clef.shape;note.clefLine=clef.line;note.meterCount=meter.count;note.meterUnit=meter.unit;note.partName=partName;note.keyFifths=keyFifths}
+ attachBreathSymbols(notes,sourceXml(row.source),row.stream_id).forEach((note,index)=>{notes[index].breathSymbols=note.breathSymbols});
  for(const n of raw){pitchNames.set(n.s,(pitchNames.get(n.s)||0)+1);durations.set(n.d,(durations.get(n.d)||0)+1);measures.set(label(n.m),(measures.get(label(n.m))||0)+1)}
  for(let i=0;i<raw.length-3;i++){const motif=raw.slice(i,i+4).map((n,j,a)=>j?n.p-a[j-1].p:0).slice(1).join(',');motifs.set(motif,(motifs.get(motif)||0)+1)}
  const top=map=>[...map].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([label,count])=>({label:String(label),count}));

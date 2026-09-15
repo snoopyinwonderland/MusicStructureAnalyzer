@@ -1,5 +1,7 @@
 # MusicStructureAnalyzer 문서 안내
 
+- [S-STRUCT-004: 부분 Motif와 호흡 기호](structure-review-004.md)
+
 - [주요 Motif 가족 목록: 공통 집계와 비중](motif-family-summary.md)
 
 문서가 늘어나더라도 현재 계약, 현재 구현, 과거 개발 기록을 혼동하지 않도록 이 파일을 진입점으로 사용한다.
